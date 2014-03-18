@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\PromotionsBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\Bundle\ResourceBundle\Model\TimestampableInterface;
 
 /**
@@ -47,6 +48,38 @@ interface PromotionInterface extends TimestampableInterface
      * @param string $description
      */
     public function setDescription($description);
+
+    /**
+     * Get priority
+     *
+     * @return integer
+     */
+    public function getPriority();
+
+    /**
+     * Set priority
+     *
+     * @param integer $priority
+     *
+     * @return PromotionInterface
+     */
+    public function setPriority($priority);
+
+    /**
+     * Is exclusive
+     *
+     * @return boolean
+     */
+    public function isExclusive();
+
+    /**
+     * Set exclusive
+     *
+     * @param boolean $exclusive
+     *
+     * @return PromotionInterface
+     */
+    public function setExclusive($exclusive);
 
     /**
      * Get usage limit
@@ -122,7 +155,7 @@ interface PromotionInterface extends TimestampableInterface
     public function setCouponBased($couponBased);
 
     /**
-     * @return CouponInterface[]
+     * @return Collection|CouponInterface[]
      */
     public function getCoupons();
 
@@ -153,7 +186,7 @@ interface PromotionInterface extends TimestampableInterface
     public function removeCoupon(CouponInterface $coupon);
 
     /**
-     * @return RuleInterface[]
+     * @return Collection|RuleInterface[]
      */
     public function getRules();
 
@@ -184,7 +217,7 @@ interface PromotionInterface extends TimestampableInterface
     public function removeRule(RuleInterface $rule);
 
     /**
-     * @return ActionInterface[]
+     * @return Collection|ActionInterface[]
      */
     public function getActions();
 

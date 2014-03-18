@@ -18,7 +18,8 @@ use Sylius\Bundle\InventoryBundle\Model\StockableInterface;
  * Stock operator interface.
  * Manage stock levels and inventory units.
  *
- * @author Paweł Jędrzejewski <pjedrzejewkski@diweb.pl>
+ * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 interface InventoryOperatorInterface
 {
@@ -29,6 +30,22 @@ interface InventoryOperatorInterface
      * @param integer            $quantity
      */
     public function increase(StockableInterface $stockable, $quantity);
+
+    /**
+     * Hold stock for given stockable by quantity.
+     *
+     * @param StockableInterface $stockable
+     * @param integer            $quantity
+     */
+    public function hold(StockableInterface $stockable, $quantity);
+
+    /**
+     * Release stock for given stockable by quantity.
+     *
+     * @param StockableInterface $stockable
+     * @param integer            $quantity
+     */
+    public function release(StockableInterface $stockable, $quantity);
 
     /**
      * Decrease stock by count of given inventory units.

@@ -22,12 +22,12 @@ use Sylius\Bundle\ShippingBundle\Model\ShipmentItemInterface;
 interface InventoryUnitInterface extends BaseInventoryUnitInterface, ShipmentItemInterface
 {
     /**
-     * @return null|OrderInterface
+     * @return null|OrderItemInterface
      */
-    public function getOrder();
+    public function getOrderItem();
 
     /**
-     * @param null|OrderInterface $order
+     * @param null|OrderItemInterface $orderItem
      */
-    public function setOrder(OrderInterface $order = null);
+    public function setOrderItem(OrderItemInterface $orderItem = null);
 }

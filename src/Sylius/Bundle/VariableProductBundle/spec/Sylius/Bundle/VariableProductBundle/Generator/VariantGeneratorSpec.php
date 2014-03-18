@@ -11,20 +11,24 @@
 
 namespace spec\Sylius\Bundle\VariableProductBundle\Generator;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\VariableProductBundle\Model\VariableProductInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\ValidatorInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class VariantGeneratorSpec extends ObjectBehavior
 {
-    /**
-     * @param Symfony\Component\Validator\ValidatorInterface $validator
-     * @param Doctrine\Common\Persistence\ObjectRepository   $variantRepository
-     */
-    function let($validator, $variantRepository)
+    function let(
+        ValidatorInterface $validator,
+        ObjectRepository $variantRepository,
+        EventDispatcherInterface $eventDispatcher
+    )
     {
-        $this->beConstructedWith($validator, $variantRepository);
+        $this->beConstructedWith($validator, $variantRepository, $eventDispatcher);
     }
 
     function it_is_initializable()
@@ -37,10 +41,7 @@ class VariantGeneratorSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\VariableProductBundle\Generator\VariantGeneratorInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\VariableProductBundle\Model\VariableProductInterface $product
-     */
-    function it_throws_exception_if_product_doesnt_have_any_options($product)
+    function it_throws_exception_if_product_doesnt_have_any_options(VariableProductInterface $product)
     {
         $product->hasOptions()->willReturn(false);
 

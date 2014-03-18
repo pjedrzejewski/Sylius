@@ -12,6 +12,9 @@
 namespace spec\Sylius\Bundle\PromotionsBundle\Model;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\PromotionsBundle\Model\ActionInterface;
+use Sylius\Bundle\PromotionsBundle\Model\CouponInterface;
+use Sylius\Bundle\PromotionsBundle\Model\RuleInterface;
 
 /**
  * @author Saša Stamenković <umpirsky@gmail.com>
@@ -45,6 +48,23 @@ class PromotionSpec extends ObjectBehavior
         $this->getDescription()->shouldReturn('New Year Sale 50% off.');
     }
 
+    function its_priority_should_be_mutable()
+    {
+        $this->setPriority(5);
+        $this->getPriority()->shouldReturn(5);
+    }
+
+    function its_not_exclusive_by_default()
+    {
+        $this->isExclusive()->shouldReturn(false);
+    }
+
+    function its_exclusive_should_be_mutable()
+    {
+        $this->setExclusive(true);
+        $this->isExclusive()->shouldReturn(true);
+    }
+
     function it_should_have_no_usage_limit_by_default()
     {
         $this->getUsageLimit()->shouldReturn(null);
@@ -73,19 +93,13 @@ class PromotionSpec extends ObjectBehavior
         $this->getUsed()->shouldReturn(1);
     }
 
-    /**
-     * @param DateTime $date
-     */
-    function its_starts_at_should_be_mutable($date)
+    function its_starts_at_should_be_mutable(\DateTime $date)
     {
         $this->setStartsAt($date);
         $this->getStartsAt()->shouldReturn($date);
     }
 
-    /**
-     * @param DateTime $date
-     */
-    function its_ends_at_should_be_mutable($date)
+    function its_ends_at_should_be_mutable(\DateTime $date)
     {
         $this->setEndsAt($date);
         $this->getEndsAt()->shouldReturn($date);
@@ -96,10 +110,7 @@ class PromotionSpec extends ObjectBehavior
         $this->getCoupons()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\CouponInterface $coupon
-     */
-    function it_should_add_coupons_properly($coupon)
+    function it_should_add_coupons_properly(CouponInterface $coupon)
     {
         $this->hasCoupon($coupon)->shouldReturn(false);
 
@@ -109,10 +120,7 @@ class PromotionSpec extends ObjectBehavior
         $this->hasCoupon($coupon)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\CouponInterface $coupon
-     */
-    function it_should_remove_coupons_properly($coupon)
+    function it_should_remove_coupons_properly(CouponInterface $coupon)
     {
         $this->hasCoupon($coupon)->shouldReturn(false);
 
@@ -130,10 +138,7 @@ class PromotionSpec extends ObjectBehavior
         $this->getRules()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\RuleInterface $rule
-     */
-    function it_should_add_rules_properly($rule)
+    function it_should_add_rules_properly(RuleInterface $rule)
     {
         $this->hasRule($rule)->shouldReturn(false);
 
@@ -143,10 +148,7 @@ class PromotionSpec extends ObjectBehavior
         $this->hasRule($rule)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\RuleInterface $rule
-     */
-    function it_should_remove_rules_properly($rule)
+    function it_should_remove_rules_properly(RuleInterface $rule)
     {
         $this->hasRule($rule)->shouldReturn(false);
 
@@ -164,10 +166,7 @@ class PromotionSpec extends ObjectBehavior
         $this->getActions()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\ActionInterface $action
-     */
-    function it_should_add_actions_properly($action)
+    function it_should_add_actions_properly(ActionInterface $action)
     {
         $this->hasAction($action)->shouldReturn(false);
 
@@ -177,10 +176,7 @@ class PromotionSpec extends ObjectBehavior
         $this->hasAction($action)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\PromotionsBundle\Model\ActionInterface $action
-     */
-    function it_should_remove_actions_properly($action)
+    function it_should_remove_actions_properly(ActionInterface $action)
     {
         $this->hasAction($action)->shouldReturn(false);
 

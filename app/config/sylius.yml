@@ -1,7 +1,7 @@
 sylius_core:
     driver: doctrine/orm
-    order_confirmation:
-        enabled: true
+    emails:
+        enabled: false
 
 sylius_installer:
     classes:
@@ -43,6 +43,7 @@ sylius_variable_product:
     classes:
         variant:
             model: Sylius\Bundle\CoreBundle\Model\Variant
+            repository: Sylius\Bundle\CoreBundle\Repository\VariantRepository
             form: Sylius\Bundle\CoreBundle\Form\Type\VariantType
 
 sylius_taxation:
@@ -55,26 +56,35 @@ sylius_shipping:
     classes:
         shipment:
             model: Sylius\Bundle\CoreBundle\Model\Shipment
+            repository: Sylius\Bundle\CoreBundle\Repository\ShipmentRepository
         shipment_item:
             model: Sylius\Bundle\CoreBundle\Model\InventoryUnit
         shipping_method:
             model: Sylius\Bundle\CoreBundle\Model\ShippingMethod
             form: Sylius\Bundle\CoreBundle\Form\Type\ShippingMethodType
 
-sylius_promotions: ~
+sylius_promotions:
+    classes:
+        promotion_subject:
+            model: %sylius.model.order.class%
 
 sylius_inventory:
-    backorders: true
+    backorders: %sylius.inventory.backorders_enabled%
+    track_inventory: %sylius.inventory.tracking_enabled%
     classes:
-        unit:
+        inventory_unit:
             model: Sylius\Bundle\CoreBundle\Model\InventoryUnit
         stockable:
             model: %sylius.model.variant.class%
 
 sylius_payments:
+    classes:
+        payment:
+            controller: Sylius\Bundle\CoreBundle\Controller\PaymentController
     gateways:
         dummy: Test
         stripe: Stripe
+        be2bill: Be2Bill
 
 sylius_payum: ~
 
@@ -105,3 +115,17 @@ sylius_resource:
             driver: doctrine/orm
             classes:
                 model: Sylius\Bundle\CoreBundle\Model\Group
+        sylius.locale:
+            driver: doctrine/orm
+            classes:
+                model: Sylius\Bundle\CoreBundle\Model\Locale
+                controller: Sylius\Bundle\ResourceBundle\Controller\ResourceController
+        sylius.block:
+            driver: doctrine/phpcr-odm
+            classes:
+                model: Symfony\Cmf\Bundle\BlockBundle\Doctrine\Phpcr\SimpleBlock
+        sylius.page:
+            driver: doctrine/phpcr-odm
+            classes:
+                model: Symfony\Cmf\Bundle\ContentBundle\Doctrine\Phpcr\StaticContent
+                repository: Sylius\Bundle\CoreBundle\Repository\PageRepository

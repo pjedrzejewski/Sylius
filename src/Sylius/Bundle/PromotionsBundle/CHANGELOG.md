@@ -1,6 +1,22 @@
 CHANGELOG
 =========
 
+### v0.8.0
+
+* Support exclusive promotions.
+
+### v0.7.0
+
+* Add reverting mechanism for promotion actions.
+
+### v0.6.0
+
+* Release before components introduction. (delayed)
+
+### v0.5.0
+
+* Release after repositories reorganization.
+
 ### v0.2.0
 
 * Symfony 2.3 compatible version.

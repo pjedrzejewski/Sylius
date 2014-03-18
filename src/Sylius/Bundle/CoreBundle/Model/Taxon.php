@@ -12,8 +12,9 @@
 namespace Sylius\Bundle\CoreBundle\Model;
 
 use Sylius\Bundle\TaxonomiesBundle\Model\Taxon as BaseTaxon;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class Taxon extends BaseTaxon implements ImageInterface
+class Taxon extends BaseTaxon implements ImageInterface, TaxonInterface
 {
     /**
      * @var \SplFileInfo
@@ -35,11 +36,17 @@ class Taxon extends BaseTaxon implements ImageInterface
      */
     protected $updatedAt;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $products;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->createdAt = new \DateTime();
+        $this->products = new ArrayCollection();
     }
 
     /**
@@ -128,5 +135,21 @@ class Taxon extends BaseTaxon implements ImageInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProducts($products)
+    {
+        $this->products = $products;
     }
 }

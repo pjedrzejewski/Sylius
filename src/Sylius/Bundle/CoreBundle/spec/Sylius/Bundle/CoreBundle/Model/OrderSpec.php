@@ -12,9 +12,14 @@
 namespace spec\Sylius\Bundle\CoreBundle\Model;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\AddressingBundle\Model\AddressInterface;
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
 use Sylius\Bundle\CoreBundle\Model\OrderShippingStates;
-use Sylius\Bundle\InventoryBundle\Model\InventoryUnitInterface;
+use Sylius\Bundle\CoreBundle\Model\ShipmentInterface;
+use Sylius\Bundle\CoreBundle\Model\UserInterface;
+use Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface;
+use Sylius\Bundle\OrderBundle\Model\AdjustmentInterface;
+use Sylius\Bundle\CoreBundle\Model\OrderItemInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
@@ -41,10 +46,7 @@ class OrderSpec extends ObjectBehavior
         $this->getUser()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\UserInterface $user
-     */
-    function it_should_allow_defining_user($user)
+    function it_should_allow_defining_user(UserInterface $user)
     {
         $this->setUser($user);
         $this->getUser()->shouldReturn($user);
@@ -55,10 +57,7 @@ class OrderSpec extends ObjectBehavior
         $this->getShippingAddress()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\AddressingBundle\Model\AddressInterface $address
-     */
-    function it_should_allow_defining_shipping_address($address)
+    function it_should_allow_defining_shipping_address(AddressInterface $address)
     {
         $this->setShippingAddress($address);
         $this->getShippingAddress()->shouldReturn($address);
@@ -69,10 +68,7 @@ class OrderSpec extends ObjectBehavior
         $this->getBillingAddress()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\AddressingBundle\Model\AddressInterface $address
-     */
-    function it_should_allow_defining_billing_address($address)
+    function it_should_allow_defining_billing_address(AddressInterface $address)
     {
         $this->setBillingAddress($address);
         $this->getBillingAddress()->shouldReturn($address);
@@ -83,40 +79,12 @@ class OrderSpec extends ObjectBehavior
         $this->getInventoryUnits()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit
-     */
-    function it_should_add_inventory_units_properly($unit)
-    {
-        $unit->setOrder($this)->shouldBeCalled();
-        $this->addInventoryUnit($unit);
-    }
-
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit
-     */
-    function it_should_remove_inventory_units_properly($unit)
-    {
-        $unit->setOrder($this)->shouldBeCalled();
-        $this->addInventoryUnit($unit);
-
-        $this->hasInventoryUnit($unit)->shouldReturn(true);
-
-        $unit->setOrder(null)->shouldBeCalled();
-        $this->removeInventoryUnit($unit);
-
-        $this->hasInventoryUnit($unit)->shouldReturn(false);
-    }
-
     function it_should_initialize_shipments_collection_by_default()
     {
         $this->getShipments()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\ShipmentInterface $shipment
-     */
-    function it_should_add_shipment_properly($shipment)
+    function it_should_add_shipment_properly(ShipmentInterface $shipment)
     {
         $this->hasShipment($shipment)->shouldReturn(false);
 
@@ -126,10 +94,7 @@ class OrderSpec extends ObjectBehavior
         $this->hasShipment($shipment)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\ShipmentInterface $shipment
-     */
-    function it_should_remove_shipment_properly($shipment)
+    function it_should_remove_shipment_properly(ShipmentInterface $shipment)
     {
         $shipment->setOrder($this)->shouldBeCalled();
         $this->addShipment($shipment);
@@ -143,13 +108,13 @@ class OrderSpec extends ObjectBehavior
     }
 
     /**
-     * helper method
-     *
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface $order
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $shippingAdjustment
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $taxAdjustment
+     * Helper method
      */
-    protected function addShippingAndTaxAdjustments($order, $shippingAdjustment, $taxAdjustment)
+    protected function addShippingAndTaxAdjustments(
+        OrderInterface $order,
+        AdjustmentInterface $shippingAdjustment,
+        AdjustmentInterface $taxAdjustment
+    )
     {
         $shippingAdjustment->getLabel()->willReturn(OrderInterface::SHIPPING_ADJUSTMENT);
         $shippingAdjustment->setAdjustable($order)->shouldBeCalled();
@@ -160,11 +125,10 @@ class OrderSpec extends ObjectBehavior
         $order->addAdjustment($taxAdjustment);
     }
 
-    /**
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $shippingAdjustment
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $taxAdjustment
-     */
-    function it_should_return_shipping_adjustments($shippingAdjustment, $taxAdjustment)
+    function it_should_return_shipping_adjustments(
+        AdjustmentInterface $shippingAdjustment,
+        AdjustmentInterface $taxAdjustment
+    )
     {
         $this->addShippingAndTaxAdjustments($this, $shippingAdjustment, $taxAdjustment);
 
@@ -175,11 +139,10 @@ class OrderSpec extends ObjectBehavior
         $shippingAdjustments->first()->shouldReturn($shippingAdjustment);
     }
 
-    /**
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $shippingAdjustment
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $taxAdjustment
-     */
-    function it_should_remove_shipping_adjustments($shippingAdjustment, $taxAdjustment)
+    function it_should_remove_shipping_adjustments(
+        AdjustmentInterface $shippingAdjustment,
+        AdjustmentInterface $taxAdjustment
+    )
     {
         $this->addShippingAndTaxAdjustments($this, $shippingAdjustment, $taxAdjustment);
 
@@ -192,11 +155,10 @@ class OrderSpec extends ObjectBehavior
         $this->getShippingAdjustments()->count()->shouldReturn(0); //shipping adjustment has been removed
     }
 
-    /**
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $shippingAdjustment
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $taxAdjustment
-     */
-    function it_should_return_tax_adjustments($shippingAdjustment, $taxAdjustment)
+    function it_should_return_tax_adjustments(
+        AdjustmentInterface $shippingAdjustment,
+        AdjustmentInterface $taxAdjustment
+    )
     {
         $this->addShippingAndTaxAdjustments($this, $shippingAdjustment, $taxAdjustment);
 
@@ -207,11 +169,10 @@ class OrderSpec extends ObjectBehavior
         $taxAdjustments->first()->shouldReturn($taxAdjustment);
     }
 
-    /**
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $shippingAdjustment
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface $taxAdjustment
-     */
-    function it_should_remove_tax_adjustments($shippingAdjustment, $taxAdjustment)
+    function it_should_remove_tax_adjustments(
+        AdjustmentInterface $shippingAdjustment,
+        AdjustmentInterface $taxAdjustment
+    )
     {
         $this->addShippingAndTaxAdjustments($this, $shippingAdjustment, $taxAdjustment);
 
@@ -224,12 +185,10 @@ class OrderSpec extends ObjectBehavior
         $this->getTaxAdjustments()->count()->shouldReturn(0); //tax adjustment has been removed
     }
 
-    /*
     function it_should_not_have_currency_defined_by_default()
     {
         $this->getCurrency()->shouldReturn(null);
     }
-    */
 
     function it_should_allow_defining_currency()
     {
@@ -237,9 +196,9 @@ class OrderSpec extends ObjectBehavior
         $this->getCurrency()->shouldReturn('PLN');
     }
 
-    function it_has_ready_shipping_state_by_default()
+    function it_has_checkout_shipping_state_by_default()
     {
-        $this->getShippingState()->shouldReturn(OrderShippingStates::READY);
+        $this->getShippingState()->shouldReturn(OrderShippingStates::CHECKOUT);
     }
 
     function its_shipping_state_is_mutable()
@@ -248,38 +207,36 @@ class OrderSpec extends ObjectBehavior
         $this->getShippingState()->shouldReturn(OrderShippingStates::SHIPPED);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit1
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit2
-     */
-    function it_is_a_backorder_if_contains_at_least_one_backordered_unit($unit1, $unit2)
+    function it_is_a_backorder_if_contains_at_least_one_backordered_unit(
+        InventoryUnitInterface $unit1,
+        InventoryUnitInterface $unit2,
+        OrderItemInterface $item
+    )
     {
-        $unit1->setOrder($this)->shouldBeCalled();
-        $unit2->setOrder($this)->shouldBeCalled();
-
-        $this->addInventoryUnit($unit1);
-        $this->addInventoryUnit($unit2);
-
         $unit1->getInventoryState()->willReturn(InventoryUnitInterface::STATE_BACKORDERED);
         $unit2->getInventoryState()->willReturn(InventoryUnitInterface::STATE_SOLD);
+
+        $item->getInventoryUnits()->willReturn(array($unit1, $unit2));
+
+        $item->setOrder($this)->shouldBeCalled();
+        $this->addItem($item);
 
         $this->shouldBeBackorder();
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit1
-     * @param Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface $unit2
-     */
-    function it_not_a_backorder_if_contains_no_backordered_units($unit1, $unit2)
+    function it_not_a_backorder_if_contains_no_backordered_units(
+        InventoryUnitInterface $unit1,
+        InventoryUnitInterface $unit2,
+         OrderItemInterface $item
+    )
     {
-        $unit1->setOrder($this)->shouldBeCalled();
-        $unit2->setOrder($this)->shouldBeCalled();
-
-        $this->addInventoryUnit($unit1);
-        $this->addInventoryUnit($unit2);
-
         $unit1->getInventoryState()->willReturn(InventoryUnitInterface::STATE_SOLD);
         $unit2->getInventoryState()->willReturn(InventoryUnitInterface::STATE_SOLD);
+
+        $item->getInventoryUnits()->willReturn(array($unit1, $unit2));
+
+        $item->setOrder($this)->shouldBeCalled();
+        $this->addItem($item);
 
         $this->shouldNotBeBackorder();
     }

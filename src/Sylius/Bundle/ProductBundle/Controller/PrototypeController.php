@@ -36,7 +36,7 @@ class PrototypeController extends ResourceController
      */
     public function buildAction(Request $request, $id)
     {
-        $prototype = $this->findOr404(array('id' => $id));
+        $prototype = $this->findOr404($request, array('id' => $id));
         $productController = $this->getProductController();
 
         $product = $productController->createNew();
@@ -48,18 +48,17 @@ class PrototypeController extends ResourceController
 
         $form = $productController->getForm($product);
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $manager = $productController->getManager();
-
+        if ($request->isMethod('POST') && $form->submit($request)->isValid()) {
+            $manager = $this->get('doctrine')->getManager();
             $manager->persist($product);
             $manager->flush();
 
-            $productController->setFlash('success', '%resource% has been successfully created.');
+            $this->flashHelper->setFlash('success', 'Product has been successfully created.');
 
-            return $productController->redirectTo($product);
+            return $this->redirectHandler->redirectTo($product);
         }
 
-        return $productController->renderResponse('build.html', array(
+        return $productController->render($this->config->getTemplate('build.html'), array(
             'prototype' => $prototype,
             'product'   => $product,
             'form'      => $form->createView()

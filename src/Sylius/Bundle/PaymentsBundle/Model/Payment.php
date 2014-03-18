@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\PaymentsBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Payments model.
@@ -46,14 +47,14 @@ class Payment implements PaymentInterface
      *
      * @var integer
      */
-    protected $amount;
+    protected $amount = 0;
 
     /**
      * State.
      *
      * @var string
      */
-    protected $state;
+    protected $state = PaymentInterface::STATE_NEW;
 
     /**
      * Credit card as a source.
@@ -61,13 +62,6 @@ class Payment implements PaymentInterface
      * @var CreditCardInterface
      */
     protected $creditCard;
-
-    /**
-     * Processing logs.
-     *
-     * @var PaymentLogInterface[]
-     */
-    protected $logs;
 
     /**
      * Creation date.
@@ -86,18 +80,14 @@ class Payment implements PaymentInterface
     /**
      * @var array
      */
-    protected $details;
+    protected $details = array();
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->amount = 0;
-        $this->state = PaymentInterface::STATE_NEW;
-        $this->logs = new ArrayCollection();
-        $this->createdAt = new \DateTime('now');
-        $this->details = array();
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -211,46 +201,6 @@ class Payment implements PaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function getLogs()
-    {
-        return $this->logs;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasLog(PaymentLogInterface $log)
-    {
-        return $this->logs->contains($log);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addLog(PaymentLogInterface $log)
-    {
-        if (!$this->hasLog($log)) {
-            $this->logs->add($log);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function removeLog(PaymentLogInterface $log)
-    {
-        if ($this->hasLog($log)) {
-            $this->logs->removeElement($log);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getCreatedAt()
     {
         return $this->createdAt;
@@ -285,15 +235,17 @@ class Payment implements PaymentInterface
     }
 
     /**
-     * @param array $details
+     * {@inheritdoc}
      */
     public function setDetails(array $details)
     {
         $this->details = $details;
+
+        return $this;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getDetails()
     {

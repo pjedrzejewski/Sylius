@@ -1,0 +1,8 @@
+sylius:
+    account:
+        address:
+            flash:
+                billing:
+                    success: The address has been successfully set as your default billing address.
+                shipping:
+                    success: The address has been successfully set as your default shipping address.

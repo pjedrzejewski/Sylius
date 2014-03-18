@@ -13,14 +13,13 @@ namespace Sylius\Bundle\OrderBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sylius\Bundle\ResourceBundle\Model\TimestampableInterface;
 
 /**
  * Model for orders.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-class Order implements OrderInterface, TimestampableInterface
+class Order implements OrderInterface
 {
     /**
      * Id.
@@ -46,7 +45,7 @@ class Order implements OrderInterface, TimestampableInterface
     /**
      * Items in order.
      *
-     * @var Collection
+     * @var Collection|OrderItemInterface[]
      */
     protected $items;
 
@@ -55,12 +54,12 @@ class Order implements OrderInterface, TimestampableInterface
      *
      * @var integer
      */
-    protected $itemsTotal;
+    protected $itemsTotal = 0;
 
     /**
      * Adjustments.
      *
-     * @var Collection
+     * @var Collection|AdjustmentInterface[]
      */
     protected $adjustments;
 
@@ -69,7 +68,7 @@ class Order implements OrderInterface, TimestampableInterface
      *
      * @var integer
      */
-    protected $adjustmentsTotal;
+    protected $adjustmentsTotal = 0;
 
     /**
      * Calculated total.
@@ -77,14 +76,14 @@ class Order implements OrderInterface, TimestampableInterface
      *
      * @var integer
      */
-    protected $total;
+    protected $total = 0;
 
     /**
      * Whether order was confirmed.
      *
      * @var Boolean
      */
-    protected $confirmed;
+    protected $confirmed = true;
 
     /**
      * Confirmation token.
@@ -108,11 +107,18 @@ class Order implements OrderInterface, TimestampableInterface
     protected $updatedAt;
 
     /**
+     * Deletion time.
+     *
+     * @var \DateTime
+     */
+    protected $deletedAt;
+
+    /**
      * State
      *
      * @var integer
      */
-    protected $state;
+    protected $state = OrderInterface::STATE_CART;
 
     /**
      * Constructor.
@@ -120,13 +126,8 @@ class Order implements OrderInterface, TimestampableInterface
     public function __construct()
     {
         $this->items = new ArrayCollection();
-        $this->itemsTotal = 0;
         $this->adjustments = new ArrayCollection();
-        $this->adjustmentsTotal = 0;
-        $this->total = 0;
-        $this->confirmed = true;
         $this->createdAt = new \DateTime();
-        $this->state = OrderStates::INITIAL;
     }
 
     /**
@@ -194,42 +195,6 @@ class Order implements OrderInterface, TimestampableInterface
     /**
      * {@inheritdoc}
      */
-    public function isConfirmed()
-    {
-        return OrderStates::ORDER_CONFIRMED === $this->state;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setConfirmed($confirmed)
-    {
-        $this->state = (Boolean) $confirmed ? OrderStates::ORDER_CONFIRMED : OrderStates::ORDER;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirmationToken()
-    {
-        return $this->confirmationToken;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setConfirmationToken($confirmationToken)
-    {
-        $this->confirmationToken = $confirmationToken;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getItems()
     {
         return $this->items;
@@ -260,7 +225,7 @@ class Order implements OrderInterface, TimestampableInterface
      */
     public function countItems()
     {
-        return count($this->items);
+        return $this->items->count();
     }
 
     /**
@@ -274,7 +239,7 @@ class Order implements OrderInterface, TimestampableInterface
 
         foreach ($this->items as $existingItem) {
             if ($item->equals($existingItem)) {
-                $existingItem->setQuantity($existingItem->getQuantity() + $item->getQuantity());
+                $existingItem->merge($item, false);
 
                 return $this;
             }
@@ -435,6 +400,10 @@ class Order implements OrderInterface, TimestampableInterface
 
         $this->total = $this->itemsTotal + $this->adjustmentsTotal;
 
+        if ($this->total < 0) {
+            $this->total = 0;
+        }
+
         return $this;
     }
 
@@ -470,6 +439,32 @@ class Order implements OrderInterface, TimestampableInterface
     public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDeleted()
+    {
+        return null !== $this->deletedAt && new \DateTime() >= $this->deletedAt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDeletedAt(\DateTime $deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }
@@ -519,6 +514,6 @@ class Order implements OrderInterface, TimestampableInterface
      */
     public function isEmpty()
     {
-        return 0 === $this->countItems();
+        return $this->items->isEmpty();
     }
 }

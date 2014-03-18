@@ -11,15 +11,27 @@
 
 namespace Sylius\Bundle\PayumBundle\Payum\Paypal\Action;
 
-use Payum\Action\PaymentAwareAction;
-use Payum\Bridge\Spl\ArrayObject;
-use Payum\Exception\RequestNotSupportedException;
-use Payum\Request\CaptureRequest;
-use Payum\Request\SecuredCaptureRequest;
+use Payum\Bundle\PayumBundle\Security\TokenFactory;
+use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\Request\SecuredCaptureRequest;
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
 
 class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
 {
+    /**
+     * @var TokenFactory
+     */
+    protected $tokenFactory;
+
+    /**
+     * @param TokenFactory $tokenFactory
+     */
+    public function __construct(TokenFactory $tokenFactory)
+    {
+        $this->tokenFactory = $tokenFactory;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -32,37 +44,47 @@ class CaptureOrderUsingExpressCheckoutAction extends PaymentAwareAction
 
         /** @var OrderInterface $order */
         $order = $request->getModel();
+        $payment = $order->getPayment();
 
-        $paymentDetails = $order->getPayment()->getDetails();
-        if (empty($paymentDetails)) {
-            $paymentDetails['RETURNURL'] = $request->getToken()->getTargetUrl();
-            $paymentDetails['CANCELURL'] = $request->getToken()->getTargetUrl();
-            $paymentDetails['INVNUM'] = $order->getNumber();
+        $details = $payment->getDetails();
+        if (empty($details)) {
+            $details['RETURNURL'] = $request->getToken()->getTargetUrl();
+            $details['CANCELURL'] = $request->getToken()->getTargetUrl();
+            $details['NOTIFYURL'] = $this->tokenFactory->createNotifyToken(
+                $request->getToken()->getPaymentName(),
+                $order
+            );
+            $details['INVNUM'] = $order->getNumber();
 
-            $paymentDetails['PAYMENTREQUEST_0_CURRENCYCODE'] = $order->getCurrency();
-            $paymentDetails['PAYMENTREQUEST_0_AMT'] = number_format($order->getTotal() / 100, 2);
-            $paymentDetails['PAYMENTREQUEST_0_ITEMAMT'] = number_format($order->getItemsTotal() / 100, 2);
-            $paymentDetails['PAYMENTREQUEST_0_TAXAMT'] = number_format($order->getTaxTotal() / 100, 2);
-            $paymentDetails['PAYMENTREQUEST_0_SHIPPINGAMT'] = number_format($order->getShippingTotal() / 100, 2);
+            $details['PAYMENTREQUEST_0_CURRENCYCODE'] = $order->getCurrency();
+            $details['PAYMENTREQUEST_0_AMT'] = number_format($order->getTotal() / 100, 2);
+            $details['PAYMENTREQUEST_0_ITEMAMT'] = number_format(($order->getItemsTotal() + $order->getPromotionTotal())/ 100, 2);
+            $details['PAYMENTREQUEST_0_TAXAMT'] = number_format($order->getTaxTotal() / 100, 2);
+            $details['PAYMENTREQUEST_0_SHIPPINGAMT'] = number_format($order->getShippingTotal() / 100, 2);
 
             $m = 0;
             foreach ($order->getItems() as $item) {
-                $paymentDetails['L_PAYMENTREQUEST_0_AMT'.$m] =  number_format($item->getTotal() / 100, 2);
-                $paymentDetails['L_PAYMENTREQUEST_0_QTY'.$m] =  $item->getQuantity();
+                $details['L_PAYMENTREQUEST_0_AMT'.$m] = number_format($item->getUnitPrice() / 100, 2);
+                $details['L_PAYMENTREQUEST_0_QTY'.$m] = $item->getQuantity();
 
                 $m++;
             }
+
+            if ($order->getPromotionTotal() !== 0) {
+                $details['L_PAYMENTREQUEST_0_NAME'.$m] = 'Discount';
+                $details['L_PAYMENTREQUEST_0_AMT'.$m]  = number_format($order->getPromotionTotal() / 100, 2);
+                $details['L_PAYMENTREQUEST_0_QTY'.$m]  = 1;
+            }
+
+            $payment->setDetails($details);
         }
 
-        // TODO: find a way to simply the next logic
-
-        $paymentDetails = ArrayObject::ensureArrayObject($paymentDetails);
-
         try {
-            $this->payment->execute(new CaptureRequest($paymentDetails));
-            $order->getPayment()->setDetails((array) $paymentDetails);
+            $request->setModel($payment);
+            $this->payment->execute($request);
+            $request->setModel($order);
         } catch (\Exception $e) {
-            $order->getPayment()->setDetails((array) $paymentDetails);
+            $request->setModel($order);
 
             throw $e;
         }

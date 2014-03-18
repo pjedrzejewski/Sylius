@@ -11,6 +11,8 @@
 
 namespace Sylius\Bundle\ShippingBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
+
 /**
  * Shipment interface.
  *
@@ -19,12 +21,13 @@ namespace Sylius\Bundle\ShippingBundle\Model;
 interface ShipmentInterface extends ShippingSubjectInterface
 {
     // Shipment default states.
-    const STATE_CHECKOUT    = 'checkout';
-    const STATE_READY       = 'ready';
-    const STATE_DISPATCHED  = 'dispatched';
-    const STATE_PENDING     = 'pending';
-    const STATE_SHIPPED     = 'shipped';
-    const STATE_RETURNED    = 'returned';
+    const STATE_CHECKOUT   = 'checkout';
+    const STATE_ONHOLD     = 'onhold';
+    const STATE_PENDING    = 'pending';
+    const STATE_READY      = 'ready';
+    const STATE_SHIPPED    = 'shipped';
+    const STATE_RETURNED   = 'returned';
+    const STATE_CANCELLED  = 'cancelled';
 
     /**
      * Get shipment state.
@@ -57,7 +60,7 @@ interface ShipmentInterface extends ShippingSubjectInterface
     /**
      * Get shipment items.
      *
-     * @return ShipmentItemInterface[]
+     * @return Collection|ShipmentItemInterface[]
      */
     public function getItems();
 

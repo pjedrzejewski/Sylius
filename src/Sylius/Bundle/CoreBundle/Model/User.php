@@ -18,7 +18,7 @@ use Sylius\Bundle\AddressingBundle\Model\AddressInterface;
 /**
  * User model.
  *
- * @author Paweł Jędrzjewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class User extends BaseUser implements UserInterface
 {
@@ -29,6 +29,7 @@ class User extends BaseUser implements UserInterface
     protected $lastName;
     protected $createdAt;
     protected $updatedAt;
+    protected $deletedAt;
     protected $currency;
     protected $orders;
     protected $billingAddress;
@@ -44,11 +45,17 @@ class User extends BaseUser implements UserInterface
         parent::__construct();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setCurrency($currency)
     {
         $this->currency = $currency;
@@ -129,9 +136,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get orders
-     *
-     * @return ArrayCollection
+     * {@inheritdoc}
      */
     public function getOrders()
     {
@@ -139,10 +144,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set billingAddress
-     *
-     * @param  AddressInterface $billingAddress
-     * @return User
+     * {@inheritdoc}
      */
     public function setBillingAddress(AddressInterface $billingAddress = null)
     {
@@ -156,9 +158,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get billingAddress
-     *
-     * @return AddressInterface
+     * {@inheritdoc}
      */
     public function getBillingAddress()
     {
@@ -166,10 +166,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Set shippingAddress
-     *
-     * @param  AddressInterface $shippingAddress
-     * @return User
+     * {@inheritdoc}
      */
     public function setShippingAddress(AddressInterface $shippingAddress = null)
     {
@@ -183,9 +180,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get shippingAddress
-     *
-     * @return AddressInterface
+     * {@inheritdoc}
      */
     public function getShippingAddress()
     {
@@ -193,10 +188,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Add address
-     *
-     * @param  AddressInterface $address
-     * @return User
+     * {@inheritdoc}
      */
     public function addAddress(AddressInterface $address)
     {
@@ -208,9 +200,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Remove address
-     *
-     * @param AddressInterface $address
+     * {@inheritdoc}
      */
     public function removeAddress(AddressInterface $address)
     {
@@ -220,10 +210,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Has address
-     *
-     * @param  AddressInterface $address
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasAddress(AddressInterface $address)
     {
@@ -231,9 +218,7 @@ class User extends BaseUser implements UserInterface
     }
 
     /**
-     * Get addresses
-     *
-     * @return AddressInterface[]
+     * {@inheritdoc}
      */
     public function getAddresses()
     {
@@ -304,7 +289,7 @@ class User extends BaseUser implements UserInterface
      */
     public function getUpdatedAt()
     {
-        return $this->createdAt;
+        return $this->updatedAt;
     }
 
     /**
@@ -313,6 +298,32 @@ class User extends BaseUser implements UserInterface
     public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDeleted()
+    {
+        return null !== $this->deletedAt && new \DateTime() >= $this->deletedAt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDeletedAt(\DateTime $deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }

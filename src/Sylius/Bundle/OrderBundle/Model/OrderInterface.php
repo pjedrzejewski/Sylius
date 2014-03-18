@@ -12,14 +12,25 @@
 namespace Sylius\Bundle\OrderBundle\Model;
 
 use Doctrine\Common\Collections\Collection;
+use Sylius\Bundle\ResourceBundle\Model\SoftDeletableInterface;
+use Sylius\Bundle\ResourceBundle\Model\TimestampableInterface;
 
 /**
  * Order interface.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-interface OrderInterface extends AdjustableInterface
+interface OrderInterface extends AdjustableInterface, TimestampableInterface, SoftDeletableInterface
 {
+    const STATE_CART        = 1;
+    const STATE_CART_LOCKED = 2;
+    const STATE_PENDING     = 3;
+    const STATE_CONFIRMED   = 4;
+    const STATE_SHIPPED     = 5;
+    const STATE_ABANDONED   = 6;
+    const STATE_CANCELLED   = 7;
+    const STATE_RETURNED    = 8;
+
     /**
      * Has the order been completed by user and can be handled.
      *
@@ -61,44 +72,16 @@ interface OrderInterface extends AdjustableInterface
     public function setNumber($number);
 
     /**
-     * Is confirmed?
-     *
-     * @return Boolean
-     */
-    public function isConfirmed();
-
-    /**
-     * Set confirmed.
-     *
-     * @param Boolean $confirmed
-     */
-    public function setConfirmed($confirmed);
-
-    /**
-     * Get confirmation token.
-     *
-     * @return string
-     */
-    public function getConfirmationToken();
-
-    /**
-     * Set confirmation token.
-     *
-     * @param string $confirmationToken
-     */
-    public function setConfirmationToken($confirmationToken);
-
-    /**
      * Get order items.
      *
-     * @return OrderItemInterface[] An array or collection of OrderItemInterface
+     * @return Collection|OrderItemInterface[] An array or collection of OrderItemInterface
      */
     public function getItems();
 
     /**
      * Set items.
      *
-     * @param Collection $items
+     * @param Collection|OrderItemInterface[] $items
      */
     public function setItems(Collection $items);
 

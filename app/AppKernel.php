@@ -9,10 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\ClassLoader\DebugUniversalClassLoader;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\HttpKernel\Debug\ErrorHandler;
-use Symfony\Component\HttpKernel\Debug\ExceptionHandler;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
@@ -50,9 +47,17 @@ class AppKernel extends Kernel
             new Sylius\Bundle\WebBundle\SyliusWebBundle(),
             new Sylius\Bundle\ResourceBundle\SyliusResourceBundle(),
 
+            // CMF bundles.
+            new Sonata\BlockBundle\SonataBlockBundle(),
+            new Symfony\Cmf\Bundle\CoreBundle\CmfCoreBundle(),
+            new Symfony\Cmf\Bundle\BlockBundle\CmfBlockBundle(),
+            new Symfony\Cmf\Bundle\ContentBundle\CmfContentBundle(),
+            new Symfony\Cmf\Bundle\RoutingBundle\CmfRoutingBundle(),
+            new Symfony\Cmf\Bundle\MenuBundle\CmfMenuBundle(),
+
             // Core bundles.
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
@@ -76,9 +81,11 @@ class AppKernel extends Kernel
             new Payum\Bundle\PayumBundle\PayumBundle(),
         );
 
-        if (in_array($this->getEnvironment(), array('dev'))) {
-            $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+        if ('dev' === $this->environment) {
+            $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
         }
+
+        $bundles = $this->addFixturesBundle($bundles);
 
         return $bundles;
     }
@@ -86,33 +93,60 @@ class AppKernel extends Kernel
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        if ($this->debug) {
-            ini_set('display_errors', 1);
-            error_reporting(-1);
+        $loader->load(__DIR__.'/config/config_'.$this->environment.'.yml');
 
-            DebugUniversalClassLoader::enable();
-            ErrorHandler::register();
-            if ('cli' !== php_sapi_name()) {
-                ExceptionHandler::register();
-            }
-        } else {
-            ini_set('display_errors', 0);
+        if (is_file($file = __DIR__.'/config/config_'.$this->environment.'.local.yml')) {
+            $loader->load($file);
         }
-
-        ini_set('date.timezone', 'UTC');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function getCacheDir()
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
-
-        if (is_file($file = __DIR__.'/config/config_'.$this->getEnvironment().'.local.yml')) {
-            $loader->load($file);
+        if ($this->isVagrantEnvironment()) {
+            return '/dev/shm/sylius/cache/'.$this->environment;
         }
+
+        return parent::getCacheDir();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLogDir()
+    {
+        if ($this->isVagrantEnvironment()) {
+            return '/dev/shm/sylius/logs';
+        }
+
+        return parent::getLogDir();
+    }
+
+    /**
+     * @return boolean
+     */
+    private function isVagrantEnvironment()
+    {
+        return (getenv('HOME') === '/home/vagrant' || getenv('VAGRANT') === 'VAGRANT') && is_dir('/dev/shm');
+    }
+
+    /**
+     * @param array $bundles
+     * @param array $environments
+     *
+     * @return array
+     */
+    private function addFixturesBundle(array $bundles, array $environments = array('dev', 'test'))
+    {
+        if (in_array($this->environment, $environments) && class_exists('Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle')) {
+            $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+            $bundles[] = new Sylius\Bundle\FixturesBundle\SyliusFixturesBundle();
+        }
+
+        return $bundles;
     }
 }

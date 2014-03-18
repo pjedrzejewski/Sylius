@@ -12,6 +12,7 @@
 namespace spec\Sylius\Bundle\InventoryBundle\Checker;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\InventoryBundle\Model\StockableInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
@@ -33,10 +34,7 @@ class AvailabilityCheckerSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\InventoryBundle\Checker\AvailabilityCheckerInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_any_stockable_as_available_if_backorders_are_enabled($stockable)
+    function it_recognizes_any_stockable_as_available_if_backorders_are_enabled(StockableInterface $stockable)
     {
         $this->beConstructedWith(true);
 
@@ -45,10 +43,7 @@ class AvailabilityCheckerSpec extends ObjectBehavior
         $this->isStockAvailable($stockable)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_any_stockable_as_available_if_its_on_demand_and_backorders_are_disabled($stockable)
+    function it_recognizes_any_stockable_as_available_if_its_on_demand_and_backorders_are_disabled(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 
@@ -57,10 +52,7 @@ class AvailabilityCheckerSpec extends ObjectBehavior
         $this->isStockAvailable($stockable)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_any_stockable_as_available_if_its_on_demand_and_backorders_are_disabled_and_on_hand_quantity_insufficient($stockable)
+    function it_recognizes_any_stockable_as_available_if_its_on_demand_and_backorders_are_disabled_and_on_hand_quantity_insufficient(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 
@@ -75,23 +67,40 @@ class AvailabilityCheckerSpec extends ObjectBehavior
         $this->isStockAvailable($stockable)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_stockable_as_available_if_on_hand_quantity_is_greater_than_0($stockable)
+    function it_recognizes_stockable_as_available_if_on_hand_quantity_is_greater_than_0(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 
         $stockable->isAvailableOnDemand()->willReturn(false);
         $stockable->getOnHand()->willReturn(5);
+        $stockable->getOnHold()->willReturn(0);
 
         $this->isStockAvailable($stockable)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_stockable_as_available_even_if_hand_quantity_is_lesser_than_or_equal_to_0_when_backorders_are_enabled($stockable)
+    function it_recognizes_stockable_as_not_available_if_on_hold_quantity_is_same_as_on_hand(StockableInterface $stockable)
+    {
+        $this->beConstructedWith(false);
+
+        $stockable->isAvailableOnDemand()->willReturn(false);
+        $stockable->getOnHand()->willReturn(5);
+        $stockable->getOnHold()->willReturn(5);
+
+        $this->isStockAvailable($stockable)->shouldReturn(false);
+    }
+
+    function it_recognizes_stockable_as_available_if_on_hold_quantity_is_less_then_on_hand(StockableInterface $stockable)
+    {
+        $this->beConstructedWith(false);
+
+        $stockable->isAvailableOnDemand()->willReturn(false);
+        $stockable->getOnHand()->willReturn(5);
+        $stockable->getOnHold()->willReturn(4);
+
+        $this->isStockAvailable($stockable)->shouldReturn(true);
+    }
+
+    function it_recognizes_stockable_as_available_even_if_hand_quantity_is_lesser_than_or_equal_to_0_when_backorders_are_enabled(StockableInterface $stockable)
     {
         $this->beConstructedWith(true);
 
@@ -102,52 +111,42 @@ class AvailabilityCheckerSpec extends ObjectBehavior
         $this->isStockAvailable($stockable)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_stockable_as_not_available_if_on_hand_quantity_is_lesser_than_or_equal_to_0($stockable)
+    function it_recognizes_stockable_as_not_available_if_on_hand_quantity_is_lesser_than_or_equal_to_0(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 
         $stockable->isAvailableOnDemand()->willReturn(false);
 
         $stockable->getOnHand()->willReturn(0);
+        $stockable->getOnHold()->willReturn(0);
         $this->isStockAvailable($stockable)->shouldReturn(false);
 
         $stockable->getOnHand()->willReturn(-5);
         $this->isStockAvailable($stockable)->shouldReturn(false);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_any_stockable_and_quantity_as_sufficient_if_backorders_are_enabled($stockable)
+    function it_recognizes_any_stockable_and_quantity_as_sufficient_if_backorders_are_enabled(StockableInterface $stockable)
     {
         $this->beConstructedWith(true);
 
         $this->isStockSufficient($stockable, 999)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_stockable_stock_sufficient_if_on_hand_quantity_is_greater_than_required_quantity($stockable)
+    function it_recognizes_stockable_stock_sufficient_if_on_hand_quantity_is_greater_than_required_quantity(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 
         $stockable->isAvailableOnDemand()->willReturn(false);
 
         $stockable->getOnHand()->willReturn(10);
+        $stockable->getOnHold()->willReturn(0);
         $this->isStockSufficient($stockable, 5)->shouldReturn(true);
 
         $stockable->getOnHand()->willReturn(15);
         $this->isStockSufficient($stockable, 15)->shouldReturn(true);
     }
 
-    /**
-     * @param Sylius\Bundle\InventoryBundle\Model\StockableInterface $stockable
-     */
-    function it_recognizes_stock_sufficient_if_its_available_on_demand_and_backorders_are_disabled($stockable)
+    function it_recognizes_stock_sufficient_if_its_available_on_demand_and_backorders_are_disabled(StockableInterface $stockable)
     {
         $this->beConstructedWith(false);
 

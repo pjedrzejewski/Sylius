@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+### v0.8.0
+
+* Convert translations to YAML.
+* Add inventory level events.
+* Handling of the stock exception.
+
+### v0.7.0
+
+* Add "on-hold" inventory concept.
+* Add dummy inventory operator.
+
+### v0.6.0
+
+* Release before components introduction. (delayed)
+
+### v0.5.0
+
+* Release after repositories reorganization.
+
 ### v0.4.0
 
 * Introduce ``InventoryUnitFactory``.

@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\AddressingBundle\Matcher;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\Bundle\AddressingBundle\Model\AddressInterface;
 use Sylius\Bundle\AddressingBundle\Model\ZoneInterface;
 
@@ -20,7 +21,7 @@ use Sylius\Bundle\AddressingBundle\Model\ZoneInterface;
  * Service implementing this interface should be able to find
  * best matching zones for provided address model.
  *
- * @author Саша Стаменковић <umpirsky@gmail.com>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 interface ZoneMatcherInterface
 {
@@ -38,7 +39,7 @@ interface ZoneMatcherInterface
      *
      * @param AddressInterface $address
      *
-     * @return ZoneInterface[]
+     * @return Collection|ZoneInterface[]
      */
     public function matchAll(AddressInterface $address);
 }

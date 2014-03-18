@@ -12,9 +12,10 @@
 namespace Sylius\Bundle\CoreBundle\Model;
 
 use Doctrine\Common\Collections\Collection;
+use Sylius\Bundle\AddressingBundle\Model\ZoneInterface;
 use Sylius\Bundle\ShippingBundle\Model\ShippingCategoryInterface;
-use Sylius\Bundle\TaxationBundle\Model\TaxCategoryInterface;
 use Sylius\Bundle\TaxationBundle\Model\TaxableInterface;
+use Sylius\Bundle\TaxationBundle\Model\TaxCategoryInterface;
 use Sylius\Bundle\VariableProductBundle\Model\VariableProductInterface;
 
 /**
@@ -22,7 +23,7 @@ use Sylius\Bundle\VariableProductBundle\Model\VariableProductInterface;
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-interface ProductInterface extends VariableProductInterface, TaxableInterface
+interface ProductInterface extends VariableProductInterface, PriceableInterface, TaxableInterface
 {
     /**
      * Get product SKU.
@@ -32,7 +33,9 @@ interface ProductInterface extends VariableProductInterface, TaxableInterface
     public function getSku();
 
     /**
-     * {@inheritdoc}
+     * Set product SKU.
+     *
+     * @param string $sku
      */
     public function setSku($sku);
 
@@ -67,7 +70,7 @@ interface ProductInterface extends VariableProductInterface, TaxableInterface
     /**
      * Get taxons.
      *
-     * @return Collection
+     * @return Collection|TaxonInterface[]
      */
     public function getTaxons();
 
@@ -77,20 +80,6 @@ interface ProductInterface extends VariableProductInterface, TaxableInterface
      * @param Collection $taxons
      */
     public function setTaxons(Collection $taxons);
-
-    /**
-     * Gets product price.
-     *
-     * @return integer $price
-     */
-    public function getPrice();
-
-    /**
-     * Sets product price.
-     *
-     * @param float $price
-     */
-    public function setPrice($price);
 
     /**
      * Get product short description.
@@ -128,9 +117,23 @@ interface ProductInterface extends VariableProductInterface, TaxableInterface
     public function setShippingCategory(ShippingCategoryInterface $category = null);
 
     /**
+     * Get address zone restriction.
+     *
+     * @return ZoneInterface
+     */
+    public function getRestrictedZone();
+
+    /**
+     * Set address zone restriction.
+     *
+     * @param ZoneInterface $zone
+     */
+    public function setRestrictedZone(ZoneInterface $zone = null);
+
+    /**
      * Get all product images.
      *
-     * @return Collection
+     * @return Collection|ImageInterface[]
      */
     public function getImages();
 

@@ -27,6 +27,7 @@ class StateResolver implements StateResolverInterface
      */
     public function resolvePaymentState(OrderInterface $order)
     {
+        $order->setPaymentState($order->getPayment()->getState());
     }
 
     /**
@@ -43,25 +44,29 @@ class StateResolver implements StateResolverInterface
         $order->setShippingState($this->getShippingState($order));
     }
 
-    private function getShippingState(OrderInterface $order)
+    protected function getShippingState(OrderInterface $order)
     {
         $states = array();
+
         foreach ($order->getShipments() as $shipment) {
             $states[] = $shipment->getState();
         }
 
         $states = array_unique($states);
 
-        if (array(ShipmentInterface::STATE_SHIPPED) === $states) {
-            return OrderShippingStates::SHIPPED;
-        }
+        $acceptableStates = array(
+            ShipmentInterface::STATE_CHECKOUT   => OrderShippingStates::CHECKOUT,
+            ShipmentInterface::STATE_ONHOLD     => OrderShippingStates::ONHOLD,
+            ShipmentInterface::STATE_READY      => OrderShippingStates::READY,
+            ShipmentInterface::STATE_SHIPPED    => OrderShippingStates::SHIPPED,
+            ShipmentInterface::STATE_RETURNED   => OrderShippingStates::RETURNED,
+            ShipmentInterface::STATE_CANCELLED  => OrderShippingStates::CANCELLED,
+        );
 
-        if (array(ShipmentInterface::STATE_DISPATCHED) === $states) {
-            return OrderShippingStates::DISPATCHED;
-        }
-
-        if (array(ShipmentInterface::STATE_RETURNED) === $states) {
-            return OrderShippingStates::RETURNED;
+        foreach ($acceptableStates as $shipmentState => $orderState) {
+            if (array($shipmentState) == $states) {
+                return $orderState;
+            }
         }
 
         return OrderShippingStates::PARTIALLY_SHIPPED;

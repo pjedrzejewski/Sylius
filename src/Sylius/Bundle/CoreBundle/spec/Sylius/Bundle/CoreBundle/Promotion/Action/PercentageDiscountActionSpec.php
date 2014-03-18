@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace spec\SyliusN\Bundle\CoreBundle\Promotion\Action;
+namespace spec\Sylius\Bundle\CoreBundle\Promotion\Action;
 
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
+use Sylius\Bundle\OrderBundle\Model\AdjustmentInterface;
+use Sylius\Bundle\PromotionsBundle\Model\PromotionInterface;
+use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class PercentageDiscountActionSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface $adjustmentRepository
-     */
-    function let($adjustmentRepository)
+    function let(RepositoryInterface $adjustmentRepository)
     {
         $this->beConstructedWith($adjustmentRepository);
     }
@@ -37,12 +37,12 @@ class PercentageDiscountActionSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\PromotionsBundle\Action\PromotionActionInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface           $order
-     * @param Sylius\Bundle\OrderBundle\Model\AdjustmentInterface     $adjustment
-     * @param Sylius\Bundle\PromotionsBundle\Model\PromotionInterface $promotion
-     */
-    function it_applies_percentage_discount_as_promotion_adjustment($adjustmentRepository, $order, $adjustment, $promotion)
+    function it_applies_percentage_discount_as_promotion_adjustment(
+        $adjustmentRepository,
+        OrderInterface $order,
+        AdjustmentInterface $adjustment,
+        PromotionInterface $promotion
+    )
     {
         $order->getPromotionSubjectItemTotal()->willReturn(10000);
         $adjustmentRepository->createNew()->willReturn($adjustment);
@@ -55,6 +55,6 @@ class PercentageDiscountActionSpec extends ObjectBehavior
 
         $configuration = array('percentage' => 0.25);
 
-        $this->execute($order, $configuration);
+        $this->execute($order, $configuration, $promotion);
     }
 }

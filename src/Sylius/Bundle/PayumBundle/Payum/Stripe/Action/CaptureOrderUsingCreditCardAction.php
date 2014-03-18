@@ -11,11 +11,10 @@
 
 namespace Sylius\Bundle\PayumBundle\Payum\Stripe\Action;
 
-use Payum\Action\PaymentAwareAction;
-use Payum\Bridge\Spl\ArrayObject;
-use Payum\Exception\RequestNotSupportedException;
-use Payum\Request\CaptureRequest;
-use Payum\Request\SecuredCaptureRequest;
+use Payum\Core\Action\PaymentAwareAction;
+use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\Request\SecuredCaptureRequest;
+use Payum\Core\Security\SensitiveValue;
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
 use Sylius\Bundle\PayumBundle\Payum\Request\ObtainCreditCardRequest;
 
@@ -33,35 +32,32 @@ class CaptureOrderUsingCreditCardAction extends PaymentAwareAction
 
         /** @var OrderInterface $order */
         $order = $request->getModel();
+        $payment = $order->getPayment();
 
-        $paymentDetails = $order->getPayment()->getDetails();
-        if (empty($paymentDetails)) {
+        $details = $payment->getDetails();
+        if (empty($details)) {
             $this->payment->execute($obtainCreditCardRequest = new ObtainCreditCardRequest($order));
 
-            $paymentDetails = array(
-                'card' => array(
+            $details = array(
+                'card' => new SensitiveValue(array(
                     'number' => $obtainCreditCardRequest->getCreditCard()->getNumber(),
                     'expiryMonth' => $obtainCreditCardRequest->getCreditCard()->getExpiryMonth(),
                     'expiryYear' => $obtainCreditCardRequest->getCreditCard()->getExpiryYear(),
                     'cvv' => $obtainCreditCardRequest->getCreditCard()->getSecurityCode()
-                ),
+                )),
                 'amount' => number_format($order->getTotal() / 100, 2),
                 'currency' => $order->getCurrency(),
             );
+
+            $payment->setDetails($details);
         }
 
-        // TODO: find a way to simply the next logic
-
-        $paymentDetails = ArrayObject::ensureArrayObject($paymentDetails);
-
         try {
-            $this->payment->execute(new CaptureRequest($paymentDetails));
-
-            unset($paymentDetails['card']);
-            $order->getPayment()->setDetails((array) $paymentDetails);
+            $request->setModel($payment);
+            $this->payment->execute($request);
+            $request->setModel($order);
         } catch (\Exception $e) {
-            unset($paymentDetails['card']);
-            $order->getPayment()->setDetails((array) $paymentDetails);
+            $request->setModel($order);
 
             throw $e;
         }

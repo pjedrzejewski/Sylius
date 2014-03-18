@@ -12,21 +12,30 @@
 namespace spec\Sylius\Bundle\CoreBundle\Cart;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\CartBundle\Model\CartItemInterface;
+use Sylius\Bundle\CoreBundle\Checker\RestrictedZoneCheckerInterface;
+use Sylius\Bundle\InventoryBundle\Checker\AvailabilityCheckerInterface;
+use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
+use Sylius\Bundle\CartBundle\Provider\CartProviderInterface;
+use Sylius\Bundle\CoreBundle\Calculator\PriceCalculatorInterface;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class ItemResolverSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface             $productRepository
-     * @param Symfony\Component\Form\FormFactory                                 $formFactory
-     * @param Sylius\Bundle\InventoryBundle\Checker\AvailabilityCheckerInterface $availabilityChecker
-     * @param Symfony\Component\HttpFoundation\Request                           $request
-     */
-    function let($productRepository, $formFactory, $availabilityChecker)
+    function let(
+        CartProviderInterface $cartProvider,
+        PriceCalculatorInterface $priceCalculator,
+        RepositoryInterface $productRepository,
+        FormFactory $formFactory,
+        AvailabilityCheckerInterface $availabilityChecker,
+        RestrictedZoneCheckerInterface $restrictedZoneChecker
+    )
     {
-        $this->beConstructedWith($productRepository, $formFactory, $availabilityChecker);
+        $this->beConstructedWith($cartProvider, $priceCalculator, $productRepository, $formFactory, $availabilityChecker, $restrictedZoneChecker);
     }
 
     function it_is_initializable()
@@ -39,10 +48,7 @@ class ItemResolverSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\CartBundle\Resolver\ItemResolverInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_unless_request_method_is_POST($item, $request)
+    function it_throws_exception_unless_request_method_is_POST(CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(false);
 
@@ -52,10 +58,7 @@ class ItemResolverSpec extends ObjectBehavior
         ;
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_when_product_id_is_missing_on_request($item, $request)
+    function it_throws_exception_when_product_id_is_missing_on_request(CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(true);
         $request->get('id')->willReturn(null);
@@ -66,10 +69,7 @@ class ItemResolverSpec extends ObjectBehavior
         ;
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_if_product_with_given_id_does_not_exist($productRepository, $item, $request)
+    function it_throws_exception_if_product_with_given_id_does_not_exist($productRepository, CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(true);
         $request->get('id')->willReturn(5);

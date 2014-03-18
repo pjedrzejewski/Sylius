@@ -1,3 +1,5 @@
+{% form_theme form 'SyliusWebBundle::forms.html.twig' %}
+
 <div class="row">
     <div class="col-md-8 row-split">
         {{ form_errors(form) }}
@@ -21,16 +23,20 @@
     </div>
 
     <div class="col-md-4">
+        {{ form_row(form.width) }}
+        {{ form_row(form.height) }}
+        {{ form_row(form.depth) }}
+        {{ form_row(form.weight) }}
         <div id="sylius-assortment-variant-images" class="col-md-12" data-prototype="{{ form_widget(form.images.vars.prototype)|e }}">
             {% for imageForm in form.images %}
             <div class="sylius-assortment-variant-images-image">
                 <div class="control-group">
                     <div class="controls">
-                        <a href="{{ imageForm.vars.value.path|imagine_filter('sylius_90x60') }}" target="_blank"><img class="img-polaroid" src="{{ imageForm.vars.value.path|imagine_filter('sylius_90x60') }}" alt="" /></a>
+                        <a href="{{ imageForm.vars.value.path|imagine_filter('sylius_small') }}" target="_blank"><img class="img-polaroid" src="{{ imageForm.vars.value.path|imagine_filter('sylius_90x60') }}" alt="" /></a>
                         &nbsp;
                         {{ form_widget(imageForm.file) }}
                         &nbsp;
-                        <a href="#" class="btn btn-danger" data-collection-button="delete" data-prototype="sylius-assortment-variant-images" data-collection="sylius-assortment-variant-images"><i class="icon-trash"></i>&nbsp;{{ 'sylius.variant.delete_image'|trans }}</a>
+                        <a href="#" class="btn btn-danger" data-collection-button="delete" data-prototype="sylius-assortment-variant-images" data-collection="sylius-assortment-variant-images"><i class="glyphicon glyphicon-trash"></i>&nbsp;{{ 'sylius.variant.delete_image'|trans }}</a>
                     </div>
                 </div>
             </div>

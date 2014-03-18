@@ -12,12 +12,10 @@
 namespace Sylius\Bundle\ResourceBundle\Twig;
 
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\Routing\RouterInterface;
-use Twig_Extension;
-use Twig_Function_Method;
 
 /**
  * Sylius resource twig helper.
@@ -26,7 +24,7 @@ use Twig_Function_Method;
  * @author Saša Stamenković <umpirsky@gmail.com>
  * @author Arnaud Langlade <arn0d.dev@gmail.com>
  */
-class SyliusResourceExtension extends Twig_Extension
+class SyliusResourceExtension extends \Twig_Extension
 {
     /**
      * @var string
@@ -44,16 +42,23 @@ class SyliusResourceExtension extends Twig_Extension
     private $syliusRouteParams = array();
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     private $request;
 
     /**
-     * @var Container
+     * @var ContainerInterface
      */
     private $container;
 
-    public function __construct(Container $container, $paginateTemplate, $sortingTemplate)
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     * @param string             $paginateTemplate
+     * @param string             $sortingTemplate
+     */
+    public function __construct(ContainerInterface $container, $paginateTemplate, $sortingTemplate)
     {
         $this->container = $container;
         $this->paginateTemplate = $paginateTemplate;
@@ -66,8 +71,16 @@ class SyliusResourceExtension extends Twig_Extension
     public function getFunctions()
     {
         return array(
-            'sylius_resource_sort' => new Twig_Function_Method($this, 'renderSortingLink', array('is_safe' => array('html'))),
-            'sylius_resource_paginate' => new Twig_Function_Method($this, 'renderPaginateSelect', array('is_safe' => array('html'))),
+             new \Twig_SimpleFunction(
+                 'sylius_resource_sort',
+                 array($this, 'renderSortingLink'),
+                 array('is_safe' => array('html'))
+             ),
+             new \Twig_SimpleFunction(
+                 'sylius_resource_paginate',
+                 array($this, 'renderPaginateSelect'),
+                 array('is_safe' => array('html'))
+             ),
         );
     }
 
@@ -89,30 +102,38 @@ class SyliusResourceExtension extends Twig_Extension
     }
 
     /**
-     * @param string$property
-     * @param mixed $label
-     * @param string $order
-     * @param array $options
+     * @param string      $property
+     * @param null|string $label
+     * @param string      $order
+     * @param array       $options
+     *
      * @return string
      */
     public function renderSortingLink($property, $label = null, $order = 'asc', array $options = array())
     {
-        if (array_key_exists('sortable', $this->syliusRouteParams) &&
-            !$this->syliusRouteParams['sortable']) {
+        if (array_key_exists('sortable', $this->syliusRouteParams) && !$this->syliusRouteParams['sortable']) {
             return $label;
         }
 
         if ('asc' !== $order && 'desc' !== $order) {
-            $order ='asc';
+            $order = 'asc';
         }
 
         $options = $this->getOptions($options, $this->sortingTemplate);
-        $label = null === $label ? $property : $label;
-        $sorting = $this->request->get('sorting', array());
-        $currentOrder = isset($sorting[$property]) ? $sorting[$property] : null;
-
-        if (null !== $currentOrder) {
-            $order = 'asc' === $currentOrder ? 'desc' : 'asc';
+        $sorting = $this->request->get('sorting');
+        if (null !== $sorting) {
+            if (isset($sorting[$property])) {
+                $currentOrder = $sorting[$property];
+                $order        = 'asc' === $sorting[$property] ? 'desc' : 'asc';
+            } else {
+                $currentOrder = null;
+            }
+        } else {
+            $currentOrder = null;
+            $sorting = array('id' => 'asc');
+            if (isset($this->syliusRouteParams['sorting'])) {
+                $sorting = $this->syliusRouteParams['sorting'];
+            }
         }
 
         $url = $this->container->get('router')->generate(
@@ -126,18 +147,19 @@ class SyliusResourceExtension extends Twig_Extension
         return $this->container->get('templating')->render(
             $options['template'],
             array(
-                'url' => $url,
-                'label' => $label,
-                'icon' => $property == key($sorting),
+                'url'          => $url,
+                'label'        => null === $label ? $property : $label,
+                'icon'         => $property == key($sorting),
                 'currentOrder' => $currentOrder,
             )
         );
     }
 
     /**
-     * @param \Pagerfanta\Pagerfanta $paginator
-     * @param array $limitOptions
-     * @param array $options
+     * @param Pagerfanta $paginator
+     * @param array      $limitOptions
+     * @param array      $options
+     *
      * @return string
      */
     public function renderPaginateSelect(Pagerfanta $paginator, array $limitOptions, array $options = array())
@@ -147,6 +169,7 @@ class SyliusResourceExtension extends Twig_Extension
             $options = $this->getOptions($options, $this->paginateTemplate);
             $paginateName = substr($this->syliusRouteParams['paginate'], 1);
 
+            $limits = array();
             foreach ($limitOptions as $limit) {
                 $routeParams = $this->getRouteParams(
                     array($paginateName => $limit),
@@ -171,6 +194,8 @@ class SyliusResourceExtension extends Twig_Extension
                 )
             );
         }
+
+        return '';
     }
 
     /**
@@ -184,6 +209,7 @@ class SyliusResourceExtension extends Twig_Extension
     /**
      * @param array $params
      * @param array $default
+     *
      * @return array
      */
     private function getRouteParams(array $params = array(), array $default = array())
@@ -196,17 +222,19 @@ class SyliusResourceExtension extends Twig_Extension
     }
 
     /**
-     * @param null $route
+     * @param null|string $route
+     *
      * @return mixed|null
      */
     private function getRouteName($route = null)
     {
-        return (null === $route) ? $this->request->attributes->get('_route') : $route;
+        return null === $route ? $this->request->attributes->get('_route') : $route;
     }
 
     /**
-     * @param array $options
-     * @param $defaultTemplate
+     * @param array  $options
+     * @param string $defaultTemplate
+     *
      * @return array
      */
     private function getOptions(array $options, $defaultTemplate)

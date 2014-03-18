@@ -21,8 +21,8 @@
     "require": {
         "php":                                  ">=5.3.3",
 
-        "athari/yalinqo":                       "*@dev",
-        "doctrine/doctrine-bundle":             "1.2.*@dev",
+        "doctrine/doctrine-bundle":             "~1.3@dev",
+        "doctrine/doctrine-cache-bundle":       "@dev",
         "doctrine/orm":                         "~2.3",
         "friendsofsymfony/rest-bundle":         "~1.0",
         "friendsofsymfony/user-bundle":         "2.0.*@dev",
@@ -30,8 +30,6 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "jms/serializer-bundle":                "0.12.*",
         "jms/translation-bundle":               "1.1.*",
-        "knplabs/knp-menu":                     "2.0.*@dev",
-        "knplabs/knp-menu-bundle":              "2.0.*@dev",
         "knplabs/knp-gaufrette-bundle":         "*@dev",
         "knplabs/knp-snappy-bundle":            "*@dev",
         "liip/doctrine-cache-bundle":           "*",
@@ -44,16 +42,20 @@
         "symfony/monolog-bundle":               "2.3.*",
         "symfony/swiftmailer-bundle":           "2.3.*",
         "symfony/symfony":                      "~2.3",
+        "symfony/expression-language":          "~2.4",
         "twig/extensions":                      "1.0.*",
         "white-october/pagerfanta-bundle":      "1.0.*@dev",
-        "omnipay/omnipay":                      "1.0.*",
-        "payum/payum":                          "~0.6.3",
-        "payum/payum-bundle":                   "~0.6.2",
-        "payum/paypal-express-checkout-nvp":    "0.6.*",
-        "payum/omnipay-bridge":                 "0.6.*"
+        "pagerfanta/pagerfanta":                "1.0.*@dev",
+        "payum/payum":                          "~0.7.2",
+        "payum/payum-bundle":                   "~0.7.3",
+        "symfony-cmf/block-bundle":             "1.0.*",
+        "symfony-cmf/content-bundle":           "1.0.*",
+        "symfony-cmf/routing-bundle":           "1.1.*",
+        "symfony-cmf/menu-bundle":              "1.0.*",
+        "jackalope/jackalope-doctrine-dbal": "1.0.*"
     },
     "require-dev": {
-        "behat/behat":                       "2.4.*@stable",
+        "behat/behat":                       "~2.4",
         "behat/symfony2-extension":          "*",
         "behat/mink-extension":              "*",
         "behat/mink-browserkit-driver":      "*",
@@ -61,7 +63,11 @@
         "behat/mink-selenium2-driver":       "*",
         "doctrine/doctrine-fixtures-bundle": "2.2.*",
         "fzaninotto/faker":                  "1.2.*",
-        "phpspec/phpspec":                   "2.0.*@dev"
+        "phpspec/phpspec":                   "2.0.*@dev",
+        "phpunit/phpunit":                   "~3.7"
+    },
+    "provide": {
+        "phpcr/phpcr-implementation": "2.1.0"
     },
     "scripts": {
         "post-install-cmd": [

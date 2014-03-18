@@ -11,21 +11,28 @@
 
 namespace spec\Sylius\Bundle\CartBundle\Provider;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use Sylius\Bundle\CartBundle\Model\CartInterface;
+use Sylius\Bundle\CartBundle\Storage\CartStorageInterface;
+use Sylius\Bundle\CartBundle\SyliusCartEvents;
+use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class CartProviderSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\CartBundle\Storage\CartStorageInterface  $storage
-     * @param Doctrine\Common\Persistence\ObjectManager              $manager
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface $repository
-     */
-    function let($storage, $manager, $repository)
+    function let(
+        CartStorageInterface $storage,
+        ObjectManager $manager,
+        RepositoryInterface $repository,
+        EventDispatcherInterface $eventDispatcher
+    )
     {
-        $this->beConstructedWith($storage, $manager, $repository);
+        $this->beConstructedWith($storage, $manager, $repository, $eventDispatcher);
     }
 
     function it_is_initializable()
@@ -38,54 +45,93 @@ class CartProviderSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\CartBundle\Provider\CartProviderInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartInterface $cart
-     */
-    function it_looks_for_cart_by_identifier_if_any_in_storage($storage, $repository, $cart)
+    function it_looks_for_cart_by_identifier_if_any_in_storage(
+        $storage,
+        $repository,
+        $eventDispatcher,
+        CartInterface $cart
+    )
     {
         $storage->getCurrentCartIdentifier()->willReturn(3);
         $repository->find(3)->shouldBeCalled()->willReturn($cart);
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_INITIALIZE, Argument::any())->shouldNotBeCalled();
 
         $this->getCart()->shouldReturn($cart);
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartInterface $cart
-     */
-    function it_creates_new_cart_if_there_is_no_identifier_in_storage($storage, $repository, $cart)
+    function it_creates_new_cart_if_there_is_no_identifier_in_storage(
+        $storage,
+        $repository,
+        $eventDispatcher,
+        CartInterface $cart
+    )
     {
         $storage->getCurrentCartIdentifier()->willReturn(null);
         $repository->createNew()->willReturn($cart);
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_INITIALIZE, Argument::any())->shouldBeCalled();
 
         $this->getCart()->shouldReturn($cart);
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartInterface $cart
-     */
-    function it_creates_new_cart_if_identifier_is_wrong($storage, $repository, $cart)
+    function it_creates_new_cart_if_identifier_is_wrong(
+        $storage,
+        $repository,
+        $eventDispatcher,
+        CartInterface $cart
+    )
     {
         $storage->getCurrentCartIdentifier()->willReturn(7);
         $repository->find(7)->shouldBeCalled()->willReturn(null);
         $repository->createNew()->willReturn($cart);
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_INITIALIZE, Argument::any())->shouldBeCalled();
 
         $this->getCart()->shouldReturn($cart);
     }
 
-    function it_resets_current_cart_identifier_in_storage_when_abandoning_cart($storage)
+    function it_resets_current_cart_identifier_in_storage_when_abandoning_cart(
+        $storage,
+        $storage,
+        $eventDispatcher,
+        CartInterface $cart
+    )
     {
+        $this->setCart($cart);
+        $storage->setCurrentCartIdentifier($cart)->shouldBeCalled();
+
         $storage->resetCurrentCartIdentifier()->shouldBeCalled();
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_ABANDON, Argument::any())->shouldBeCalled();
 
         $this->abandonCart();
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartInterface $cart
-     */
-    function it_sets_current_cart_identifier_when_setting_cart($storage, $cart)
+    function it_sets_current_cart_identifier_when_setting_cart($storage, CartInterface $cart)
     {
         $storage->setCurrentCartIdentifier($cart)->shouldBeCalled();
 
         $this->setCart($cart);
+    }
+
+    function it_initializes_cart_while_validating_existence_and_if_there_is_no_identifier_in_storage(
+        $storage,
+        $repository,
+        CartInterface $cart
+    )
+    {
+        $storage->getCurrentCartIdentifier()->willReturn(null);
+        $repository->find(Argument::any())->shouldNotBeCalled();
+
+        $this->hasCart()->shouldReturn(false);
+    }
+
+    function it_initializes_cart_while_validating_existence_and_if_there_is_identifier_in_storage(
+        $storage,
+        $repository,
+        CartInterface $cart
+    )
+    {
+        $storage->getCurrentCartIdentifier()->willReturn(666);
+        $repository->find(666)->shouldBeCalled()->willReturn($cart);
+
+        $this->hasCart()->shouldReturn(true);
     }
 }

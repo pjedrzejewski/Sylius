@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\Collection;
 /**
  * Zone interface.
  *
- * @author Саша Стаменковић <umpirsky@gmail.com>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 interface ZoneInterface
 {
@@ -54,7 +54,7 @@ interface ZoneInterface
     public function setType($type);
 
     /**
-     * @return Collection
+     * @return Collection|ZoneMemberInterface[]
      */
     public function getMembers();
 
@@ -66,7 +66,7 @@ interface ZoneInterface
     public function setMembers(Collection $members);
 
     /**
-     * @return bool
+     * @return Boolean
      */
     public function hasMembers();
 
@@ -87,7 +87,7 @@ interface ZoneInterface
     /**
      * @param ZoneMemberInterface $member
      *
-     * @return bool
+     * @return Boolean
      */
     public function hasMember(ZoneMemberInterface $member);
 }

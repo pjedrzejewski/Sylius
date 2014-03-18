@@ -21,7 +21,7 @@ use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
 interface OrderRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Get recently completed orders.
+     * Gets recently completed orders.
      *
      * @return array
      */

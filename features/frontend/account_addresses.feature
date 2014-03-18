@@ -6,19 +6,19 @@ Feature: User account addresses page
 
   Background:
     Given I am logged in user
-      And the following countries exist:
-        | name    |
-        | Germany |
-        | Austria |
-        | Poland  |
-        | Finland |
-        | USA     |
-      And the following addresses exist:
-        | user                 | address                                                      |
-        | sylius@example.com  | Jan Kowalski, Heine-Straße 12, 99734, Berlin, Germany   |
-        | sylius@example.com  | Jan Kowalski, Fun-Straße 1, 90032, Vienna, Austria      |
-        | sylius@example.com  | Jan Kowalski, Wawel 5 , 31-001, Kraków, Poland          |
-      And I am on my account addresses page
+    And the following countries exist:
+      | name    |
+      | Germany |
+      | Austria |
+      | Poland  |
+      | Finland |
+      | USA     |
+    And the following addresses exist:
+      | user                | address                                               |
+      | sylius@example.com  | Jan Kowalski, Heine-Straße 12, 99734, Berlin, Germany |
+      | sylius@example.com  | Jan Kowalski, Fun-Straße 1, 90032, Vienna, Austria    |
+      | sylius@example.com  | Jan Kowalski, Wawel 5 , 31-001, Kraków, Poland        |
+    And I am on my account addresses page
 
   Scenario: Viewing my account addresses page
     Given I am on my account homepage
@@ -61,6 +61,7 @@ Feature: User account addresses page
      Then I should still be on my account address creation page
       And I should see 6 validation errors
 
+  @javascript
   Scenario: Deleting an address
     Given I press "Delete" near "GERMANY"
      Then I should see "Do you want to delete this item"
@@ -88,7 +89,7 @@ Feature: User account addresses page
       And I leave "Street" empty
       And I leave "City" empty
       And I leave "Postcode" empty
-      And I press "Save changes"
+     When I press "Save changes"
      Then I should see 6 validation errors
 
   Scenario: Viewing that no default shipping and billing addresses have been defined

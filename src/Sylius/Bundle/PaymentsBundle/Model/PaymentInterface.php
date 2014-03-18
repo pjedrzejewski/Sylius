@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\PaymentsBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
 use Sylius\Bundle\ResourceBundle\Model\TimestampableInterface;
 
 /**
@@ -21,13 +22,14 @@ use Sylius\Bundle\ResourceBundle\Model\TimestampableInterface;
 interface PaymentInterface extends TimestampableInterface
 {
     // Payment states.
-    const STATE_CHECKOUT   = 'checkout';
-    const STATE_PROCESSING = 'processing';
-    const STATE_PENDING    = 'pending';
-    const STATE_FAILED     = 'failed';
-    const STATE_VOID       = 'void';
-    const STATE_COMPLETED  = 'completed';
     const STATE_NEW        = 'new';
+    const STATE_PENDING    = 'pending';
+    const STATE_PROCESSING = 'processing';
+    const STATE_COMPLETED  = 'completed';
+    const STATE_FAILED     = 'failed';
+    const STATE_CANCELLED  = 'cancelled';
+    const STATE_VOID       = 'void';
+    const STATE_REFUNDED   = 'refunded';
     const STATE_UNKNOWN    = 'unknown';
 
     /**
@@ -41,6 +43,8 @@ interface PaymentInterface extends TimestampableInterface
      * Set payment method.
      *
      * @param null|PaymentMethodInterface $method
+     *
+     * @return PaymentInterface
      */
     public function setMethod(PaymentMethodInterface $method = null);
 
@@ -55,6 +59,8 @@ interface PaymentInterface extends TimestampableInterface
      * Set payment source.
      *
      * @param null|PaymentSourceInterface $source
+     *
+     * @return PaymentInterface
      */
     public function setSource(PaymentSourceInterface $source = null);
 
@@ -69,6 +75,8 @@ interface PaymentInterface extends TimestampableInterface
      * Set state.
      *
      * @param string $state
+     *
+     * @return PaymentInterface
      */
     public function setState($state);
 
@@ -83,6 +91,8 @@ interface PaymentInterface extends TimestampableInterface
      * Set currency.
      *
      * @param string
+     *
+     * @return PaymentInterface
      */
     public function setCurrency($currency);
 
@@ -97,41 +107,15 @@ interface PaymentInterface extends TimestampableInterface
      * Set amount.
      *
      * @param integer $amount
+     *
+     * @return PaymentInterface
      */
     public function setAmount($amount);
 
     /**
-     * Get processing logs.
-     *
-     * @return PaymentLogInterface[]
-     */
-    public function getLogs();
-
-    /**
-     * Has given log already?
-     *
-     * @param PaymentLogInterface $log
-     *
-     * @return Boolean
-     */
-    public function hasLog(PaymentLogInterface $log);
-
-    /**
-     * Add payment processing log.
-     *
-     * @param PaymentLogInterface $log
-     */
-    public function addLog(PaymentLogInterface $log);
-
-    /**
-     * Remove payment processing log.
-     *
-     * @param PaymentLogInterface $log
-     */
-    public function removeLog(PaymentLogInterface $log);
-
-    /**
      * @param array $details
+     *
+     * @return PaymentInterface
      */
     public function setDetails(array $details);
 

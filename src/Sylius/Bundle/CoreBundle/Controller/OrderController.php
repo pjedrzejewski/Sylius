@@ -12,52 +12,60 @@
 namespace Sylius\Bundle\CoreBundle\Controller;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
+use Sylius\Bundle\CoreBundle\SyliusOrderEvents;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 class OrderController extends ResourceController
 {
     /**
-     * Render order filter form.
-     */
-    public function filterFormAction(Request $request)
-    {
-        $form = $this->getFormFactory()->createNamed('criteria', 'sylius_order_filter', $request->query->get('criteria'));
-
-        return $this->renderResponse('SyliusWebBundle:Backend/Order:filterForm.html.twig', array(
-            'form' => $form->createView()
-        ));
-    }
-
-    /**
      * @param Request $request
-     * @param $id
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @param integer $id
+     *
+     * @return Response
+     *
+     * @throws NotFoundHttpException
      */
     public function indexByUserAction(Request $request, $id)
     {
-        $config = $this->getConfiguration();
-        $sorting = $config->getSorting();
+        $user = $this->get('sylius.repository.user')->findOneById($id);
 
-        $user = $this->get('sylius.repository.user')
-            ->findOneById($id);
-
-        if (!isset($user)) {
-            throw new NotFoundHttpException('Requested user does not exist');
+        if (!$user) {
+            throw new NotFoundHttpException('Requested user does not exist.');
         }
 
         $paginator = $this
             ->getRepository()
-            ->createByUserPaginator($user, $sorting);
+            ->createByUserPaginator($user, $this->config->getSorting())
+        ;
 
         $paginator->setCurrentPage($request->get('page', 1), true, true);
-        $paginator->setMaxPerPage($config->getPaginationMaxPerPage());
+        $paginator->setMaxPerPage($this->config->getPaginationMaxPerPage());
 
-        return $this->renderResponse('SyliusWebBundle:Backend/Order:indexByUser.html.twig', array(
-            'user' => $user,
+        return $this->render('SyliusWebBundle:Backend/Order:indexByUser.html.twig', array(
+            'user'   => $user,
             'orders' => $paginator
         ));
+    }
+
+    /**
+     * @return Response
+     *
+     * @throws NotFoundHttpException
+     */
+    public function releaseInventoryAction()
+    {
+        $order = $this->findOr404($this->getRequest());
+
+        $this->get('event_dispatcher')->dispatch(SyliusOrderEvents::PRE_RELEASE, new GenericEvent($order));
+
+        $this->domainManager->update($order);
+
+        $this->get('event_dispatcher')->dispatch(SyliusOrderEvents::POST_RELEASE, new GenericEvent($order));
+
+        return $this->redirectHandler->redirectToReferer();
     }
 
     private function getFormFactory()

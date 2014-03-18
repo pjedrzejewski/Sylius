@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\CartBundle\Controller;
 
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,13 +54,15 @@ class CartItemController extends Controller
         $cart = $this->getCurrentCart();
         $emptyItem = $this->createNew();
 
+        $eventDispatcher = $this->getEventDispatcher();
+
         try {
             $item = $this->getResolver()->resolve($emptyItem, $request);
         } catch (ItemResolvingException $exception) {
             // Write flash message
-            $this->dispatchEvent(SyliusCartEvents::ITEM_ADD_ERROR, new FlashEvent($exception->getMessage()));
+            $eventDispatcher->dispatch(SyliusCartEvents::ITEM_ADD_ERROR, new FlashEvent($exception->getMessage()));
 
-            return $this->redirectToCartSummary();
+            return $this->redirectAfterAdd($request);
         }
 
         $event = new CartItemEvent($cart, $item);
@@ -67,12 +70,28 @@ class CartItemController extends Controller
         $event->isValid(false);
 
         // Update models
-        $this->dispatchEvent(SyliusCartEvents::ITEM_ADD_INITIALIZE, $event);
-        $this->dispatchEvent(SyliusCartEvents::CART_CHANGE, new GenericEvent($cart));
-        $this->dispatchEvent(SyliusCartEvents::CART_SAVE_INITIALIZE, $event);
+        $eventDispatcher->dispatch(SyliusCartEvents::ITEM_ADD_INITIALIZE, $event);
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_CHANGE, new GenericEvent($cart));
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_SAVE_INITIALIZE, $event);
 
         // Write flash message
-        $this->dispatchEvent(SyliusCartEvents::ITEM_ADD_COMPLETED, new FlashEvent());
+        $eventDispatcher->dispatch(SyliusCartEvents::ITEM_ADD_COMPLETED, new FlashEvent());
+
+        return $this->redirectAfterAdd($request);
+    }
+
+    /**
+     * Redirect to specific URL or to cart.
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    private function redirectAfterAdd(Request $request)
+    {
+        if ($request->query->has('_redirect_to')) {
+            return $this->redirect($request->query->get('_redirect_to'));
+        }
 
         return $this->redirectToCartSummary();
     }
@@ -93,9 +112,11 @@ class CartItemController extends Controller
         $cart = $this->getCurrentCart();
         $item = $this->getRepository()->find($id);
 
+        $eventDispatcher = $this->getEventDispatcher();
+
         if (!$item || false === $cart->hasItem($item)) {
             // Write flash message
-            $this->dispatchEvent(SyliusCartEvents::ITEM_REMOVE_ERROR, new FlashEvent());
+            $eventDispatcher->dispatch(SyliusCartEvents::ITEM_REMOVE_ERROR, new FlashEvent());
 
             return $this->redirectToCartSummary();
         }
@@ -104,12 +125,12 @@ class CartItemController extends Controller
         $event->isFresh(true);
 
         // Update models
-        $this->dispatchEvent(SyliusCartEvents::ITEM_REMOVE_INITIALIZE, $event);
-        $this->dispatchEvent(SyliusCartEvents::CART_CHANGE, new GenericEvent($cart));
-        $this->dispatchEvent(SyliusCartEvents::CART_SAVE_INITIALIZE, $event);
+        $eventDispatcher->dispatch(SyliusCartEvents::ITEM_REMOVE_INITIALIZE, $event);
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_CHANGE, new GenericEvent($cart));
+        $eventDispatcher->dispatch(SyliusCartEvents::CART_SAVE_INITIALIZE, $event);
 
         // Write flash message
-        $this->dispatchEvent(SyliusCartEvents::ITEM_REMOVE_COMPLETED, new FlashEvent());
+        $eventDispatcher->dispatch(SyliusCartEvents::ITEM_REMOVE_COMPLETED, new FlashEvent());
 
         return $this->redirectToCartSummary();
     }

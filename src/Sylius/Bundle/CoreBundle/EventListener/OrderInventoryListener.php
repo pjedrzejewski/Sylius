@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\CoreBundle\EventListener;
 
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
+use Sylius\Bundle\CoreBundle\Model\OrderItemInterface;
 use Sylius\Bundle\CoreBundle\OrderProcessing\InventoryHandlerInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -19,11 +20,12 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  * Order inventory processing listener.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 class OrderInventoryListener
 {
     /**
-     * Order  processor.
+     * Inventory handler.
      *
      * @var InventoryHandlerInterface
      */
@@ -40,21 +42,39 @@ class OrderInventoryListener
     }
 
     /**
-     * Get the order from event and run the inventory processor on it.
+     * Put order inventory on hold.
      *
      * @param GenericEvent $event
      */
-    public function onCheckoutFinalizePreComplete(GenericEvent $event)
+    public function holdInventoryUnits(GenericEvent $event)
     {
-        $order = $event->getSubject();
+        $this->inventoryHandler->holdInventory(
+            $this->getOrder($event)
+        );
+    }
 
-        if (!$order instanceof OrderInterface) {
-            throw new \InvalidArgumentException(
-                'Order inventory listener requires event subject to be instance of "Sylius\Bundle\CoreBundle\Model\OrderInterface"'
-            );
-        }
+    /**
+     * Release order inventory.
+     *
+     * @param GenericEvent $event
+     */
+    public function releaseInventoryUnits(GenericEvent $event)
+    {
+        $this->inventoryHandler->releaseInventory(
+            $this->getOrder($event)
+        );
+    }
 
-        $this->inventoryHandler->updateInventory($order);
+    /**
+     * Update order inventory.
+     *
+     * @param GenericEvent $event
+     */
+    public function updateInventoryUnits(GenericEvent $event)
+    {
+        $this->inventoryHandler->updateInventory(
+            $this->getOrder($event)
+        );
     }
 
     /**
@@ -62,7 +82,19 @@ class OrderInventoryListener
      *
      * @param GenericEvent $event
      */
-    public function onCartChange(GenericEvent $event)
+    public function processInventoryUnits(GenericEvent $event)
+    {
+        $this->inventoryHandler->processInventoryUnits(
+            $this->getItem($event)
+        );
+    }
+
+    /**
+     * Gets order from event.
+     *
+     * @param GenericEvent $event
+     */
+    protected function getOrder(GenericEvent $event)
     {
         $order = $event->getSubject();
 
@@ -72,6 +104,24 @@ class OrderInventoryListener
             );
         }
 
-        $this->inventoryHandler->processInventoryUnits($order);
+        return $order;
+    }
+
+    /**
+     * Gets order from event.
+     *
+     * @param GenericEvent $event
+     */
+    protected function getItem(GenericEvent $event)
+    {
+        $item = $event->getSubject();
+
+        if (!$item instanceof OrderItemInterface) {
+            throw new \InvalidArgumentException(
+                'Order inventory listener requires event subject to be instance of "Sylius\Bundle\CoreBundle\Model\OrderItemInterface"'
+            );
+        }
+
+        return $item;
     }
 }

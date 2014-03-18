@@ -13,7 +13,6 @@ namespace Sylius\Bundle\CoreBundle\Model;
 
 use Sylius\Bundle\InventoryBundle\Model\InventoryUnit as BaseInventoryUnit;
 use Sylius\Bundle\ShippingBundle\Model\ShipmentInterface as BaseShipmentInterface;
-use Sylius\Bundle\ShippingBundle\Model\ShipmentItemInterface;
 use Sylius\Bundle\ShippingBundle\Model\ShippableInterface;
 
 /**
@@ -34,9 +33,9 @@ class InventoryUnit extends BaseInventoryUnit implements InventoryUnitInterface
     /**
      * Order.
      *
-     * @var OrderInterface
+     * @var OrderItemInterface
      */
-    protected $order;
+    protected $orderItem;
 
     /**
      * Shipment
@@ -48,9 +47,9 @@ class InventoryUnit extends BaseInventoryUnit implements InventoryUnitInterface
     /**
      * Shipping state.
      *
-     * @var string ShipmentItemInterface::STATE_*
+     * @var string ShipmentInterface::STATE_*
      */
-    protected $shippingState;
+    protected $shippingState = ShipmentInterface::STATE_CHECKOUT;
 
     /**
      * Creation time.
@@ -66,11 +65,6 @@ class InventoryUnit extends BaseInventoryUnit implements InventoryUnitInterface
      */
     protected $updatedAt;
 
-    public function __construct()
-    {
-        $this->shippingState = ShipmentItemInterface::STATE_READY;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -82,17 +76,17 @@ class InventoryUnit extends BaseInventoryUnit implements InventoryUnitInterface
     /**
      * {@inheritdoc}
      */
-    public function getOrder()
+    public function getOrderItem()
     {
-        return $this->order;
+        return $this->orderItem;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setOrder(OrderInterface $order = null)
+    public function setOrderItem(OrderItemInterface $orderItem = null)
     {
-        $this->order = $order;
+        $this->orderItem = $orderItem;
 
         return $this;
     }

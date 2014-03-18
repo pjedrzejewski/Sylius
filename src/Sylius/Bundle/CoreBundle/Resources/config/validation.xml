@@ -112,6 +112,13 @@
                 </option>
             </constraint>
         </property>
+        <property name="plainPassword">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>ProfileAdd</value>
+                </option>
+            </constraint>
+        </property>
     </class>
 
     <class name="Sylius\Bundle\CoreBundle\Model\Group">
@@ -127,6 +134,26 @@
                 <option name="minMessage">sylius.group.name.min</option>
                 <option name="max">255</option>
                 <option name="maxMessage">sylius.group.name.max</option>
+                <option name="groups">
+                    <value>sylius</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+
+    <class name="Sylius\Bundle\CoreBundle\Model\Locale">
+        <constraint name="Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity">
+            <option name="fields">
+                <value>code</value>
+            </option>
+            <option name="message">sylius.locale.code.unique</option>
+            <option name="groups">
+                <value>sylius</value>
+            </option>
+        </constraint>
+        <property name="code">
+            <constraint name="NotBlank">
+                <option name="message">sylius.locale.code.not_blank</option>
                 <option name="groups">
                     <value>sylius</value>
                 </option>

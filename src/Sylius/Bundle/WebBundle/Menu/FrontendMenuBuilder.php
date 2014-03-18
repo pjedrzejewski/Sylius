@@ -17,6 +17,7 @@ use Sylius\Bundle\CartBundle\Provider\CartProviderInterface;
 use Sylius\Bundle\MoneyBundle\Twig\SyliusMoneyExtension;
 use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
 use Sylius\Bundle\TaxonomiesBundle\Model\TaxonInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -63,6 +64,7 @@ class FrontendMenuBuilder extends MenuBuilder
      * @param FactoryInterface         $factory
      * @param SecurityContextInterface $securityContext
      * @param TranslatorInterface      $translator
+     * @param EventDispatcherInterface $eventDispatcher
      * @param RepositoryInterface      $exchangeRateRepository
      * @param RepositoryInterface      $taxonomyRepository
      * @param CartProviderInterface    $cartProvider
@@ -72,13 +74,14 @@ class FrontendMenuBuilder extends MenuBuilder
         FactoryInterface         $factory,
         SecurityContextInterface $securityContext,
         TranslatorInterface      $translator,
+        EventDispatcherInterface $eventDispatcher,
         RepositoryInterface      $exchangeRateRepository,
         RepositoryInterface      $taxonomyRepository,
         CartProviderInterface    $cartProvider,
         SyliusMoneyExtension     $moneyExtension
     )
     {
-        parent::__construct($factory, $securityContext, $translator);
+        parent::__construct($factory, $securityContext, $translator, $eventDispatcher);
 
         $this->exchangeRateRepository = $exchangeRateRepository;
         $this->taxonomyRepository = $taxonomyRepository;
@@ -101,21 +104,26 @@ class FrontendMenuBuilder extends MenuBuilder
             )
         ));
 
-        $cart = $this->cartProvider->getCart();
+        if ($this->cartProvider->hasCart()) {
+            $cart = $this->cartProvider->getCart();
+            $cartTotals = array('items' => $cart->getTotalItems(), 'total' => $cart->getTotal());
+        } else {
+            $cartTotals = array('items' => 0, 'total' => 0);
+        }
 
         $menu->addChild('cart', array(
             'route' => 'sylius_cart_summary',
             'linkAttributes' => array('title' => $this->translate('sylius.frontend.menu.main.cart', array(
-                '%items%' => $cart->getTotalItems(),
-                '%total%' => $this->moneyExtension->formatPrice($cart->getTotal())
+                '%items%' => $cartTotals['items'],
+                '%total%' => $this->moneyExtension->formatPrice($cartTotals['total'])
             ))),
             'labelAttributes' => array('icon' => 'icon-shopping-cart icon-large')
         ))->setLabel($this->translate('sylius.frontend.menu.main.cart', array(
-            '%items%' => $cart->getTotalItems(),
-            '%total%' => $this->moneyExtension->formatPrice($cart->getTotal())
+            '%items%' => $cartTotals['items'],
+            '%total%' => $this->moneyExtension->formatPrice($cartTotals['total'])
         )));
 
-        if ($this->securityContext->isGranted('ROLE_USER')) {
+        if ($this->securityContext->getToken() && $this->securityContext->isGranted('ROLE_USER')) {
             $route = $this->request === null ? '' : $this->request->get('_route');
 
             if (1 === preg_match('/^(sylius_account)|(fos_user)/', $route)) {
@@ -150,12 +158,25 @@ class FrontendMenuBuilder extends MenuBuilder
             ))->setLabel($this->translate('sylius.frontend.menu.main.register'));
         }
 
-        if ($this->securityContext->isGranted('ROLE_SYLIUS_ADMIN')) {
-            $menu->addChild('administration', array(
+        if ($this->securityContext->getToken() && $this->securityContext->isGranted('ROLE_SYLIUS_ADMIN')) {
+
+            $routeParams = array(
                 'route' => 'sylius_backend_dashboard',
                 'linkAttributes' => array('title' => $this->translate('sylius.frontend.menu.main.administration')),
                 'labelAttributes' => array('icon' => 'icon-briefcase icon-large', 'iconOnly' => false)
-            ))->setLabel($this->translate('sylius.frontend.menu.main.administration'));
+            );
+
+            if ($this->securityContext->isGranted('ROLE_PREVIOUS_ADMIN')) {
+                $routeParams = array_merge($routeParams, array(
+                    'route' => 'sylius_switch_user_return',
+                    'routeParameters' => array(
+                        'username' => $this->securityContext->getToken()->getUsername(),
+                        '_switch_user' => '_exit'
+                    )
+                ));
+            }
+
+            $menu->addChild('administration', $routeParams)->setLabel($this->translate('sylius.frontend.menu.main.administration'));
         }
 
         return $menu;

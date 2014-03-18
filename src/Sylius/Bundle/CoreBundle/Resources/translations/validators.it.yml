@@ -1,0 +1,28 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius:
+  user:
+    first_name:
+      max: 'Il nome non deve essere più lungo di {{ limit }} caratteri.'
+      min: 'Il nome deve essere lungo almeno {{ limit }} caratteri.'
+      not_blank: Per favore inserisci il tuo nome.
+    last_name:
+      max: 'Il cognome non deve essere più lungo di {{ limit }} caratteri.'
+      min: 'Il cognome deve essere lungo almeno {{ limit }} caratteri.'
+      not_blank: Per favore inserisci il tuo cognome.
+  variant:
+    onHand:
+      min: 'La scorta di magazzino deve essere maggiore di {{ limit }}.'
+      not_blank: Per favore inserisci la scorta di magazzino.
+    price:
+      min: 'Il prezzo deve essere superiore a {{ limit }}.'
+      not_blank: Per favore inserisci il prezzo.
+sylius_shipping:
+  method:
+    zone:
+      not_blank: sylius_shipping.method.zone.not_blank
+sylius_taxation:
+  rate:
+    zone:
+      not_blank: Per favore inserisci la tassazione locale.

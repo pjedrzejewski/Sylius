@@ -11,7 +11,7 @@
 
 namespace Sylius\Bundle\VariableProductBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\SyliusResourceExtension;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 
@@ -20,8 +20,9 @@ use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-class SyliusVariableProductExtension extends SyliusResourceExtension implements PrependExtensionInterface
+class SyliusVariableProductExtension extends AbstractResourceExtension implements PrependExtensionInterface
 {
+    protected $configDirectory = '/../Resources/config/container';
     protected $configFiles = array(
         'options',
         'variants',
@@ -33,11 +34,8 @@ class SyliusVariableProductExtension extends SyliusResourceExtension implements 
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $this->configDir = __DIR__.'/../Resources/config/container';
-
-        list(, $loader) = $this->configure($config, new Configuration(), $container, self::CONFIGURE_LOADER | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS);
-
-        $this->loadDatabaseDriver($container->getParameter('sylius_product.driver'), $loader);
+        $config[0]['driver'] = $container->getParameter('sylius_product.driver');
+        $this->configure($config, new Configuration(), $container, self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS);
     }
 
     /**

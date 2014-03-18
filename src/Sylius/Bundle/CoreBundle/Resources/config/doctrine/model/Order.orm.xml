@@ -27,11 +27,9 @@
             <join-column name="payment_id" referenced-column-name="id" nullable="true" />
         </many-to-one>
 
-        <one-to-many field="inventoryUnits" target-entity="Sylius\Bundle\InventoryBundle\Model\InventoryUnitInterface" mapped-by="order" orphan-removal="true">
-            <cascade>
-                <cascade-all/>
-            </cascade>
-        </one-to-many>
+        <many-to-one target-entity="Sylius\Bundle\PromotionsBundle\Model\CouponInterface" field="promotionCoupon">
+            <join-column name="coupon_id" on-delete="SET NULL" />
+        </many-to-one>
 
         <one-to-many field="shipments" target-entity="Sylius\Bundle\ShippingBundle\Model\ShipmentInterface" mapped-by="order" orphan-removal="true">
             <cascade>
@@ -44,7 +42,22 @@
         </many-to-one>
 
         <field name="currency" length="3" />
+        <field type="string" name="paymentState" column="payment_state" />
         <field type="string" name="shippingState" column="shipping_state" />
+        
+        <many-to-many field="promotions" target-entity="Sylius\Bundle\PromotionsBundle\Model\PromotionInterface">
+            <join-table name="sylius_promotion_order">
+                <join-columns>
+                    <join-column name="order_id" referenced-column-name="id" />
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="promotion_id" referenced-column-name="id" />
+                </inverse-join-columns>
+            </join-table>
+            <cascade>
+                <cascade-persist />
+            </cascade>
+        </many-to-many>
     </mapped-superclass>
 
 </doctrine-mapping>

@@ -14,57 +14,91 @@ namespace Sylius\Bundle\CoreBundle\Cart;
 use Sylius\Bundle\CartBundle\Model\CartItemInterface;
 use Sylius\Bundle\CartBundle\Resolver\ItemResolverInterface;
 use Sylius\Bundle\CartBundle\Resolver\ItemResolvingException;
-use Sylius\Bundle\CoreBundle\Model\VariantInterface;
+use Sylius\Bundle\CoreBundle\Model\OrderItem;
+use Sylius\Bundle\CoreBundle\Model\Product;
 use Sylius\Bundle\InventoryBundle\Checker\AvailabilityCheckerInterface;
 use Sylius\Bundle\ResourceBundle\Model\RepositoryInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
+use Sylius\Bundle\CoreBundle\Checker\RestrictedZoneCheckerInterface;
+use Sylius\Bundle\CartBundle\Provider\CartProviderInterface;
+use Sylius\Bundle\CoreBundle\Calculator\PriceCalculatorInterface;
 
 /**
  * Item resolver for cart bundle.
  * Returns proper item objects for cart add and remove actions.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 class ItemResolver implements ItemResolverInterface
 {
     /**
-     * Product manager.
+     * Cart provider.
+     *
+     * @var CartProviderInterface
+     */
+    protected $cartProvider;
+
+    /**
+     * Prica calculator.
+     *
+     * @var PriceCalculatorInterface
+     */
+    protected $priceCalculator;
+
+    /**
+     * Product repository.
      *
      * @var RepositoryInterface
      */
-    private $productRepository;
+    protected $productRepository;
 
     /**
      * Form factory.
      *
      * @var FormFactory
      */
-    private $formFactory;
+    protected $formFactory;
 
     /**
      * Stock availability checker.
      *
      * @var AvailabilityCheckerInterface
      */
-    private $availabilityChecker;
+    protected $availabilityChecker;
+
+    /**
+     * Restricted zone checker.
+     *
+     * @var RestrictedZoneCheckerInterface
+     */
+    protected $restrictedZoneChecker;
 
     /**
      * Constructor.
      *
-     * @param RepositoryInterface          $productRepository
-     * @param FormFactory                  $formFactory
-     * @param AvailabilityCheckerInterface $availabilityChecker
+     * @param CartProviderInterface          $cartProvider
+     * @param RepositoryInterface            $productRepository
+     * @param FormFactory                    $formFactory
+     * @param AvailabilityCheckerInterface   $availabilityChecker
+     * @param RestrictedZoneCheckerInterface $restrictedZoneChecker
      */
     public function __construct(
-        RepositoryInterface          $productRepository,
-        FormFactory                  $formFactory,
-        AvailabilityCheckerInterface $availabilityChecker
+        CartProviderInterface          $cartProvider,
+        PriceCalculatorInterface       $priceCalculator,
+        RepositoryInterface            $productRepository,
+        FormFactory                    $formFactory,
+        AvailabilityCheckerInterface   $availabilityChecker,
+        RestrictedZoneCheckerInterface $restrictedZoneChecker
     )
     {
+        $this->cartProvider = $cartProvider;
+        $this->priceCalculator = $priceCalculator;
         $this->productRepository = $productRepository;
         $this->formFactory = $formFactory;
         $this->availabilityChecker = $availabilityChecker;
+        $this->restrictedZoneChecker = $restrictedZoneChecker;
     }
 
     /**
@@ -86,6 +120,7 @@ class ItemResolver implements ItemResolverInterface
             throw new ItemResolvingException('Error while trying to add item to cart');
         }
 
+        /* @var $product Product */
         if (!$product = $this->productRepository->find($id)) {
             throw new ItemResolvingException('Requested product was not found');
         }
@@ -93,8 +128,9 @@ class ItemResolver implements ItemResolverInterface
         // We use forms to easily set the quantity and pick variant but you can do here whatever is required to create the item.
         $form = $this->formFactory->create('sylius_cart_item', null, array('product' => $product));
 
-        $form->bind($request);
-        $item = $form->getData(); // Item instance, cool.
+        $form->submit($request);
+        /* @var $item OrderItem */
+        $item = $form->getData();
 
         // If our product has no variants, we simply set the master variant of it.
         if (!$product->hasVariants()) {
@@ -105,27 +141,29 @@ class ItemResolver implements ItemResolverInterface
 
         // If all is ok with form, quantity and other stuff, simply return the item.
         if (!$form->isValid() || null === $variant) {
-            throw new ItemResolvingException('Submitted form is invalid');
+            throw new ItemResolvingException('Submitted form is invalid.');
         }
 
-        if (!$this->isStockAvailable($variant)) {
-            throw new ItemResolvingException('Selected item is out of stock');
+        $item->setUnitPrice(
+            $this->priceCalculator->calculate($variant)
+        );
+
+        $quantity = $item->getQuantity();
+        foreach ($this->cartProvider->getCart()->getItems() as $cartItem) {
+            if ($cartItem->equals($item)) {
+                $quantity += $cartItem->getQuantity();
+                break;
+            }
         }
 
-        $item->setUnitPrice($variant->getPrice());
+        if (!$this->availabilityChecker->isStockSufficient($variant, $quantity)) {
+            throw new ItemResolvingException('Selected item is out of stock.');
+        }
+
+        if ($this->restrictedZoneChecker->isRestricted($product)) {
+            throw new ItemResolvingException('Selected item is not available in your country.');
+        }
 
         return $item;
-    }
-
-    /**
-     * Check if variant is available in stock.
-     *
-     * @param VariantInterface $variant
-     *
-     * @return Boolean
-     */
-    protected function isStockAvailable(VariantInterface $variant)
-    {
-        return $this->availabilityChecker->isStockAvailable($variant);
     }
 }

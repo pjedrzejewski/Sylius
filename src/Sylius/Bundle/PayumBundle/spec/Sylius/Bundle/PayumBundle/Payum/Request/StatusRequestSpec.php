@@ -28,7 +28,7 @@ class StatusRequestSpec extends ObjectBehavior
 
     function it_extends_base_status_class()
     {
-        $this->shouldHaveType('Payum\Request\BaseStatusRequest');
+        $this->shouldHaveType('Payum\Core\Request\BaseStatusRequest');
     }
 
     function it_is_new_when_marked_as_new()
@@ -70,7 +70,7 @@ class StatusRequestSpec extends ObjectBehavior
     {
         $this->markPending();
 
-        $this->getStatus()->shouldReturn(PaymentInterface::STATE_PENDING);
+        $this->getStatus()->shouldReturn(PaymentInterface::STATE_PROCESSING);
     }
 
     function it_is_failed_when_marked_as_failed()
@@ -98,7 +98,7 @@ class StatusRequestSpec extends ObjectBehavior
     {
         $this->markCanceled();
 
-        $this->getStatus()->shouldReturn(PaymentInterface::STATE_VOID);
+        $this->getStatus()->shouldReturn(PaymentInterface::STATE_CANCELLED);
     }
 
     function it_is_suspended_when_marked_as_suspended()
@@ -112,7 +112,7 @@ class StatusRequestSpec extends ObjectBehavior
     {
         $this->markSuspended();
 
-        $this->getStatus()->shouldReturn(PaymentInterface::STATE_VOID);
+        $this->getStatus()->shouldReturn(PaymentInterface::STATE_PROCESSING);
     }
 
     function it_is_expired_when_marked_as_expired()

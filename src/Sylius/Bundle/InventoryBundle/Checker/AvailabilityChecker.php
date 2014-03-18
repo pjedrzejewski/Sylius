@@ -16,7 +16,7 @@ use Sylius\Bundle\InventoryBundle\Model\StockableInterface;
 /**
  * Checks availability for given stockable object.
  *
- * @author Paweł Jędrzejewski <pjedrzejewkski@diweb.pl>
+ * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
 class AvailabilityChecker implements AvailabilityCheckerInterface
 {
@@ -46,7 +46,7 @@ class AvailabilityChecker implements AvailabilityCheckerInterface
             return true;
         }
 
-        return 0 < $stockable->getOnHand();
+        return 0 < ($stockable->getOnHand() - $stockable->getOnHold());
     }
 
     /**
@@ -58,6 +58,6 @@ class AvailabilityChecker implements AvailabilityCheckerInterface
             return true;
         }
 
-        return $quantity <= $stockable->getOnHand();
+        return $quantity <= ($stockable->getOnHand() - $stockable->getOnHold());
     }
 }

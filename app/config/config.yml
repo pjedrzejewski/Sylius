@@ -46,10 +46,26 @@ doctrine:
         entity_managers:
             default:
                 auto_mapping: true
+                mappings:
+                    gedmo_loggable:
+                        type: annotation
+                        prefix: Gedmo\Loggable\Entity
+                        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+                        is_bundle: false
                 filters:
                     softdeleteable:
                         class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                         enabled: true
+
+doctrine_phpcr:
+    session:
+        backend:
+            type: doctrinedbal
+        workspace: default
+        username: admin
+        password: admin
+    odm:
+        auto_mapping: true
 
 stof_doctrine_extensions:
     default_locale: %sylius.locale%
@@ -59,11 +75,13 @@ stof_doctrine_extensions:
             sluggable: true
             timestampable: true
             softdeleteable: true
+            loggable: true
+            sortable: true
 
 fos_user:
     db_driver: orm
     firewall_name: main
-    user_class: Sylius\Bundle\CoreBundle\Model\User
+    user_class: %sylius.model.user.class%
     group:
         group_class: Sylius\Bundle\CoreBundle\Model\Group
     profile:
@@ -78,7 +96,7 @@ hwi_oauth:
     resource_owners:
         amazon:
             type:          amazon
-            client_id:     %sylius.oauth.amazon.clientid% 
+            client_id:     %sylius.oauth.amazon.clientid%
             client_secret: %sylius.oauth.amazon.clientsecret%
         facebook:
             type:          facebook
@@ -99,8 +117,7 @@ swiftmailer:
 
 liip_doctrine_cache:
     namespaces:
-        sylius_settings:
-            type: %sylius.cache%
+        sylius_settings: %sylius.cache%
 
 knp_gaufrette:
     adapters:
@@ -115,29 +132,13 @@ knp_gaufrette:
 liip_imagine:
     data_root: %kernel.root_dir%/../web/media/image
     filter_sets:
-        sylius_16x16:
+        sylius_small:
             filters:
-                thumbnail: { size: [16, 16], mode: outbound }
-        sylius_50x40:
+                thumbnail: { size: [120, 90], mode: outbound }
+        sylius_medium:
             filters:
-                thumbnail: { size: [50, 40], mode: outbound }
-        sylius_90x60:
-            filters:
-                thumbnail: { size: [90, 60], mode: outbound }
-        sylius_200x200:
-            filters:
-                thumbnail: { size: [200, 200], mode: outbound }
-
-        sylius_262x255:
-            filters:
-                thumbnail: { size: [265, 255], mode: outbound }
-        sylius_310x300:
-            filters:
-                thumbnail: { size: [310, 300], mode: outbound }
-        sylius_610x600:
-            filters:
-                thumbnail: { size: [610, 600], mode: outbound }
-        sylius_gallery:
+                thumbnail: { size: [240, 180], mode: outbound }
+        sylius_large:
             filters:
                 thumbnail: { size: [640, 480], mode: outbound }
 
@@ -150,3 +151,27 @@ knp_snappy:
         enabled:    true
         binary:     /usr/bin/wkhtmltoimage
         options:    []
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.block.service.text:
+
+cmf_core:
+    publish_workflow: false
+
+cmf_block:
+    persistence:
+        phpcr:
+            block_basepath: /cms/blocks
+
+cmf_content:
+    persistence:
+        phpcr:
+            content_basepath: /cms/pages
+
+cmf_routing:
+    dynamic:
+        generic_controller: cmf_content.controller:indexAction
+        persistence:
+            phpcr: ~

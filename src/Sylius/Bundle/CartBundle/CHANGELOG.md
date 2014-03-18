@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+### v0.8.0
+
+* Convert translation files to YAML.
+
+### v0.7.0
+
+* Introduce cart provider events.
+
+### v0.6.0
+
+* Release before components introduction. (delayed)
+
 ### v0.5.0
 
 * Symfony 2.3 compatible version.

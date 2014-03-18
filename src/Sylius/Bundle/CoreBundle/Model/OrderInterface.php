@@ -14,6 +14,7 @@ namespace Sylius\Bundle\CoreBundle\Model;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Bundle\AddressingBundle\Model\AddressInterface;
 use Sylius\Bundle\CartBundle\Model\CartInterface;
+use Sylius\Bundle\OrderBundle\Model\AdjustmentInterface;
 use Sylius\Bundle\PromotionsBundle\Model\CouponInterface;
 use Sylius\Bundle\PromotionsBundle\Model\PromotionSubjectInterface;
 use Sylius\Bundle\PaymentsBundle\Model\PaymentInterface;
@@ -82,7 +83,7 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
     /**
      * Get all tax adjustments.
      *
-     * @return Collection
+     * @return Collection|AdjustmentInterface[]
      */
     public function getTaxAdjustments();
 
@@ -101,7 +102,7 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
     /**
      * Get all promotion adjustments.
      *
-     * @return Collection
+     * @return Collection|AdjustmentInterface[]
      */
     public function getPromotionAdjustments();
 
@@ -120,7 +121,7 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
     /**
      * Get all shipping adjustments.
      *
-     * @return Collection
+     * @return Collection|AdjustmentInterface[]
      */
     public function getShippingAdjustments();
 
@@ -144,9 +145,23 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
     public function setPayment(PaymentInterface $payment);
 
     /**
+     * Get the payment state.
+     *
+     * @return string
+     */
+    public function getPaymentState();
+
+    /**
+     * Set the payment state.
+     *
+     * @param string $paymentState
+     */
+    public function setPaymentState($paymentState);
+
+    /**
      * Get all inventory units.
      *
-     * @return InventoryUnitInterface[]
+     * @return Collection|InventoryUnitInterface[]
      */
     public function getInventoryUnits();
 
@@ -155,37 +170,14 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
      *
      * @param VariantInterface $variant
      *
-     * @return InventoryUnitInterface[]
+     * @return Collection|InventoryUnitInterface[]
      */
     public function getInventoryUnitsByVariant(VariantInterface $variant);
 
     /**
-     * Add inventory unit.
-     *
-     * @param InventoryUnitInterface $unit
-     */
-    public function addInventoryUnit(InventoryUnitInterface $unit);
-
-    /**
-     * Remove inventory unit.
-     *
-     * @param InventoryUnitInterface $unit
-     */
-    public function removeInventoryUnit(InventoryUnitInterface $unit);
-
-    /**
-     * Has inventory unit?
-     *
-     * @param InventoryUnitInterface $unit
-     *
-     * @return Boolean
-     */
-    public function hasInventoryUnit(InventoryUnitInterface $unit);
-
-    /**
      * Get all shipments associated with this order.
      *
-     * @return ShipmentInterface[]
+     * @return Collection|ShipmentInterface[]
      */
     public function getShipments();
 
@@ -262,4 +254,11 @@ interface OrderInterface extends CartInterface, PromotionSubjectInterface
      * @return Boolean
      */
     public function isBackorder();
+    
+    /**
+     * Gets the last updated shipment of the order
+     *
+     * @return ShipmentInterface
+     */
+    public function getLastShipment();
 }

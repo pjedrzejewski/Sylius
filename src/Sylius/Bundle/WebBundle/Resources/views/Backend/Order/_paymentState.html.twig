@@ -1,4 +1,4 @@
-{% set state = order.payment ? order.payment.state : 'new' %}
+{% set state = order.paymentState %}
 {% set label = 'primary' %}
 
 {% if 'pending' == state %}
@@ -9,4 +9,4 @@
     {% set label = 'danger' %}
 {% endif %}
 
-<span class="label label-{{ label }}">{{ state }}</span>
+<span class="label label-{{ label }}">{{ state|title }}</span>

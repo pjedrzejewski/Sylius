@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\PromotionsBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Promotion model.
@@ -42,6 +43,20 @@ class Promotion implements PromotionInterface
     protected $description;
 
     /**
+     * When exclusive, promotion with top priority will be applied
+     *
+     * @var integer
+     */
+    protected $priority = 0;
+
+    /**
+     * Cannot be applied together with other promotions
+     *
+     * @var boolean
+     */
+    protected $exclusive = false;
+
+    /**
      * Usage limit
      *
      * @var integer
@@ -53,7 +68,7 @@ class Promotion implements PromotionInterface
      *
      * @var integer
      */
-    protected $used;
+    protected $used = 0;
 
     /**
      * Start date
@@ -74,26 +89,26 @@ class Promotion implements PromotionInterface
      *
      * @var Boolean
      */
-    protected $couponBased;
+    protected $couponBased = false;
 
     /**
      * Associated coupons
      *
-     * @var CouponInterface[]
+     * @var Collection|CouponInterface[]
      */
     protected $coupons;
 
     /**
      * Associated rules
      *
-     * @var RuleInterface[]
+     * @var Collection|RuleInterface[]
      */
     protected $rules;
 
     /**
      * Associated actions
      *
-     * @var ActionInterface[]
+     * @var Collection|ActionInterface[]
      */
     protected $actions;
 
@@ -116,11 +131,10 @@ class Promotion implements PromotionInterface
      */
     public function __construct()
     {
-        $this->used = 0;
-        $this->couponBased = false;
         $this->coupons = new ArrayCollection();
         $this->rules = new ArrayCollection();
         $this->actions = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -163,6 +177,42 @@ class Promotion implements PromotionInterface
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isExclusive()
+    {
+        return $this->exclusive;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setExclusive($exclusive)
+    {
+        $this->exclusive = $exclusive;
 
         return $this;
     }

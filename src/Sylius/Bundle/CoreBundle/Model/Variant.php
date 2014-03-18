@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\CoreBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sylius\Bundle\VariableProductBundle\Model\Variant as BaseVariant;
 use Sylius\Bundle\VariableProductBundle\Model\VariantInterface as BaseVariantInterface;
 
@@ -20,7 +21,7 @@ use Sylius\Bundle\VariableProductBundle\Model\VariantInterface as BaseVariantInt
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
  */
-class Variant extends BaseVariant implements VariantInterface
+class Variant extends BaseVariant implements VariantInterface, PriceableInterface
 {
     /**
      * Variant SKU.
@@ -37,23 +38,30 @@ class Variant extends BaseVariant implements VariantInterface
     protected $price;
 
     /**
+     * On hold.
+     *
+     * @var integer
+     */
+    protected $onHold = 0;
+
+    /**
      * On hand stock.
      *
      * @var integer
      */
-    protected $onHand;
+    protected $onHand = 0;
 
     /**
      * Is variant available on demand?
      *
      * @var Boolean
      */
-    protected $availableOnDemand;
+    protected $availableOnDemand = true;
 
     /**
      * Images.
      *
-     * @var VariantImageInterface[]
+     * @var Collection|VariantImageInterface[]
      */
     protected $images;
 
@@ -92,9 +100,24 @@ class Variant extends BaseVariant implements VariantInterface
     {
         parent::__construct();
 
-        $this->onHand = 1;
-        $this->availableOnDemand = true;
         $this->images = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        $string = $this->getProduct()->getName();
+
+        if (!$this->getOptions()->isEmpty()) {
+            $string .= '(';
+
+            foreach ($this->getOptions() as $option) {
+                $string .= $option->getOption()->getName(). ': '.$option->getValue().', ';
+            }
+
+            $string = substr($string, 0, -2).')';
+        }
+
+        return $string;
     }
 
     /**
@@ -139,6 +162,24 @@ class Variant extends BaseVariant implements VariantInterface
     public function isInStock()
     {
         return 0 < $this->onHand;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOnHold()
+    {
+        return $this->onHold;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOnHold($onHold)
+    {
+        $this->onHold = $onHold;
+
+        return $this;
     }
 
     /**

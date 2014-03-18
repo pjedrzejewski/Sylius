@@ -1,3 +1,5 @@
+{% form_theme form 'SyliusWebBundle::forms.html.twig' %}
+
 <fieldset>
     {{ form_row(form.name, {'attr': {'class': 'input-lg'}}) }}
     {{ form_row(form.presentation, {'attr': {'class': 'input-lg'}}) }}
@@ -12,7 +14,7 @@
                         {{ form_label(choice, 'Choice ' ~ key) }}
                         <div class="controls">
                             {{ form_widget(choice) }}
-                            <a class="btn btn-danger delete-link sylius_property_choices_{{ key }}_delete" href="#"><i class="icon-trash"></i></a>
+                            <a class="btn btn-danger delete-link sylius_property_choices_{{ key }}_delete" href="#"><i class="glyphicon glyphicon-trash"></i></a>
                         </div>
                     </div>
                 {% endfor %}

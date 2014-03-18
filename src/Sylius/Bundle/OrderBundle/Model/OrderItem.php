@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\OrderBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Model for order line items.
@@ -39,19 +40,19 @@ class OrderItem implements OrderItemInterface
      *
      * @var integer
      */
-    protected $quantity;
+    protected $quantity = 1;
 
     /**
      * Unit price.
      *
      * @var integer
      */
-    protected $unitPrice;
+    protected $unitPrice = 0;
 
     /**
      * Total adjustments.
      *
-     * @var Collection
+     * @var Collection|AdjustmentInterface[]
      */
     protected $adjustments;
 
@@ -60,25 +61,21 @@ class OrderItem implements OrderItemInterface
      *
      * @var integer
      */
-    protected $adjustmentsTotal;
+    protected $adjustmentsTotal = 0;
 
     /**
      * Order item total.
      *
      * @var integer
      */
-    protected $total;
+    protected $total = 0;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->quantity = 1;
-        $this->unitPrice = 0;
         $this->adjustments = new ArrayCollection();
-        $this->adjustmentsTotal = 0;
-        $this->total = 0;
     }
 
     /**
@@ -103,10 +100,12 @@ class OrderItem implements OrderItemInterface
     public function setQuantity($quantity)
     {
         if (0 > $quantity) {
-            throw new \OutOfRangeException('Quantity must be greater than 0');
+            throw new \OutOfRangeException('Quantity must be greater than 0.');
         }
 
         $this->quantity = $quantity;
+
+        return $this;
     }
 
     /**
@@ -207,6 +206,8 @@ class OrderItem implements OrderItemInterface
                 $this->adjustmentsTotal += $adjustment->getAmount();
             }
         }
+
+        return $this;
     }
 
     /**
@@ -236,6 +237,10 @@ class OrderItem implements OrderItemInterface
 
         $this->total = ($this->quantity * $this->unitPrice) + $this->adjustmentsTotal;
 
+        if ($this->total < 0) {
+            $this->total = 0;
+        }
+
         return $this;
     }
 
@@ -245,5 +250,21 @@ class OrderItem implements OrderItemInterface
     public function equals(OrderItemInterface $orderItem)
     {
         return $this === $orderItem;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function merge(OrderItemInterface $orderItem, $throwOnInvalid = true)
+    {
+        if ($throwOnInvalid && ! $orderItem->equals($this)) {
+            throw new \RuntimeException('Given item cannot be merged.');
+        }
+
+        if ($this !== $orderItem) {
+            $this->quantity += $orderItem->getQuantity();
+        }
+
+        return $this;
     }
 }

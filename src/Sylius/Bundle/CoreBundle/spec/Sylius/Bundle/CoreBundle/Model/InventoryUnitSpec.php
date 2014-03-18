@@ -12,7 +12,10 @@
 namespace spec\Sylius\Bundle\CoreBundle\Model;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\CoreBundle\Model\OrderInterface;
+use Sylius\Bundle\CoreBundle\Model\OrderItemInterface;
 use Sylius\Bundle\ShippingBundle\Model\ShipmentItemInterface;
+use Sylius\Bundle\ShippingBundle\Model\ShipmentInterface;
 
 class InventoryUnitSpec extends ObjectBehavior
 {
@@ -41,19 +44,13 @@ class InventoryUnitSpec extends ObjectBehavior
         $this->getShipment()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\ShippingBundle\Model\ShipmentInterface $shipment
-     */
-    function it_allows_assigning_itself_to_a_shipment($shipment)
+    function it_allows_assigning_itself_to_a_shipment(ShipmentInterface $shipment)
     {
         $this->setShipment($shipment);
         $this->getShipment()->shouldReturn($shipment);
     }
 
-    /**
-     * @param Sylius\Bundle\ShippingBundle\Model\ShipmentInterface $shipment
-     */
-    function it_allows_detaching_itself_from_a_shipment($shipment)
+    function it_allows_detaching_itself_from_a_shipment(ShipmentInterface $shipment)
     {
         $this->setShipment($shipment);
         $this->getShipment()->shouldReturn($shipment);
@@ -62,40 +59,34 @@ class InventoryUnitSpec extends ObjectBehavior
         $this->getShipment()->shouldReturn(null);
     }
 
-    function it_has_ready_shipping_state_by_default()
+    function it_has_checkout_shipping_state_by_default()
     {
-        $this->getShippingState()->shouldReturn(ShipmentItemInterface::STATE_READY);
+        $this->getShippingState()->shouldReturn(ShipmentInterface::STATE_CHECKOUT);
     }
 
     function its_shipping_state_is_mutable()
     {
-        $this->setShippingState(ShipmentItemInterface::STATE_SHIPPED);
-        $this->getShippingState()->shouldReturn(ShipmentItemInterface::STATE_SHIPPED);
+        $this->setShippingState(ShipmentInterface::STATE_SHIPPED);
+        $this->getShippingState()->shouldReturn(ShipmentInterface::STATE_SHIPPED);
     }
 
-    function it_does_not_belong_to_an_order_by_default()
+    function it_does_not_belong_to_an_order_item_by_default()
     {
-        $this->getOrder()->shouldReturn(null);
+        $this->getOrderItem()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface $order
-     */
-    function it_allows_attaching_itself_to_an_order($order)
+    function it_allows_attaching_itself_to_an_order_item(OrderItemInterface $order_item)
     {
-        $this->setOrder($order);
-        $this->getOrder()->shouldReturn($order);
+        $this->setOrderItem($order_item);
+        $this->getOrderItem()->shouldReturn($order_item);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface $order
-     */
-    function it_allows_detaching_itself_from_an_order($order)
+    function it_allows_detaching_itself_from_an_order_item(OrderItemInterface $order_item)
     {
-        $this->setOrder($order);
-        $this->getOrder()->shouldReturn($order);
+        $this->setOrderItem($order_item);
+        $this->getOrderItem()->shouldReturn($order_item);
 
-        $this->setOrder(null);
-        $this->getOrder()->shouldReturn(null);
+        $this->setOrderItem(null);
+        $this->getOrderItem()->shouldReturn(null);
     }
 }

@@ -11,6 +11,8 @@
 
 namespace Sylius\Bundle\TaxonomiesBundle\Model;
 
+use Doctrine\Common\Collections\Collection;
+
 /**
  * Taxonomy model interface.
  *
@@ -42,16 +44,9 @@ interface TaxonomyInterface
     /**
      * Get all taxons except the root.
      *
-     * @return TaxonInterface[]
+     * @return Collection|TaxonInterface[]
      */
     public function getTaxons();
-
-    /**
-     * Get all taxons as flat list.
-     *
-     * @return TaxonInterface[]
-     */
-    public function getTaxonsAsList();
 
     /**
      * Has a taxon?

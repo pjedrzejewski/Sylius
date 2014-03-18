@@ -12,7 +12,10 @@
 namespace spec\Sylius\Bundle\PaymentsBundle\Model;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\PaymentsBundle\Model\CreditCardInterface;
 use Sylius\Bundle\PaymentsBundle\Model\PaymentInterface;
+use Sylius\Bundle\PaymentsBundle\Model\PaymentLogInterface;
+use Sylius\Bundle\PaymentsBundle\Model\PaymentMethodInterface;
 
 /**
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
@@ -39,10 +42,7 @@ class PaymentSpec extends ObjectBehavior
         $this->getMethod()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentMethodInterface $method
-     */
-    function its_payment_method_is_mutable($method)
+    function its_payment_method_is_mutable(PaymentMethodInterface $method)
     {
       $this->setMethod($method);
       $this->getMethod()->shouldReturn($method);
@@ -53,19 +53,13 @@ class PaymentSpec extends ObjectBehavior
         $this->getSource()->shouldReturn(null);
     }
 
-    /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\CreditCardInterface $source
-     */
-    function it_allows_to_assign_a_source($source)
+    function it_allows_to_assign_a_source(CreditCardInterface $source)
     {
         $this->setSource($source);
         $this->getSource()->shouldReturn($source);
     }
 
-    /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\CreditCardInterface $source
-     */
-    function it_allows_to_remove_a_source($source)
+    function it_allows_to_remove_a_source(CreditCardInterface $source)
     {
         $this->setSource($source);
         $this->setSource(null);
@@ -103,31 +97,6 @@ class PaymentSpec extends ObjectBehavior
     {
         $this->setState(PaymentInterface::STATE_COMPLETED);
         $this->getState()->shouldReturn(PaymentInterface::STATE_COMPLETED);
-    }
-
-    function it_initializes_log_collection_by_default()
-    {
-        $this->getLogs()->shouldHaveType('Doctrine\Common\Collections\Collection');
-    }
-
-    /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentLogInterface $log
-     */
-    function it_adds_logs($log)
-    {
-        $this->hasLog($log)->shouldReturn(false);
-        $this->addLog($log);
-        $this->hasLog($log)->shouldReturn(true);
-    }
-
-    /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentLogInterface $log
-     */
-    function it_removes_logs($log)
-    {
-        $this->addLog($log);
-        $this->removeLog($log);
-        $this->hasLog($log)->shouldReturn(false);
     }
 
     function it_initializes_creation_date_by_default()

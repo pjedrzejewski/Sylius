@@ -11,7 +11,12 @@
 
 namespace Sylius\Bundle\CartBundle\Controller;
 
+use Sylius\Bundle\CartBundle\Model\CartInterface;
+use Sylius\Bundle\CartBundle\Provider\CartProviderInterface;
+use Sylius\Bundle\CartBundle\Resolver\ItemResolverInterface;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Base controller for cart system controllers.
@@ -67,10 +72,20 @@ abstract class Controller extends ResourceController
      * Get cart item resolver.
      * This service is used to build the new cart item instance.
      *
-     * @return CartResolverInterface
+     * @return ItemResolverInterface
      */
     protected function getResolver()
     {
         return $this->container->get('sylius.cart_resolver');
+    }
+
+    /**
+     * Get event dispatcher.
+     *
+     * @return EventDispatcherInterface
+     */
+    protected function getEventDispatcher()
+    {
+        return $this->container->get('event_dispatcher');
     }
 }

@@ -12,15 +12,17 @@
 namespace Sylius\Bundle\CoreBundle\OrderProcessing;
 
 use Sylius\Bundle\CoreBundle\Model\OrderInterface;
+use Sylius\Bundle\CoreBundle\Model\OrderItemInterface;
 use Sylius\Bundle\CoreBundle\Model\VariantInterface;
+use Sylius\Bundle\CoreBundle\Model\InventoryUnitInterface;
 use Sylius\Bundle\InventoryBundle\Factory\InventoryUnitFactoryInterface;
-use Sylius\Bundle\InventoryBundle\Model\InventoryUnitInterface;
 use Sylius\Bundle\InventoryBundle\Operator\InventoryOperatorInterface;
 
 /**
  * Order inventory handler.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 class InventoryHandler implements InventoryHandlerInterface
 {
@@ -53,21 +55,60 @@ class InventoryHandler implements InventoryHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function processInventoryUnits(OrderInterface $order)
+    public function processInventoryUnits(OrderItemInterface $item)
+    {
+        $nbUnits = $item->getInventoryUnits()->count();
+
+        if ($item->getQuantity() > $nbUnits) {
+            $this->createInventoryUnits($item, $item->getQuantity() - $nbUnits);
+        } elseif ($item->getQuantity() < $nbUnits) {
+            foreach ($item->getInventoryUnits()->slice(0, $nbUnits - $item->getQuantity()) as $unit) {
+                $item->removeInventoryUnit($unit);
+            }
+        }
+
+        foreach ($item->getInventoryUnits() as $unit) {
+            if ($unit->getStockable() !== $item->getVariant()) {
+                $unit->setStockable($item->getVariant());
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function holdInventory(OrderInterface $order)
     {
         foreach ($order->getItems() as $item) {
-            $variant = $item->getVariant();
-            $units = $order->getInventoryUnitsByVariant($variant);
+            $quantity = 0;
 
-            $quantity = $item->getQuantity();
-            $unitsQuantity = count($units);
+            foreach ($item->getInventoryUnits() as $unit) {
+                if (InventoryUnitInterface::STATE_CHECKOUT === $unit->getInventoryState()) {
+                    $unit->setInventoryState(InventoryUnitInterface::STATE_ONHOLD);
+                    $quantity++;
+                }
+            }
 
-            if ($quantity > $unitsQuantity) {
-                $this->addInventoryUnits($order, $variant, $quantity - $unitsQuantity);
+            $this->inventoryOperator->hold($item->getVariant(), $quantity);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function releaseInventory(OrderInterface $order)
+    {
+        foreach ($order->getItems() as $item) {
+            $quantity = 0;
+
+            foreach ($item->getInventoryUnits() as $unit) {
+                if (InventoryUnitInterface::STATE_ONHOLD === $unit->getInventoryState()) {
+                    $unit->setInventoryState(InventoryUnitInterface::STATE_CHECKOUT);
+                    $quantity++;
+                }
             }
-            if ($quantity < $unitsQuantity) {
-                $this->removeInventoryUnits($order, $variant, $unitsQuantity - $quantity);
-            }
+
+            $this->inventoryOperator->release($item->getVariant(), $quantity);
         }
     }
 
@@ -77,45 +118,30 @@ class InventoryHandler implements InventoryHandlerInterface
     public function updateInventory(OrderInterface $order)
     {
         foreach ($order->getItems() as $item) {
-            $units = $order->getInventoryUnitsByVariant($item->getVariant());
+            $units = $item->getInventoryUnits();
+            $quantity = 0;
 
             foreach ($units as $unit) {
-                $unit->setInventoryState(InventoryUnitInterface::STATE_SOLD);
+                if (in_array($unit->getInventoryState(), array(InventoryUnitInterface::STATE_ONHOLD, InventoryUnitInterface::STATE_CHECKOUT))) {
+                    if (InventoryUnitInterface::STATE_ONHOLD === $unit->getInventoryState()) {
+                        $quantity++;
+                    }
+                    
+                    $unit->setInventoryState(InventoryUnitInterface::STATE_SOLD);
+                }
             }
 
+            $this->inventoryOperator->release($item->getVariant(), $quantity);
             $this->inventoryOperator->decrease($units);
         }
     }
 
-    /**
-     * Add inventory units to order.
-     *
-     * @param OrderInterface   $order
-     * @param VariantInterface $variant
-     * @param integer          $quantity
-     */
-    protected function addInventoryUnits(OrderInterface $order, VariantInterface $variant, $quantity)
+    protected function createInventoryUnits(OrderItemInterface $item, $quantity, $state = InventoryUnitInterface::STATE_CHECKOUT)
     {
-        $units = $this->inventoryUnitFactory->create($variant, $quantity, InventoryUnitInterface::STATE_CHECKOUT);
+        $units = $this->inventoryUnitFactory->create($item->getVariant(), $quantity, $state);
 
         foreach ($units as $unit) {
-            $order->addInventoryUnit($unit);
-        }
-    }
-
-    /**
-     * Remove inventory units from order.
-     *
-     * @param OrderInterface   $order
-     * @param VariantInterface $variant
-     * @param integer          $quantity
-     */
-    protected function removeInventoryUnits(OrderInterface $order, VariantInterface $variant, $quantity)
-    {
-        $units = $order->getInventoryUnitsByVariant($variant);
-
-        for ($i = 0; $i < $quantity; $i++) {
-            $order->removeInventoryUnit($units[$i]);
+            $item->addInventoryUnit($unit);
         }
     }
 }

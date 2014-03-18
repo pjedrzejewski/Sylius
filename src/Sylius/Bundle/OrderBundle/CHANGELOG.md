@@ -1,6 +1,22 @@
 CHANGELOG
 =========
 
+### v0.8.0
+
+* Convert translations to YAML.
+
+### v0.7.0
+
+* Add Number model to track order sequence.
+
+### v0.6.0
+
+* Release before components introduction. (delayed)
+
+### v0.5.0
+
+* Release after repositories reorganization.
+
 ### v0.2.0
 
 * Symfony 2.3 upgrade.
