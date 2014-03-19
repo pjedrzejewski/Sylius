@@ -1,0 +1,24 @@
+{% extends 'SyliusWebBundle::forms.html.twig' %}
+
+{% block sylius_option_value_row %}
+<div class="form-group{% if errors|length > 0 %} has-error{% endif %} collection-item">
+    <div class="col-lg-8">
+    {{ form_row(form.value) }}
+    {% for error in errors %}
+        <span class="help-block form-error">
+            {{
+                error.messagePluralization is null
+                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+            }}
+        </span>
+    {% endfor %}
+    </div>
+    <div class="col-lg-2">
+        <a href="#" class="btn btn-danger only-icon pull-right" data-collection-button="remove">
+            <i class="glyphicon glyphicon-trash"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

@@ -46,7 +46,10 @@ class BuildPropertyFormChoicesListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(FormEvents::PRE_SET_DATA => 'buildChoices');
+        return array(
+            FormEvents::PRE_SET_DATA => 'buildChoices',
+            FormEvents::PRE_SUBMIT   => 'removeChoices'
+        );
     }
 
     /**
@@ -57,20 +60,33 @@ class BuildPropertyFormChoicesListener implements EventSubscriberInterface
     public function buildChoices(FormEvent $event)
     {
         $property = $event->getData();
+
         if (null === $property) {
             return;
         }
 
         $type = $property->getType();
-        if (null === $type || PropertyTypes::CHOICE === $type) {
-            $event->getForm()->add(
-                $this->factory->createNamed('choices', 'collection', null, array(
-                    'type'         => 'text',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'by_reference' => false
-                ))
-            );
+
+        if (null !== $property->getId() && PropertyTypes::CHOICE !== $type) {
+            $event->getForm()->remove('configuration');
+        }
+    }
+
+    /**
+     * Removes the choices from the form.
+     *
+     * @param FormEvent $event
+     */
+    public function removeChocies(FormEvent $event)
+    {
+        $data = $event->getData();
+
+        if (!isset($data['type'])) {
+            return;
+        }
+
+        if (PropertyTypes::CHOICE !== $type) {
+            $event->getForm()->remove('configuration');
         }
     }
 }

@@ -1,17 +1,17 @@
-{% form_theme form 'SyliusWebBundle::forms.html.twig' %}
+{% form_theme form 'SyliusWebBundle:Backend/Option:_forms.html.twig' %}
 
 {{ form_errors(form) }}
 
 <div class="row">
-    <div class="col-md-8 row-split">
+    <div class="col-md-6">
         {{ form_row(form.name) }}
         {{ form_row(form.presentation) }}
     </div>
 
-    <div class="col-md-4">
-        <div id="sylius-option-values" class="collection-container" data-prototype="{{ form_row(form.values.vars.prototype.value, {'label': ''})|e }}">
+    <div class="col-md-6">
+        <div id="sylius-option-values" class="collection-container" data-prototype="{{ form_row(form.values.vars.prototype, {'label': ''})|e }}">
             {% for valueForm in form.values %}
-                {{ form_row(valueForm.value)  }}
+                {{ form_row(valueForm, {'label': false})  }}
             {% endfor %}
         </div>
         <a href="#" class="btn btn-primary btn-block" data-collection-button="add" data-prototype="sylius-option-values" data-collection="sylius-option-values">{{ "sylius.form.option_value.add_value"|trans }}</a>

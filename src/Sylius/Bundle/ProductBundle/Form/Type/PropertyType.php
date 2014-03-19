@@ -66,6 +66,12 @@ class PropertyType extends AbstractType
             ->add('type', 'choice', array(
                 'choices' => PropertyTypes::getChoices()
             ))
+            ->add('configuration', 'collection', array(
+                'type'         => 'text',
+                'allow_add'    => true,
+                'allow_delete' => true,
+                'by_reference' => false
+            ))
             ->addEventSubscriber(new BuildPropertyFormChoicesListener($builder->getFormFactory()))
         ;
     }
