@@ -1,16 +1,61 @@
 {% extends 'SyliusWebBundle::forms.html.twig' %}
 
-{% block form_widget %}
-{% spaceless %}
-    {{ parent() }}
-    <div class="configuration"></div>
-{% endspaceless %}
-{% endblock form_widget %}
-
-{% block form_row %}
-{% spaceless %}
-    <div>
-        {{ parent() }}
+{% block sylius_promotion_rule_row %}
+<div class="form-group{% if errors|length > 0 %} has-error{% endif %} collection-item promotion-container">
+    <div class="col-lg-8">
+    {{ form_row(form.type) }}
+    <div class="configuration">
+        {% if form.configuration is defined %}
+            {% for configurationForm in form.configuration %}
+                {% form_theme configurationForm 'SyliusWebBundle:Backend/Promotion:_configurationForms.html.twig' %}
+                {{ form_row(configurationForm) }}
+            {% endfor %}
+        {% endif %}
     </div>
-{% endspaceless %}
-{% endblock form_row %}
+    {% for error in errors %}
+        <span class="help-block form-error">
+            {{
+                error.messagePluralization is null
+                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+            }}
+        </span>
+    {% endfor %}
+    </div>
+    <div class="col-lg-2">
+        <a href="#" class="btn btn-danger only-icon pull-right" data-collection-button="remove">
+            <i class="glyphicon glyphicon-trash"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block sylius_promotion_action_row %}
+<div class="form-group{% if errors|length > 0 %} has-error{% endif %} collection-item promotion-container">
+    <div class="col-lg-8">
+    {{ form_row(form.type) }}
+    <div class="configuration">
+        {% if form.configuration is defined %}
+            {% for configurationForm in form.configuration %}
+                {% form_theme configurationForm 'SyliusWebBundle:Backend/Promotion:_configurationForms.html.twig' %}
+                {{ form_row(configurationForm) }}
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% for error in errors %}
+        <span class="help-block form-error">
+            {{
+                error.messagePluralization is null
+                ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+            }}
+        </span>
+    {% endfor %}
+    </div>
+    <div class="col-lg-2">
+        <a href="#" class="btn btn-danger only-icon pull-right" data-collection-button="remove">
+            <i class="glyphicon glyphicon-trash"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

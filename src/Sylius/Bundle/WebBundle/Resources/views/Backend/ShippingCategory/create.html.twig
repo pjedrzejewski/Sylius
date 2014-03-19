@@ -1,4 +1,4 @@
-{% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
+{% extends app.request.xmlHttpRequest ? 'SyliusWebBundle:Backend:ajaxLayout.html.twig' : 'SyliusWebBundle:Backend:layout.html.twig' %}
 
 {% from 'SyliusResourceBundle:Macros:actions.html.twig' import create %}
 

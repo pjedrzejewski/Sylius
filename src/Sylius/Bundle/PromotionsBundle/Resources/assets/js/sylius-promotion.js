@@ -17,6 +17,7 @@
 
             return this.each(function() {
                 show($(this), false);
+
                 $(this).change(function() {
                     show($(this), true);
                 });
@@ -29,9 +30,14 @@
                         prototypePrefix = settings.prototypePrefix;
                     }
 
-                    var form = element.closest('div.control-group').parent();
-                    var container = form.next();
-                    var count = form.parents(':eq(1)').children().length - 1;
+                    var form = element.closest('div.promotion-container');
+                    var container = form.find('div.configuration');
+                    var count = form.closest('div.collection-container').find('div.promotion-container').length - 1;
+
+                    if (count < 0) {
+                        count = 0;
+                    }
+
                     var prototype = $('#' + prototypePrefix + '_' + selectedValue)
                         .data('prototype')
                         .replace(/\[__name__\]/g, '[' + prototypePrefix + '][' + count + '][configuration]')
@@ -39,11 +45,9 @@
                     ;
 
                     if (replace) {
-                        if (form.children().length > 1) {
-                            form.children().last().remove();
-                        }
+                        container.empty();
                         container.html(prototype);
-                    } else if (form.children().length <= 1) {
+                    } else if (container.children().length <= 1) {
                         container.html(prototype);
                     }
                 }
@@ -57,7 +61,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.handlePrototypes' );
+            $.error('Method ' +  method + ' does not exist on jQuery.handlePrototypes.');
         }
     };
 

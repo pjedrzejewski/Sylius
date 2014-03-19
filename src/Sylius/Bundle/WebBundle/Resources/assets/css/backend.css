@@ -50,6 +50,9 @@ form.form-signin .form-control:focus {
     line-height: 20px;
     font-size: 13px;
 }
+.only-icon > i {
+    margin-right: 0px !important;
+}
 .btn > i {
     margin-right: 5px;
 }
@@ -145,7 +148,20 @@ form.form-signin .form-control:focus {
 .grid-tabs {
     margin-bottom: 10px;
 }
-
+.promotion-settings {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.promotion-container {
+    background: #FAFAFA;
+    border-bottom: 3px solid #eee;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.promotion-container .configuration label {
+    margin-top: 5px;
+    margin-right: 5px;
+}
 /* Table. */
 .table {
     background: #FAFAFA;

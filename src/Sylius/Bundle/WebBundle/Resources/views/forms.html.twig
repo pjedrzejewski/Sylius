@@ -38,6 +38,29 @@
 {% endspaceless %}
 {% endblock money_widget %}
 
+{% block sylius_province_row %}
+    <div class="form-group{% if errors|length > 0 %} has-error{% endif %} collection-item">
+        {{ form_label(form) }}
+        <div class="col-lg-9">
+        {{ form_widget(form) }}
+        {% for error in errors %}
+            <span class="help-block form-error">
+                {{
+                    error.messagePluralization is null
+                    ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                    : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+                }}
+            </span>
+        {% endfor %}
+        </div>
+        <div class="col-lg-1">
+            <a href="#" class="btn btn-danger only-icon pull-right" data-collection-button="remove" data-prototype="sylius_country_provinces" data-collection="sylius_country_provinces">
+                <i class="glyphicon glyphicon-trash"></i>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
 {% block percent_widget %}
 {% spaceless %}
     <div class="input-group">

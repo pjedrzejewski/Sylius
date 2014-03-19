@@ -62,6 +62,7 @@ class CountryType extends AbstractType
             ))
             ->add('provinces', 'collection', array(
                 'type'         => 'sylius_province',
+                'options'      => array('label' => false),
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,

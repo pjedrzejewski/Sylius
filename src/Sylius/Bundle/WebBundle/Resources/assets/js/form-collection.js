@@ -19,9 +19,9 @@
             var item = prototype.replace(/__name__/g, collectionContainer.children().length);
             collectionContainer.append(item);
         });
-        $(document).on('click', 'a[data-collection-button="delete"]', function(e) {
+        $(document).on('click', 'a[data-collection-button="remove"]', function(e) {
             e.preventDefault();
-            var item = $(this).closest('.sylius-assortment-variant-images-image');
+            var item = $(this).closest('.collection-item');
             item.remove();
         });
     });

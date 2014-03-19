@@ -55,8 +55,8 @@
                 {# Gallery modal #}
                 {% include 'SyliusWebBundle::gallery.html.twig' %}
 
-                {# Confirmation modal #}
-                {% include 'SyliusWebBundle::confirm-modal.html.twig' %}
+                {% include 'SyliusWebBundle:Backend/Modal:contentModal.html.twig' %}
+                {% include 'SyliusWebBundle:Backend/Modal:confirmationModal.html.twig' %}
 
                 <footer>
                     <p>&copy; <a href="http://Sylius.org">Sylius</a>, 2011 - {{ 'now'|date('Y') }}.</p>
@@ -71,6 +71,7 @@
             <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
             {% javascripts output='assets/compiled/backend.js'
                 '@SyliusWebBundle/Resources/assets/js/jquery.blueimp-gallery.min.js'
+                '@SyliusWebBundle/Resources/assets/js/content-modal.js'
                 '@SyliusWebBundle/Resources/assets/js/confirm-modal.js'
                 '@SyliusWebBundle/Resources/assets/js/form-collection.js'
                 '@SyliusWebBundle/Resources/assets/js/form-spinner.js'

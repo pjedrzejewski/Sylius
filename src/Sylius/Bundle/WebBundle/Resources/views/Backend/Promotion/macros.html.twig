@@ -75,6 +75,12 @@
 
 <ul>
 {% for key, value in configuration %}
+    {% if key in ['amount', 'price'] %}
+    {% set value = value|sylius_money %}
+    {% endif %}
+    {% if key in ['percentage'] %}
+    {% set value = value * 100 ~ '%' %}
+    {% endif %}
     <li><strong>{{ key|humanize }}</strong>: {{ value }}</li>
 {% endfor %}
 </ul>
