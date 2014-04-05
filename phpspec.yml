@@ -15,6 +15,7 @@ suites:
     Resource         : { namespace: Sylius, spec_path: src/Sylius/Component/Resource }
     Settings         : { namespace: Sylius, spec_path: src/Sylius/Component/Settings }
     Shipping         : { namespace: Sylius, spec_path: src/Sylius/Component/Shipping }
+    Store            : { namespace: Sylius, spec_path: src/Sylius/Component/Store }
     Taxation         : { namespace: Sylius, spec_path: src/Sylius/Component/Taxation }
     Taxonomy         : { namespace: Sylius, spec_path: src/Sylius/Component/Taxonomy }
     Variation        : { namespace: Sylius, spec_path: src/Sylius/Component/Variation }
