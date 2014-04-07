@@ -16,8 +16,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory as FakerFactory;
 use PHPCR\Util\NodeHelper;
-use Symfony\Cmf\Bundle\ContentBundle\Doctrine\Phpcr\StaticContent;
-use Symfony\Cmf\Bundle\RoutingBundle\Doctrine\Phpcr\Route;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class LoadPagesData extends ContainerAware implements FixtureInterface, OrderedFixtureInterface
@@ -39,10 +37,12 @@ class LoadPagesData extends ContainerAware implements FixtureInterface, OrderedF
         NodeHelper::createPath($session, $basepath);
 
         $parent = $manager->find(null, $basepath);
-        $repository = $this->container->get('sylius.repository.page');
+        $repository = $this->container->get('sylius.repository.static_content');
+        $routeRepository = $this->container->get('sylius.repository.route');
+
 
         // Terms of service.
-        $route = new Route();
+        $route = $routeRepository->createNew();
         $route->setPosition($routeRoot, 'terms-of-service');
         $manager->persist($route);
 
@@ -56,7 +56,7 @@ class LoadPagesData extends ContainerAware implements FixtureInterface, OrderedF
         $manager->persist($content);
 
         // Contact.
-        $route = new Route();
+        $route = $routeRepository->createNew();
         $route->setPosition($routeRoot, 'about');
         $manager->persist($route);
 

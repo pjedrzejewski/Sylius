@@ -16,3 +16,9 @@ cmf_routing:
         generic_controller: cmf_content.controller:indexAction
         persistence:
             phpcr: ~
+
+cmf_create:
+    role: ROLE_SYLIUS_ADMIN
+    persistence:
+        phpcr:
+            image: false

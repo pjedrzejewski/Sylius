@@ -16,7 +16,6 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory as FakerFactory;
 use PHPCR\Util\NodeHelper;
-use Symfony\Cmf\Bundle\BlockBundle\Doctrine\Phpcr\SimpleBlock;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class LoadBlocksData extends ContainerAware implements FixtureInterface, OrderedFixtureInterface
@@ -33,7 +32,7 @@ class LoadBlocksData extends ContainerAware implements FixtureInterface, Ordered
         NodeHelper::createPath($session, $basepath);
 
         $parent = $manager->find(null, $basepath);
-        $repository = $this->container->get('sylius.repository.block');
+        $repository = $this->container->get('sylius.repository.simple_block');
 
         $contactBlock = $repository->createNew();
         $contactBlock->setParentDocument($parent);

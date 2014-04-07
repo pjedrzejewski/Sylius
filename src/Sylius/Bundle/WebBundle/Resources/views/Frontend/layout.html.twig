@@ -23,6 +23,8 @@
             %}
                 <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
             {% endstylesheets %}
+
+            {% include "CmfCreateBundle::includecssfiles.html.twig" %}
         {% endblock %}
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -67,7 +69,7 @@
                     <ul>
                     {% for child in cmf_children(cmf_find('/cms/pages')) %}
                         <li>
-                            <a href="{{ path('sylius_page_show', {'id': child.name}) }}">{{ child.title|striptags }}</a>
+                            <a href="{{ path('sylius_static_content_show', {'id': child.name}) }}">{{ child.title|striptags }}</a>
                         </li>
                     {% endfor %}
                     </ul>
@@ -118,6 +120,11 @@
         %}
             <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
+
+        {% render(controller(
+            "cmf_create.jsloader.controller:includeJSFilesAction",
+            {'_locale': app.request.locale, 'editor': 'hallo'}
+        )) %}
         {% endblock %}
     </body>
 </html>
