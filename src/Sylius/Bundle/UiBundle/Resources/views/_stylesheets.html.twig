@@ -1,0 +1,8 @@
+{% stylesheets output='assets/compiled/sylius-ui.css' filter='cssrewrite'
+    '@SyliusUiBundle/Resources/assets/less/ui.less'
+    '@SyliusUiBundle/Resources/assets/vendor/bootstrap/dist/css/bootstrap.css'
+    '@SyliusUiBundle/Resources/assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css'
+    '@SyliusUiBundle/Resources/assets/vendor/fontawesome/css/font-awesome.css'
+%}
+    <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstylesheets %}

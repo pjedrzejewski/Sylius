@@ -2,11 +2,11 @@
 
 {% set order = shipment.order %}
 
-{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% import 'SyliusWebBundle:Backend/Macros:misc.html.twig' as misc %}
+{% import 'SyliusUiBundle::alerts.html.twig' as alerts %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::pagination.html.twig' as misc %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.sales'|trans }}</li>
     <li><a href="{{ path('sylius_backend_shipment_index') }}">{{ 'sylius.breadcrumb.shipment.index'|trans }}</a></li>
@@ -16,7 +16,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1><i class="glyphicon glyphicon-plane"></i> {{ 'sylius.shipment.show_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-plane"></i> {{ 'sylius.shipment.show_header'|trans|raw }}</h1>
 </div>
 
 <div class="panel panel-default">

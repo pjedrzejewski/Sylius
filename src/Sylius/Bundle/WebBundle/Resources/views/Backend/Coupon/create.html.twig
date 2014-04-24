@@ -2,9 +2,9 @@
 
 {% set promotion = promotion_coupon.promotion %}
 
-{% from 'SyliusResourceBundle:Macros:actions.html.twig' import create %}
+{% from 'SyliusUiBundle::forms.html.twig' import create %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.sales'|trans }}</li>
     <li><a href="{{ path('sylius_backend_promotion_index') }}">{{ 'sylius.breadcrumb.promotion.index'|trans }}</a></li>
@@ -16,7 +16,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1><i class="glyphicon glyphicon-plus-sign"></i> {{ 'sylius.promotion_coupon.create_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-plus-sign"></i> {{ 'sylius.promotion_coupon.create_header'|trans|raw }}</h1>
 </div>
 
 {{ form_errors(form) }}

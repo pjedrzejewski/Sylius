@@ -1,0 +1,8 @@
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+
+{% if not product.deleted %}
+{{ buttons.edit(path('sylius_backend_product_update', {'id': product.id})) }}
+{{ buttons.delete(path('sylius_backend_product_delete', {'id': product.id}), null, false, false) }}
+{% else %}
+{% if product.deleted %}<span class="label label-danger">{{ 'sylius.deleted'|trans }}</span>{% endif %}
+{% endif %}

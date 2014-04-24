@@ -1,0 +1,10 @@
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+
+{{ buttons.create(path('sylius_backend_product_create'), 'sylius.product.create'|trans) }}
+{{ buttons.manage(path('sylius_backend_product_option_index'), 'sylius.product_option.manage'|trans) }}
+{{ buttons.manage(path('sylius_backend_product_attribute_index'), 'sylius.product_attribute.manage'|trans) }}
+{% if app.request.query.get('deleted') %}
+    <a href="{{ path('sylius_backend_product_index', {'deleted': false}) }}" class="btn btn-danger"><i class="fa fa-trash"></i> {{ 'sylius.hide_deleted'|trans }}</a>
+{% else %}
+    <a href="{{ path('sylius_backend_product_index', {'deleted': true}) }}" class="btn btn-danger"><i class="fa fa-trash"></i> {{ 'sylius.show_deleted'|trans }}</a>
+{% endif %}

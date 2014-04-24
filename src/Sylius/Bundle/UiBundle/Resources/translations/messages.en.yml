@@ -1,0 +1,18 @@
+sylius:
+    add_to_cart: Add to cart
+    address:
+        city: City
+        company: Company
+        country: Country
+        firstname: First name
+        lastname: Last name
+        postcode: Postcode
+        province: Province
+        street: Street
+    alert:
+        error: Error
+        info: Information
+        success: Success
+        warning: Warning
+    breadcrumb:
+        default: Sylius

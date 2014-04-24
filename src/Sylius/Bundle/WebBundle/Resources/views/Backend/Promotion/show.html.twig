@@ -1,9 +1,9 @@
 {% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
 {% from 'SyliusWebBundle:Backend/Promotion:macros.html.twig' import configuration %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.assortment'|trans }}</li>
     <li><a href="{{ path('sylius_backend_promotion_index') }}">{{ 'sylius.breadcrumb.promotion.index'|trans }}</a></li>
@@ -23,7 +23,7 @@
         {{ buttons.manage(path('sylius_backend_promotion_coupon_generate', {'promotionId': promotion.id}), 'sylius.promotion_coupon.generate'|trans) }}
     {% endif %}
     </div>
-    <h1><i class="glyphicon glyphicon-info-sign"></i> {{ 'sylius.promotion.show_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-info-sign"></i> {{ 'sylius.promotion.show_header'|trans|raw }}</h1>
 </div>
 
 <div class="row">

@@ -1,0 +1,8 @@
+<div id="flashes">
+{% for type, message in app.session.flashbag.all %}
+    <div class="alert alert-{{ type }}">
+        <button type="button" data-dismiss="alert" class="close" aria-hidden="true">&times;</button>
+        {{ message }}
+    </div>
+{% endfor %}
+</div>

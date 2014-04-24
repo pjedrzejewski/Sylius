@@ -1,10 +1,10 @@
 {% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% from 'SyliusWebBundle:Backend/Macros:misc.html.twig' import pagination %}
 {% from 'SyliusWebBundle:Backend/ShippingCategory:macros.html.twig' import list %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::pagination.html.twig' as pagination %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.configuration'|trans }}</li>
     <li>{{ 'sylius.breadcrumb.shipping_category.index'|trans }}</a></li>
@@ -17,11 +17,11 @@
         {{ buttons.create(path('sylius_backend_shipping_category_create'), 'sylius.shipping_category.create'|trans) }}
         {{ buttons.manage(path('sylius_backend_shipping_method_index'), 'sylius.shipping_method.manage'|trans) }}
     </div>
-    <h1><i class="glyphicon glyphicon-cog"></i> {{ 'sylius.shipping_category.index_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-cog"></i> {{ 'sylius.shipping_category.index_header'|trans|raw }}</h1>
 </div>
 
-{{ pagination(shipping_categories) }}
+{{ pagination.standard(shipping_categories) }}
 {{ list(shipping_categories) }}
-{{ pagination(shipping_categories) }}
+{{ pagination.standard(shipping_categories) }}
 
 {% endblock %}

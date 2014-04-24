@@ -1,8 +1,8 @@
 {% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.customers'|trans }}</li>
     <li><a href="{{ path('sylius_backend_user_index') }}">{{ 'sylius.breadcrumb.user.index'|trans }}</a></li>
@@ -20,7 +20,7 @@
         {{ buttons.delete(path('sylius_backend_user_delete', {'id': user.id}), null, false, false) }}
         {% endif %}
     </div>
-    <h1><i class="glyphicon glyphicon-info-sign"></i> {{ 'sylius.user.show_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-info-sign"></i> {{ 'sylius.user.show_header'|trans|raw }}</h1>
 </div>
 
 

@@ -1,11 +1,16 @@
-{% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
+{% extends 'SyliusWebBundle:Backend:layout2Column.html.twig' %}
 
+{% from 'SyliusUiBundle::elements.html.twig' import header %}
 {% from 'SyliusWebBundle:Backend/ProductVariant:macros.html.twig' import list as list_variants %}
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
-{% import 'SyliusWebBundle:Backend/Macros:misc.html.twig' as misc %}
+{% import 'SyliusUiBundle::alerts.html.twig' as alerts %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::labels.html.twig' as labels %}
 
-{% block topbar %}
+{% block sidebar %}
+    {% include 'SyliusWebBundle:Backend/Product:_sidebar.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.assortment'|trans }}</li>
     <li><a href="{{ path('sylius_backend_product_index') }}">{{ 'sylius.breadcrumb.product.index'|trans }}</a></li>
@@ -14,27 +19,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <div class="actions-menu">
-    {{ buttons.manage(path('sylius_backend_product_index'), 'sylius.product.manage'|trans) }}
-    {% if not product.deleted %}
-    {{ buttons.edit(path('sylius_backend_product_update', {'id': product.id})) }}
-    {{ buttons.delete(path('sylius_backend_product_delete', {'id': product.id}), null, false, false) }}
-    <a href="{{ path('sylius_product_show', {'slug': product.slug}) }}" class="btn btn-info">
-       <i class="glyphicon glyphicon-shopping-cart"></i>
-        {{ 'sylius.product.show_in_store'|trans }}
-    </a>
-    {% endif %}
-    <a href="{{ path('sylius_backend_product_history', {'id': product.id}) }}" class="btn btn-info">
-       <i class="glyphicon glyphicon-calendar"></i>
-        {{ 'sylius.history'|trans }}
-    </a>
-    </div>
-    <h1>
-        <i class="glyphicon glyphicon-info-sign"></i> {{ 'sylius.product.show_header'|trans({'%product%': product.name})|raw }}
-        {% if product.deleted %}<span class="label label-danger">{{ 'sylius.deleted'|trans }}</span>{% endif %}
-    </h1>
-</div>
+{{ header('product', 'SyliusWebBundle:Backend/Product/Actions:_show.html.twig', {'product': product}) }}
 
 <div class="row">
     <div class="col-md-6">
@@ -86,7 +71,7 @@
                         </ul>
                         {% else %}
                             <span class="label label-info">
-                                <i class="glyphicon glyphicon-list-alt icon-white"></i> {{ 'sylius.product.no_options'|trans }}
+                                <i class="fa fa-list-alt icon-white"></i> {{ 'sylius.product.no_options'|trans }}
                             </span>
                         {% endif %}
                     </td>
@@ -102,7 +87,7 @@
                         </ul>
                         {% else %}
                             <span class="label label-info">
-                                <i class="glyphicon glyphicon-list-alt icon-white"></i> {{ 'sylius.product.no_taxons'|trans }}
+                                <i class="fa fa-list-alt icon-white"></i> {{ 'sylius.product.no_taxons'|trans }}
                             </span>
                         {% endif %}
                     </td>
@@ -118,7 +103,7 @@
                 <tr>
                     <td>{{ 'sylius.product.available_on_demand'|trans }}</td>
                     <td>
-                        {{ misc.state_label(product.masterVariant.availableOnDemand) }}
+                        {{ labels.boolean(product.masterVariant.availableOnDemand) }}
                     </td>
                 </tr>
                 {% if product.restrictedZone %}
@@ -171,7 +156,7 @@
                 <tr>
                     <td colspan="2">
                         <span class="label label-info">
-                            <i class="glyphicon glyphicon-list-alt icon-white"></i> {{ 'sylius.product.no_attributes'|trans }}
+                            <i class="fa fa-list-alt icon-white"></i> {{ 'sylius.product.no_attributes'|trans }}
                         </span>
                     </td>
                 </tr>

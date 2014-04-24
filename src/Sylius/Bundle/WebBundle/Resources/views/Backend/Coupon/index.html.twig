@@ -2,11 +2,11 @@
 
 {% set promotionId = app.request.get('promotionId') %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% from 'SyliusWebBundle:Backend/Macros:misc.html.twig' import pagination %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::pagination.html.twig' as pagination %}
 {% from 'SyliusWebBundle:Backend/Coupon:macros.html.twig' import list %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.sales'|trans }}</li>
     <li><a href="{{ path('sylius_backend_promotion_index') }}">{{ 'sylius.breadcrumb.promotion.index'|trans }}</a></li>
@@ -21,11 +21,11 @@
         {{ buttons.create(path('sylius_backend_promotion_coupon_create', {'promotionId': promotionId}), 'sylius.promotion_coupon.create'|trans) }}
         {{ buttons.manage(path('sylius_backend_promotion_coupon_generate', {'promotionId': promotionId}), 'sylius.promotion_coupon.generate'|trans) }}
     </div>
-    <h1><i class="glyphicon glyphicon-ticket"></i> {{ 'sylius.promotion_coupon.index_header'|trans|raw }}</h1>
+    <h1><i class="fa fa-ticket"></i> {{ 'sylius.promotion_coupon.index_header'|trans|raw }}</h1>
 </div>
 
-{{ pagination(promotion_coupons) }}
+{{ pagination.standard(promotion_coupons) }}
 {{ list(promotion_coupons) }}
-{{ pagination(promotion_coupons) }}
+{{ pagination.standard(promotion_coupons) }}
 
 {% endblock %}

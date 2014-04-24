@@ -1,8 +1,8 @@
 {% macro list(users) %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
-{% import 'SyliusWebBundle:Backend/Macros:misc.html.twig' as misc %}
+{% import 'SyliusUiBundle::alerts.html.twig' as alerts %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::labels.html.twig' as labels %}
 
 {% if users|length > 0 %}
 <table id="users" class="table">
@@ -26,7 +26,7 @@
             <td><a href="{{ path('sylius_backend_user_show', {'id': user.id}) }}">{{ user.email }}</a></td>
             <td>{{ user.createdAt|date('d-m-Y H:i') }}</td>
             <td>
-                {{ misc.state_label(user.enabled) }}
+                {{ labels.boolean(user.enabled) }}
             </td>
             <td>
                 <div class="pull-right">
@@ -49,9 +49,9 @@
 
 {% macro simple_list(users) %}
 
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
-{% import 'SyliusWebBundle:Backend/Macros:misc.html.twig' as misc %}
+{% import 'SyliusUiBundle::alerts.html.twig' as alerts %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::labels.html.twig' as labels %}
 
 {% if users|length > 0 %}
 <table id="users" class="table">
@@ -72,7 +72,7 @@
                 </a>
                 </td>
             <td>
-                {{ misc.state_label(user.enabled) }}
+                {{ labels.boolean(user.enabled) }}
             </td>
             <td>
                 <div class="pull-right">

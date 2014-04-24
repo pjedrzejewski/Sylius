@@ -14,6 +14,7 @@ namespace Sylius\Bundle\WebBundle\Menu;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Sylius\Bundle\MoneyBundle\Twig\MoneyExtension;
+use Sylius\Bundle\UiBundle\Menu\MenuBuilder;
 use Sylius\Component\Cart\Provider\CartProviderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\Taxonomy\Model\TaxonInterface;
@@ -72,16 +73,15 @@ class FrontendMenuBuilder extends MenuBuilder
      */
     public function __construct(
         FactoryInterface         $factory,
-        SecurityContextInterface $securityContext,
-        TranslatorInterface      $translator,
         EventDispatcherInterface $eventDispatcher,
+        SecurityContextInterface $securityContext,
         RepositoryInterface      $exchangeRateRepository,
         RepositoryInterface      $taxonomyRepository,
         CartProviderInterface    $cartProvider,
         MoneyExtension           $moneyExtension
     )
     {
-        parent::__construct($factory, $securityContext, $translator, $eventDispatcher);
+        parent::__construct($factory, $securityContext, $eventDispatcher);
 
         $this->exchangeRateRepository = $exchangeRateRepository;
         $this->taxonomyRepository = $taxonomyRepository;

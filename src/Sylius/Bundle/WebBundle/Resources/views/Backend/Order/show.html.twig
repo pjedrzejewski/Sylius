@@ -1,10 +1,10 @@
 {% extends 'SyliusWebBundle:Backend:layout.html.twig' %}
 
-{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
-{% import 'SyliusResourceBundle:Macros:buttons.html.twig' as buttons %}
-{% import 'SyliusWebBundle:Backend/Macros:misc.html.twig' as misc %}
+{% import 'SyliusUiBundle::alerts.html.twig' as alerts %}
+{% import 'SyliusUiBundle::buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle::labels.html.twig' as labels %}
 
-{% block topbar %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.sales'|trans }}</li>
     <li><a href="{{ path('sylius_backend_order_index') }}">{{ 'sylius.breadcrumb.order.index'|trans }}</a></li>
@@ -21,7 +21,7 @@
     </div>
     {% endif %}
     <h1>
-        <span class="glyphicon glyphicon-file"></span> {{ 'sylius.order.show_header'|trans({'%number%': order.number}) }}
+        <span class="fa fa-file"></span> {{ 'sylius.order.show_header'|trans({'%number%': order.number}) }}
         {% if order.deleted %}<span class="label label-danger">{{ 'sylius.deleted'|trans }}</span>{% endif %}
     </h1>
 </div>
@@ -51,7 +51,7 @@
                 <div class="list-group-item-text">
                     <a href="{{ path('sylius_backend_payment_update', {'id': order.payment.id}) }}">{{ order.payment.method }} - {{ order.payment.amount|sylius_price(order.payment.currency) }}</a>
                     <div class="pull-right">
-                        {{ misc.state_label(order.payment.state, 'payment') }}
+                        {{ labels.payment_state(order.payment.state) }}
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                         <li>
                             <a href="{{ path('sylius_backend_shipment_show', {'id': shipment.id}) }}">{{ shipment.method.name }}</a>
                             <div class="pull-right">
-                                <span class="label label-primary">{{ shipment.state|title }}</span>
+                                {{ labels.shipment_state(shipment.state) }}
                             </div>
                         </li>
                     {% else %}
@@ -234,21 +234,21 @@
                     <form action="{{ path('sylius_backend_inventory_unit_update_state', {'id': unit.id, 'state': constant('Sylius\\Component\\Inventory\\Model\\InventoryUnitInterface::STATE_BACKORDERED')}) }}" method="post">
                         <input type="hidden" name="_method" value="PUT">
                         <button class="btn btn-default" type="submit">
-                            <i class="glyphicon glyphicon-share"></i> <span>{{ 'sylius.order.inventory_unit.backorder'|trans }}</span>
+                            <i class="fa fa-share"></i> <span>{{ 'sylius.order.inventory_unit.backorder'|trans }}</span>
                         </button>
                     </form>
                 {% elseif constant('Sylius\\Component\\Inventory\\Model\\InventoryUnitInterface::STATE_BACKORDERED') == unit.inventoryState and constant('Sylius\\Component\\Shipping\\Model\\ShipmentInterface::STATE_ONHOLD') == unit.shippingState %}
                     <form action="{{ path('sylius_backend_inventory_unit_update_state', {'id': unit.id, 'state': constant('Sylius\\Component\\Inventory\\Model\\InventoryUnitInterface::STATE_SOLD')}) }}" method="post">
                         <input type="hidden" name="_method" value="PUT">
                         <button class="btn btn-default" type="submit">
-                            <i class="glyphicon glyphicon-stats"></i> <span>{{ 'sylius.order.inventory_unit.fulfill'|trans }}</span>
+                            <i class="fa fa-stats"></i> <span>{{ 'sylius.order.inventory_unit.fulfill'|trans }}</span>
                         </button>
                     </form>
                 {% elseif constant('Sylius\\Component\\Inventory\\Model\\InventoryUnitInterface::STATE_SOLD') == unit.inventoryState and constant('Sylius\\Component\\Shipping\\Model\\ShipmentInterface::STATE_SHIPPED') == unit.shippingState %}
                     <form action="{{ path('sylius_backend_inventory_unit_update_state', {'id': unit.id, 'state': constant('Sylius\\Component\\Inventory\\Model\\InventoryUnitInterface::STATE_RETURNED')}) }}" method="post">
                         <input type="hidden" name="_method" value="PUT">
                         <button class="btn btn-default" type="submit">
-                            <i class="glyphicon glyphicon-share-alt"></i> <span>{{ 'sylius.order.inventory_unit.return'|trans }}</span>
+                            <i class="fa fa-share-alt"></i> <span>{{ 'sylius.order.inventory_unit.return'|trans }}</span>
                         </button>
                     </form>
                 {% endif %}
@@ -268,7 +268,7 @@
     <form action="{{ path('sylius_backend_order_release_inventory', {'id': order.id}) }}" method="post">
         <input type="hidden" name="_method" value="PUT">
         <button class="btn btn-default" type="submit">
-            <i class="glyphicon glyphicon-repeat"></i> <span>{{ 'sylius.order.release_inventory'|trans }}</span>
+            <i class="fa fa-repeat"></i> <span>{{ 'sylius.order.release_inventory'|trans }}</span>
         </button>
     </form>
 {% elseif 1 == order.shipments|length and constant('Sylius\\Component\\Order\\Model\\OrderInterface::STATE_CONFIRMED') == order.state and constant('Sylius\\Component\\Payment\\Model\\PaymentInterface::STATE_COMPLETED') == order.paymentState %}
