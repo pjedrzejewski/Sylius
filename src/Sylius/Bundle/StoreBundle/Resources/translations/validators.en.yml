@@ -1,0 +1,7 @@
+sylius:
+    store:
+        code:
+            not_blank: Please choose currency.
+            unique: The store code has to be unique.
+        name:
+            not_blank: Please enter store name.

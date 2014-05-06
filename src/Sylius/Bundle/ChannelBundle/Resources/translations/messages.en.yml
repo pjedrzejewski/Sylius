@@ -1,0 +1,7 @@
+sylius:
+    form:
+        channel:
+            code: Code
+            name: Name
+            type: Type
+            color: Color

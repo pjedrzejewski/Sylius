@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ This file is part of the Sylius package.
+
+ (c) Paweł Jędrzejewski
+
+ For the full copyright and license information, please view the LICENSE
+ file that was distributed with this source code.
+
+-->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+                               http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="sylius.context.store.class">Sylius\Bundle\StoreBundle\Context\StoreContext</parameter>
+    </parameters>
+
+    <services>
+        <service id="sylius.form.type.store" class="%sylius.form.type.store.class%">
+            <argument>%sylius.model.store.class%</argument>
+            <argument>%sylius.validation_group.store%</argument>
+            <tag name="form.type" alias="sylius_store" />
+        </service>
+
+        <service id="sylius.context.store" class="%sylius.context.store.class%">
+            <argument type="service" id="session" />
+        </service>
+    </services>
+
+</container>
