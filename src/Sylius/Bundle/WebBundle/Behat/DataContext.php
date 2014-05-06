@@ -783,36 +783,23 @@ class DataContext extends BehatContext implements KernelAwareInterface
     }
 
     /**
-     * @Given /^there are following exchange rates:$/
+     * @Given /^there are following currencies configured:$/
      */
-    public function thereAreExchangeRates(TableNode $table)
+    public function thereAreCurrencies(TableNode $table)
     {
-        foreach ($table->getHash() as $data) {
-            $this->thereIsExchangeRate($data['currency'], $data['rate'], false);
-        }
-
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * @Given /^I created exchange rate "([^""]*)"$/
-     */
-    public function thereIsExchangeRate($currency, $rate = 1, $flush = true)
-    {
-        $repository = $this->getRepository('exchange_rate');
-
-        /* @var $exchangeRate ExchangeRateInterface */
-        $exchangeRate = $repository->createNew();
-        $exchangeRate->setCurrency($currency);
-        $exchangeRate->setRate($rate);
-
+        $repository = $this->getRepository('currency');
         $manager = $this->getEntityManager();
-        $manager->persist($exchangeRate);
-        if ($flush) {
-            $manager->flush();
+
+        foreach ($table->getHash() as $data) {
+            $currency = $repository->createNew();
+            $currency->setCode($data['code']);
+            $currency->setExchangeRate($data['exchange rate']);
+            $currency->setEnabled('yes' === $data['enabled']);
+
+            $manager->persist($currency);
         }
 
-        return $exchangeRate;
+        $manager->flush();
     }
 
     /**

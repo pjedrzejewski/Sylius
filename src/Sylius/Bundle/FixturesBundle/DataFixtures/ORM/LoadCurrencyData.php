@@ -14,11 +14,11 @@ namespace Sylius\Bundle\FixturesBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Default exchange rate fixtures.
+ * Default currency fixtures.
  *
  * @author Saša Stamenković <umpirsky@gmail.com>
  */
-class LoadExchangeRatesData extends DataFixture
+class LoadCurrencyData extends DataFixture
 {
     protected $currencies = array(
         'EUR' => 1.00,
@@ -31,15 +31,16 @@ class LoadExchangeRatesData extends DataFixture
      */
     public function load(ObjectManager $manager)
     {
-        $exchangeRateRepository = $this->getExchangeRateRepository();
+        $currencyRepository = $this->getCurrencyRepository();
 
-        foreach ($this->currencies as $currency => $rate) {
-            $exchangeRate = $exchangeRateRepository->createNew();
+        foreach ($this->currencies as $code => $rate) {
+            $currency = $currencyRepository->createNew();
 
-            $exchangeRate->setCurrency($currency);
-            $exchangeRate->setRate($rate);
+            $currency->setCode($code);
+            $currency->setRate($rate);
+            $currency->setEnabled(true);
 
-            $manager->persist($exchangeRate);
+            $manager->persist($currency);
         }
 
         $manager->flush();
