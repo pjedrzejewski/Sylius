@@ -31,7 +31,8 @@ class GroupType extends AbstractResourceType
                 'label' => 'sylius.form.group.name'
             ))
             ->add('roles', 'list', array(
-                'label' => 'sylius.form.group.roles'
+                'required' => false,
+                'label'    => 'sylius.form.group.roles'
             ))
         ;
 
