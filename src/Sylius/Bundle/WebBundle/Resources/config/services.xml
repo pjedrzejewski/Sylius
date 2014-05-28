@@ -13,12 +13,7 @@
         <parameter key="sylius.controller.backend.dashboard.class">Sylius\Bundle\WebBundle\Controller\Backend\DashboardController</parameter>
 
         <parameter key="sylius.menu_builder.frontend.class">Sylius\Bundle\WebBundle\Menu\FrontendMenuBuilder</parameter>
-<<<<<<< HEAD
-        <parameter key="sylius.menu_builder.backend.class">Sylius\Bundle\WebBundle\Menu\BackendMenuBuilder</parameter>
-        <parameter key="sylius.menu_builder.locale.class">Sylius\Bundle\WebBundle\Menu\LocaleMenuBuilder</parameter>
-=======
         <parameter key="sylius.menu_builder.backend.class">Sylius\Bundle\WebBundle\Menu\Backend\MainMenuBuilder</parameter>
->>>>>>> Final concept of SyliusUiBundle and reloaded backend
 
         <parameter key="sylius.form.frontend.profile.type.class">Sylius\Bundle\WebBundle\Form\ProfileFormType</parameter>
         <parameter key="sylius.form.frontend.registration.type.class">Sylius\Bundle\CoreBundle\Form\Type\RegistrationFormType</parameter>
@@ -55,16 +50,6 @@
             <argument type="service" id="sylius.repository.taxonomy" />
             <argument type="service" id="sylius.cart_provider" />
             <argument type="service" id="sylius.templating.helper.currency" />
-            <call method="setRequest">
-                <argument type="service" id="request" on-invalid="null" strict="false" />
-            </call>
-        </service>
-        <service id="sylius.menu_builder.locale" class="%sylius.menu_builder.locale.class%">
-            <argument type="service" id="knp_menu.factory" />
-            <argument type="service" id="security.context" />
-            <argument type="service" id="translator" />
-            <argument type="service" id="event_dispatcher" />
-            <argument type="service" id="sylius.locale_provider" />
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
