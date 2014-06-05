@@ -1,0 +1,36 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius_homepage:
+    pattern: /
+    defaults: { _controller: sylius.controller.frontend.homepage:mainAction }
+
+sylius_currency:
+    resource: @SyliusWebBundle/Resources/config/routing/frontend/currency.yml
+    prefix: /currency
+
+sylius_checkout:
+    resource: @SyliusWebBundle/Resources/config/routing/frontend/checkout.yml
+    prefix: /checkout
+
+sylius_account:
+    resource: @SyliusWebBundle/Resources/config/routing/frontend/account.yml
+    prefix: /account
+
+sylius_cart:
+    resource: @SyliusCartBundle/Resources/config/routing.yml
+    prefix: /cart
+
+sylius_cart_summary:
+    pattern: /cart
+    defaults:
+        _controller: sylius.controller.cart:summaryAction
+        _sylius:
+            template: SyliusWebBundle:Frontend/Cart:summary.html.twig
+
+sylius_cart_save:
+    pattern: /cart/save
+    defaults:
+        _controller: sylius.controller.cart:saveAction
+        _sylius:
+            template: SyliusWebBundle:Frontend/Cart:summary.html.twig

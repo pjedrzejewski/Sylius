@@ -1,0 +1,30 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius:
+  extensions:
+    0: Extensions
+    accelerator:
+      help: Installiere und aktiviere einen PHP Accelerator wie zum Beispiel APC (Dringend empfohlen).
+    gd: sylius.extensions.gd
+    help: 'Installiere und aktiviere die %extension% Erweiterung.'
+    on: An
+  filesystem:
+    0: Dateisystem
+    cache:
+      - Cache
+    exists: Existiert
+    logs:
+      - Logs
+    not_exists: Existiert nicht
+    not_writable: Schreibgeschützt
+    writable: Beschreibbar
+  settings:
+    0: PHP Version und Einstellungen
+    any: Jeder
+    non_deprecated: Nicht veraltet
+    on: An
+    timezone_deprecated:
+      - Veraltete Zeitzone
+    version: PHP Version
+    version_recommanded: Empfohlene PHP Version

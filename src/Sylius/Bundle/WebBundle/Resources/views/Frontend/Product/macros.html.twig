@@ -1,0 +1,34 @@
+{% macro list(products) %}
+
+{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
+
+{% for product in products %}
+{% include 'SyliusWebBundle:Frontend/Product:_single.html.twig' %}
+{% if not loop.last %}<hr>{% endif %}
+{% else %}
+{{ alerts.info('sylius.product.no_results'|trans) }}
+{% endfor %}
+
+{% endmacro %}
+
+{% macro grid(products, size = 3) %}
+
+{% import 'SyliusWebBundle:Backend/Macros:alerts.html.twig' as alerts %}
+
+<div class="row">
+    {% for product in products %}
+        <div class="col-md-{{ 12 / size }}">
+            {% include 'SyliusWebBundle:Frontend/Product:_singleBox.html.twig' %}
+        </div>
+        {% if 0 == loop.index % size %}
+            </div>
+            <div class="row">
+        {% endif %}
+    {% else %}
+        <div class="col-md-12">
+            {{ alerts.info('sylius.product.no_results'|trans) }}
+        </div>
+    {% endfor %}
+</div>
+
+{% endmacro %}

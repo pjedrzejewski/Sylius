@@ -1,0 +1,13 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius:
+  option:
+    name:
+      not_blank: Wprowadź nazwę opcji.
+      min_length: 'Nazwa opcji musi być dłuższa niż jeden znak.|Nazwa opcji musi zawierać co najmniej {{ limit }} znaków.'
+      max_length: 'Nazwa opcji nie może być dłuższa niż jeden znak. |Nazwa opcji nie może przekraczać {{ limit }} znaków.'
+    presentation:
+      not_blank: Proszę wprowadzić nazwę publiczną.
+      min_length: 'Nazwa publiczna powinna zawierać co najmniej jeden znak. |Nazwa publiczna nie może przekraczać {{ limit }} znaków.'
+      max_length: 'Nazwa publiczna nie może być dłuższy niż jeden znak. |Nazwa publiczna nie może być dłuższa niż {{ limit }} znaków.'

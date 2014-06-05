@@ -1,0 +1,37 @@
+imports:
+    - { resource: config.yml }
+
+framework:
+    test: ~
+    default_locale: "en"
+    session:
+        storage_id: session.storage.mock_file
+
+swiftmailer:
+    disable_delivery: true
+
+doctrine:
+    dbal:
+        dbname: %sylius.database.name%_test
+
+sylius_money:
+    currency: EUR
+    locale:   en_US
+
+sylius_payment:
+    gateways:
+        cc:     Credit Card
+        test:   Test
+        stripe: Stripe
+
+doctrine_cache:
+    providers:
+        sylius_settings:
+            type: array
+
+monolog:
+    handlers:
+        main:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: error

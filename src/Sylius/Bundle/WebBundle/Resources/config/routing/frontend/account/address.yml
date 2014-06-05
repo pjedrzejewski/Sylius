@@ -1,0 +1,44 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius_account_address_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+      _controller: sylius.controller.frontend.account.address:indexAction
+
+sylius_account_address_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.frontend.account.address:createAction
+
+sylius_account_address_update:
+    pattern: /{id}/edit
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.frontend.account.address:updateAction
+
+sylius_account_address_delete:
+    pattern: /{id}
+    methods: [DELETE]
+    defaults:
+        _controller: sylius.controller.frontend.account.address:deleteAction
+
+sylius_account_address_set_default_billing:
+    pattern: /{id}/default/billing
+    methods: [PATCH]
+    defaults:
+        _controller: sylius.controller.frontend.account.address:setAddressAsAction
+        type: billing
+    requirements:
+        id:  \d+
+
+sylius_account_address_set_default_shipping:
+    pattern: /{id}/default/shipping
+    methods: [PATCH]
+    defaults:
+        _controller: sylius.controller.frontend.account.address:setAddressAsAction
+        type: shipping
+    requirements:
+        id:  \d+

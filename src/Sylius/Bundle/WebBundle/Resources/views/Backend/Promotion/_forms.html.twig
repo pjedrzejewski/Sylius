@@ -1,0 +1,16 @@
+{% extends 'SyliusWebBundle::forms.html.twig' %}
+
+{% block form_widget %}
+{% spaceless %}
+    {{ parent() }}
+    <div class="configuration"></div>
+{% endspaceless %}
+{% endblock form_widget %}
+
+{% block form_row %}
+{% spaceless %}
+    <div>
+        {{ parent() }}
+    </div>
+{% endspaceless %}
+{% endblock form_row %}
