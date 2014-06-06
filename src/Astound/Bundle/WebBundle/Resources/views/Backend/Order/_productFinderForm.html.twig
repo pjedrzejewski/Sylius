@@ -1,0 +1,65 @@
+{% form_theme form 'SyliusWebBundle:Backend:filterForms.html.twig' %}
+
+<form method="get" action="" class="form-inline form-filter">
+{{ form_row(form.name) }}
+{{ form_row(form.sku) }}
+<button type="submit" name="productLookup" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i> find product</button>
+</form>
+<script type="text/javascript" src="{{ asset('bundles/astoundweb/js/jquery.js') }}"></script>
+<script>
+function dump(obj) {
+    var out = '';
+    for (var i in obj) {
+        out += i + ": " + obj[i] + "\n";
+    }
+
+    alert("dump: "+out);
+}
+$(function(){
+	$('button[name="productLookup"]').click(function( event ){
+		event.preventDefault();
+
+		var thisData = { sku: $('input[id="{{ form.sku.vars.id }}"]').val(), name : $('input[id="{{ form.name.vars.id }}"]').val() };
+
+		$('input[id="{{ form.name.vars.id }}"]').val("");
+		$('input[id="{{ form.sku.vars.id }}"]').val("");
+		
+		$.ajax({
+			url: 'productLookup',
+			type: 'GET',
+			contentType: 'application/json',
+			data: thisData,
+			success: function( data ){
+				// alert(data);
+				var itemsAdded = '';
+				var alreadyOnPage = '';
+				if( data['fail'] == "TRUE" ){
+					$( '#flashes' ).prepend(
+						'<div class="alert alert-warning"><button type="button" class="close" aria-hidden="true">&times;</button>'+data['message']+'</div>'
+					);
+				} else {
+					data.forEach(function(item){
+						// alert("ProductID: "+item['productID']);
+						if( $('a[productid="'+item['productID']+'"]').length == 0 ){
+							$( '#addProductsButtons' ).prepend(
+								'<a class="btn btn-sm btn-primary edit" productid="'+item['productID']+'" href="" title="ADD">'+item['sku']+' <span class="glyphicon glyphicon-plus"></span> ADD</a>'
+							);
+							if( itemsAdded == '' ){
+								itemsAdded = item['sku'];
+							} else {
+								itemsAdded += ', '+item['sku'];
+							}
+						} else {
+							alreadyOnPage = ' One or more items found already appear on this page';
+						}
+					});
+					$( '#flashes' ).prepend(
+						'<div class="alert alert-success"><button type="button" class="close" aria-hidden="true">&times;</button>Product SKUs '+itemsAdded+' found.'+alreadyOnPage+'</div>'
+					);
+				}
+				$( '.alert' ).delay(4000).fadeOut(200);
+			}
+		});
+	});
+});
+</script>

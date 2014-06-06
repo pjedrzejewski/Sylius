@@ -1,0 +1,47 @@
+# This file is part of the astound package.
+# (c) Mark Williams
+
+astound_backend_ipaddress_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: astound.controller.ipaddress:indexAction
+        _astound:
+            template: astoundWebBundle:Backend/ipaddress:index.html.twig
+            method: createFilterPaginator
+            arguments: [$criteria, $sorting]
+
+astound_backend_ipaddress_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: astound.controller.ipaddress:createAction
+        _astound:
+            template: AstoundWebBundle:Backend/ipaddress:create.html.twig
+            redirect: astound_backend_ipaddress_show
+
+astound_backend_ipaddress_update:
+    pattern: /{id}/edit
+    methods: [GET, PUT, POST]
+    defaults:
+        _controller: astound.controller.ipaddress:updateAction
+        _astound:
+            template: astoundWebBundle:Backend/ipaddress:update.html.twig
+            redirect: astound_backend_ipaddress_show
+
+astound_backend_ipaddress_delete:
+    pattern: /{id}
+    methods: [DELETE]
+    defaults:
+        _controller: astound.controller.ipaddress:deleteAction
+        _astound:
+            redirect: astound_backend_ipaddress_index
+
+astound_backend_ipaddress_show:
+    pattern: /{id}
+    methods: [GET]
+    defaults:
+        _controller: astound.controller.ipaddress:showAction
+        _astound:
+            template: astoundWebBundle:Backend/ipaddress:show.html.twig
+            redirect: astound_backend_ipaddress_show

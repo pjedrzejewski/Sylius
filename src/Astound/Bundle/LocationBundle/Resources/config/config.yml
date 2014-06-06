@@ -1,0 +1,6 @@
+astound_location:
+    driver: doctrine/orm
+    classes:
+        location:
+            model: Astound\Bundle\LocationBundle\Model\Location
+            repository: Astound\Bundle\LocationBundle\Repository\LocationRepository

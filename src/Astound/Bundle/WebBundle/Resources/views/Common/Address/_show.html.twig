@@ -1,0 +1,10 @@
+<address>
+    <strong>{{ address.firstName }} {{ address.lastName }}</strong><br/>
+    {% if address.company %}
+        {{ address.company }}<br/>
+    {% endif %}
+    {{ address.street }}<br/>
+    {{ address.city }}{% if address.province %}, {{ address.province }}{% endif %}
+    {{ address.postcode }}<br/>
+    {{ address.country|upper }} 
+</address>

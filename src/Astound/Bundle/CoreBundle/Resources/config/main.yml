@@ -1,0 +1,33 @@
+imports:
+    - { resource: @AstoundWebBundle/Resources/config/services.xml }
+    # - { resource: ../../src/Astound/Bundle/CoreBundle/Resources/config/services.xml }
+    # - { resource: ../../src/Astound/Bundle/LocationBundle/Resources/config/config.yml }
+
+doctrine:
+    dbal:
+        types:
+            phone_number: Misd\PhoneNumberBundle\Doctrine\DBAL\Types\PhoneNumberType
+            
+services:
+    astound.manager.user:
+        class: Astound\Bundle\AddressingBundle\Manager\UserManager
+        arguments:
+            - @sylius.repository.country
+            - @sylius.repository.province
+    astound.controller.unisearch:
+        class: Astound\Bundle\CoreBundle\Controller\SearchController
+
+sylius_resource:
+    resources:
+        sylius.user:
+            driver: doctrine/orm
+            classes:
+                model: Sylius\Component\Core\Model\User
+                controller: Astound\Bundle\CoreBundle\Controller\UserController
+                repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\UserRepository
+
+# sylius_product:
+#     driver: doctrine/orm
+#     classes:
+#         product:
+#             repository: Astound\Bundle\CoreBundle\Repository\ProductRepository

@@ -1,0 +1,47 @@
+# This file is part of the astound package.
+# (c) Mark Williams
+
+astound_backend_location_index:
+    pattern: /
+    methods: [GET]
+    defaults:
+        _controller: astound.controller.location:indexAction
+        _astound:
+            template: astoundWebBundle:Backend/location:index.html.twig
+            method: createFilterPaginator
+            arguments: [$criteria, $sorting]
+
+astound_backend_location_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: astound.controller.location:createAction
+        _astound:
+            template: AstoundWebBundle:Backend/location:create.html.twig
+            redirect: astound_backend_location_show
+
+astound_backend_location_update:
+    pattern: /{id}/edit
+    methods: [GET, PUT, POST]
+    defaults:
+        _controller: astound.controller.location:updateAction
+        _astound:
+            template: astoundWebBundle:Backend/location:update.html.twig
+            redirect: astound_backend_location_show
+
+astound_backend_location_delete:
+    pattern: /{id}
+    methods: [DELETE]
+    defaults:
+        _controller: astound.controller.location:deleteAction
+        _astound:
+            redirect: astound_backend_location_index
+
+astound_backend_location_show:
+    pattern: /{id}
+    methods: [GET]
+    defaults:
+        _controller: astound.controller.location:showAction
+        _astound:
+            template: astoundWebBundle:Backend/location:show.html.twig
+            redirect: astound_backend_location_show
