@@ -25,6 +25,11 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             // Put here your own bundles
+            new Astound\Bundle\AddressingBundle\AstoundAddressingBundle(),
+            new Astound\Bundle\WebBundle\AstoundWebBundle(),
+            new Astound\Bundle\CoreBundle\AstoundCoreBundle(),
+            // new Astound\Bundle\LocationBundle\AstoundLocationBundle(),
+            //new Astound\Bundle\TestBundle\AstoundTestBundle(),
         );
 
         return array_merge(parent::registerBundles(), $bundles);

@@ -55,7 +55,8 @@
         "symfony/symfony":                      "~2.3",
         "twig/extensions":                      "1.0.*",
         "white-october/pagerfanta-bundle":      "1.0.*@dev",
-        "yohang/finite":                        "dev-sylius"
+        "yohang/finite":                        "dev-sylius",
+        "misd/phone-number-bundle":         "~1.0"
     },
     "require-dev": {
         "behat/behat":                       "~3.0",
@@ -129,7 +130,7 @@
         ]
     },
     "autoload": {
-        "psr-0": { "Sylius\\": "src/" }
+        "psr-0": { "Sylius\\": "src/",  "Astound\\": "src/" }
     },
     "config": {
         "bin-dir": "bin"
