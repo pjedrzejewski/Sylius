@@ -1,0 +1,7 @@
+#!/bin/bash
+chmod -R 777 app/cache/ app/logs/
+#su www-data -c "app/console cache:clear -e dev"
+#chmod -R 777 app/cache/ app/logs/
+#su www-data -c "app/console cache:clear -e prod"
+#chmod -R 777 app/cache/ app/logs/
+rm -rf app/cache/dev/*

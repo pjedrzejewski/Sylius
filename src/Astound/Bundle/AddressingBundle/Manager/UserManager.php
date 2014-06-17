@@ -10,7 +10,7 @@
 namespace Astound\Bundle\AddressingBundle\Manager;
 
 // use Sylius\Component\Addressing\Model\Address;
-use Astound\Bundle\AddressingBundle\Model\AstoundAddress as Address;
+use Astound\Bundle\AddressingBundle\Model\Address as Address;
 
 class UserManager 
 {

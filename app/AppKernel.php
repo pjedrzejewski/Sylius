@@ -29,7 +29,7 @@ class AppKernel extends Kernel
             new Astound\Bundle\WebBundle\AstoundWebBundle(),
             new Astound\Bundle\CoreBundle\AstoundCoreBundle(),
             // new Astound\Bundle\LocationBundle\AstoundLocationBundle(),
-            //new Astound\Bundle\TestBundle\AstoundTestBundle(),
+            // new Astound\Bundle\TestBundle\AstoundTestBundle(),
         );
 
         return array_merge(parent::registerBundles(), $bundles);

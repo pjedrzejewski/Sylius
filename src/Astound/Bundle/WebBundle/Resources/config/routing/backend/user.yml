@@ -1,6 +1,15 @@
 # This file is part of the Sylius package.
 # (c) Paweł Jędrzejewski
 
+sylius_backend_user_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.user:createAction
+        _sylius:
+            template: AstoundWebBundle:Backend/User:create.html.twig
+            redirect: sylius_backend_user_show
+
 sylius_backend_user:
     resource: @SyliusWebBundle/Resources/config/routing/backend/user.yml
 
@@ -22,14 +31,7 @@ sylius_backend_user:
 #         _sylius:
 #             template: SyliusWebBundle:Backend/User:filterForm.html.twig
 
-sylius_backend_user_create:
-    pattern: /new
-    methods: [GET, POST]
-    defaults:
-        _controller: sylius.controller.user:createAction
-        _sylius:
-            template: AstoundWebBundle:Backend/User:create.html.twig
-            redirect: sylius_backend_user_show
+
 
 # sylius_backend_user_update:
 #     pattern: /{id}/edit

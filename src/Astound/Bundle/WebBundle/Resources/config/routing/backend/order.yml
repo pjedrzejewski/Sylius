@@ -1,6 +1,18 @@
 # This file is part of the Sylius package.
 # (c) Paweł Jędrzejewski
 
+astound_backend_order_create:
+    pattern: /new
+    methods: [GET, POST]
+    defaults:
+        _controller: AstoundCoreBundle:Order:newOrder
+
+astound_product_lookup:
+    pattern: /productLookup
+    methods: [GET, POST]
+    defaults:
+        _controller: AstoundCoreBundle:Order:showAddButton
+
 sylius_backend_order:
     resource: @SyliusWebBundle/Resources/config/routing/backend/order.yml
 
@@ -14,17 +26,7 @@ sylius_backend_order:
 #             method: createFilterPaginator
 #             arguments: [$criteria, $sorting]
 
-sylius_backend_order_create:
-    pattern: /new
-    methods: [GET, POST]
-    defaults:
-        _controller: AstoundCoreBundle:Order:newOrder
 
-astound_product_lookup:
-    pattern: /productLookup
-    methods: [GET, POST]
-    defaults:
-        _controller: AstoundCoreBundle:Order:showAddButton
 
 # sylius_backend_order_update:
 #     pattern: /{id}/edit

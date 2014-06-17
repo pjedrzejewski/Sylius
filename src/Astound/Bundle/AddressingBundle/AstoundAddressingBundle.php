@@ -8,11 +8,12 @@ use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+use Sylius\Bundle\AddressingBundle\SyliusAddressingBundle;
 /**
  * Astound Override of Sylius Bundle AddressingBundle
  */
 
-class AstoundAddressingBundle extends Bundle
+class AstoundAddressingBundle extends SyliusAddressingBundle
 {
 	public function getParent()
 	{
@@ -25,7 +26,7 @@ class AstoundAddressingBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $interfaces = array(
-            'Astound\Bundle\AddressingBundle\Model\AstoundAddressInterface'    => 'sylius.model.address.class',
+            'Astound\Bundle\AddressingBundle\Model\AddressInterface'    => 'sylius.model.address.class',
             'Sylius\Component\Addressing\Model\CountryInterface'    => 'sylius.model.country.class',
             'Sylius\Component\Addressing\Model\ProvinceInterface'   => 'sylius.model.province.class',
             'Sylius\Component\Addressing\Model\ZoneInterface'       => 'sylius.model.zone.class',
@@ -36,7 +37,8 @@ class AstoundAddressingBundle extends Bundle
 
         $mappings = array(
             // realpath(__DIR__.'/Resources/config/doctrine/model') => 'Sylius\Component\Addressing\Model',
-            realpath(__DIR__.'/Resources/config/doctrine/model') => 'Astound\Bundle\AddressingBundle\Model',
+            realpath(__DIR__.'/Resources/config/doctrine/model') => 'Astound\Bundle\AddressingBundle\Model'
+            
         );
 
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('doctrine.orm.entity_manager'), 'sylius_addressing.driver.doctrine/orm'));
