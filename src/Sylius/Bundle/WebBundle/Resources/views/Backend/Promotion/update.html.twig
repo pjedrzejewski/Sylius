@@ -6,7 +6,7 @@
 {{ parent() }}
 {% javascripts output='assets/compiled/backend_promotion.js'
     'https://raw.github.com/brandonaaron/livequery/1.1.1/jquery.livequery.js'
-    '@SyliusPromotionsBundle/Resources/assets/js/sylius-promotion.js'
+    'bundles/syliuspromotion/js/sylius-promotion.js'
 %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
@@ -23,7 +23,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1><i class="icon-pencil"></i> {{ 'sylius.promotion.update_header'|trans|raw }}</h1>
+    <h1><i class="glyphicon glyphicon-pencil"></i> {{ 'sylius.promotion.update_header'|trans|raw }}</h1>
 </div>
 
 {{ form_errors(form) }}

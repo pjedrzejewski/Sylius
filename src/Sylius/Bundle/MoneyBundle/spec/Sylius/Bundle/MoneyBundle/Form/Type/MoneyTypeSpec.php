@@ -12,10 +12,10 @@
 namespace spec\Sylius\Bundle\MoneyBundle\Form\Type;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class MoneyTypeSpec extends ObjectBehavior
 {
@@ -39,10 +39,7 @@ class MoneyTypeSpec extends ObjectBehavior
         $this->getParent()->shouldReturn('money');
     }
 
-    /**
-     * @param Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
-     */
-    function it_defines_assigned_currency_and_sets_divisor_to_100($resolver)
+    function it_defines_assigned_currency_and_sets_divisor_to_100(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array('currency' => 'PLN', 'divisor' => 100))->shouldBeCalled();
 

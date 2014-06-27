@@ -1,7 +1,7 @@
-SyliusInventoryBundle [![Build status...](https://secure.travis-ci.org/Sylius/SyliusInventoryBundle.png)](http://travis-ci.org/Sylius/SyliusInventoryBundle)
+SyliusInventoryBundle [![Build status...](https://secure.travis-ci.org/Sylius/SyliusInventoryBundle.png?branch=master)](http://travis-ci.org/Sylius/SyliusInventoryBundle)
 =====================
 
-Flexible inventory management for Symfony2 applications.
+Flexible inventory management for [**Symfony2**](http://symfony.com) ecommerce applications.
 
 It was heavily inspired by [Spree inventory system](http://guides.spreecommerce.com/inventory.html).
 
@@ -10,23 +10,23 @@ Sylius
 
 **Sylius** - Modern ecommerce for Symfony2. Visit [Sylius.org](http://sylius.org).
 
-[phpspec2](http://phpspec.net) examples
----------------------------------------
+[phpspec](http://phpspec.net) examples
+--------------------------------------
 
-``` bash
-$ composer install --dev --prefer-dist
+```bash
+$ composer install
 $ bin/phpspec run -f pretty
 ```
 
 Documentation
 -------------
 
-Documentation is available on [**docs.sylius.org**](http://sylius.org/en/latest/bundles/SyliusInventoryBundle/index.html).
+Documentation is available on [**docs.sylius.org**](http://docs.sylius.org/en/latest/bundles/SyliusInventoryBundle/index.html).
 
 Contributing
 ------------
 
-All informations about contributing to Sylius can be found on [this page](http://sylius.docs.sylius.org/en/latest/contributing/index.html).
+All informations about contributing to Sylius can be found on [this page](http://docs.sylius.org/en/latest/contributing/index.html).
 
 Mailing lists
 -------------

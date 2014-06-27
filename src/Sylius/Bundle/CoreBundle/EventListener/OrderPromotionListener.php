@@ -11,9 +11,10 @@
 
 namespace Sylius\Bundle\CoreBundle\EventListener;
 
-use Sylius\Bundle\CoreBundle\Model\OrderInterface;
-use Sylius\Bundle\PromotionsBundle\Processor\PromotionProcessorInterface;
-use Sylius\Bundle\PromotionsBundle\SyliusPromotionEvents;
+use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Promotion\Processor\PromotionProcessorInterface;
+use Sylius\Component\Promotion\SyliusPromotionEvents;
+use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 /**
  * Order promotion listener.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class OrderPromotionListener
 {
@@ -33,7 +34,7 @@ class OrderPromotionListener
     protected $promotionProcessor;
 
     /**
-     * @var Session
+     * @var SessionInterface
      */
     protected $session;
 
@@ -43,37 +44,58 @@ class OrderPromotionListener
     private $translator;
 
     /**
+     * @var Boolean
+     */
+    private $itemBased;
+
+    /**
      * Constructor.
      *
      * @param PromotionProcessorInterface $promotionProcessor
      * @param SessionInterface            $session
      * @param TranslatorInterface         $translator
+     * @param Boolean                     $itemBased
      */
-    public function __construct(PromotionProcessorInterface $promotionProcessor, SessionInterface $session, TranslatorInterface $translator)
+    public function __construct(
+        PromotionProcessorInterface $promotionProcessor,
+        SessionInterface $session,
+        TranslatorInterface $translator,
+        $itemBased
+    )
     {
         $this->promotionProcessor = $promotionProcessor;
         $this->session = $session;
         $this->translator = $translator;
+        $this->itemBased = $itemBased;
     }
 
     /**
      * Get the order from event and run the promotion processor on it.
      *
      * @param GenericEvent $event
+     *
+     * @throws UnexpectedTypeException
      */
     public function processOrderPromotion(GenericEvent $event)
     {
         $order = $event->getSubject();
 
         if (!$order instanceof OrderInterface) {
-            throw new \InvalidArgumentException(
-                'Order promotion listener requires event subject to be instance of "Sylius\Bundle\CoreBundle\Model\OrderInterface"'
+            throw new UnexpectedTypeException(
+                $order,
+                'Sylius\Component\Core\Model\OrderInterface'
             );
         }
 
-        // remove former promotion adjustments as they are calculated each time the cart changes
-        $order->removePromotionAdjustments();
         $this->promotionProcessor->process($order);
+
+        if ($this->itemBased) {
+            foreach ($order->getItems() as $item) {
+                $this->promotionProcessor->process($item);
+            }
+        }
+
+        $order->calculateTotal();
     }
 
     /**
@@ -95,7 +117,6 @@ class OrderPromotionListener
             $message = 'sylius.promotion_coupon.invalid';
         }
 
-        $message = $this->translator->trans($message, array(), 'flashes');
-        $this->session->getFlashBag()->add($type, $message);
+        $this->session->getBag('flashes')->add($type, $this->translator->trans($message, array(), 'flashes'));
     }
 }

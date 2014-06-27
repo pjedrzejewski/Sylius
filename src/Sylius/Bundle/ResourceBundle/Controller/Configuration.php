@@ -22,11 +22,35 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Configuration
 {
+    /**
+     * @var string
+     */
     protected $bundlePrefix;
+
+    /**
+     * @var string
+     */
     protected $resourceName;
+
+    /**
+     * @var string
+     */
     protected $templateNamespace;
+
+    /**
+     * @var string
+     */
     protected $templatingEngine;
+
+    /**
+     * @var array
+     */
     protected $parameters;
+
+    /**
+     * @var ParametersParser
+     */
+    protected $parser;
 
     /**
      * Current request.
@@ -35,25 +59,31 @@ class Configuration
      */
     protected $request;
 
-    public function __construct($bundlePrefix, $resourceName, $templateNamespace, $templatingEngine = 'twig')
-    {
-
+    public function __construct(
+        ParametersParser $parser,
+        $bundlePrefix,
+        $resourceName,
+        $templateNamespace,
+        $templatingEngine = 'twig'
+    ) {
         $this->bundlePrefix = $bundlePrefix;
         $this->resourceName = $resourceName;
         $this->templateNamespace = $templateNamespace;
         $this->templatingEngine = $templatingEngine;
-
-        $this->parameters = array();
+        $this->parser = $parser;
     }
 
-    public function load(Request $request)
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function setRequest(Request $request)
     {
         $this->request = $request;
 
         $parameters = $request->attributes->get('_sylius', array());
-        $parser = new ParametersParser();
-
-        $parameters = $parser->parse($parameters, $request);
+        $this->parser->parse($parameters, $request);
 
         $this->parameters = $parameters;
     }
@@ -85,7 +115,7 @@ class Configuration
 
     public function isApiRequest()
     {
-        return 'html' !== $this->request->getRequestFormat();
+        return null !== $this->request && 'html' !== $this->request->getRequestFormat();
     }
 
     public function getServiceName($service)
@@ -133,15 +163,26 @@ class Configuration
         return $redirect;
     }
 
-    public function getRedirectParameters()
+    /**
+     * @param object|null $resource
+     *
+     * @return array
+     */
+    public function getRedirectParameters($resource = null)
     {
         $redirect = $this->get('redirect');
 
         if (null === $redirect || !is_array($redirect)) {
-            return array();
+            $redirect = array('parameters' => array());
         }
 
-        return $redirect['parameters'];
+        $parameters = $redirect['parameters'];
+
+        if (null !== $resource) {
+            $parameters = $this->parser->process($parameters, $resource);
+        }
+
+        return $parameters;
     }
 
     public function getLimit()
@@ -170,9 +211,9 @@ class Configuration
         return (Boolean) $this->get('filterable', false);
     }
 
-    public function getCriteria()
+    public function getCriteria($default = array())
     {
-        $defaultCriteria = $this->get('criteria', array());
+        $defaultCriteria = array_merge($this->get('criteria', array()), $default);
 
         if ($this->isFilterable()) {
             return array_merge($defaultCriteria, $this->request->get('criteria', array()));
@@ -207,11 +248,30 @@ class Configuration
         return $this->get('arguments', $default);
     }
 
+    public function getFactoryMethod($default)
+    {
+        $factory = $this->get('factory', array('method' => $default));
+
+        return is_array($factory) ? $factory['method'] : $factory;
+    }
+
+    public function getFactoryArguments(array $default = array())
+    {
+        $factory = $this->get('factory', array());
+
+        return isset($factory['arguments']) ? $factory['arguments'] : $default;
+    }
+
     public function getFlashMessage($message = null)
     {
         $message = sprintf('%s.%s.%s', $this->bundlePrefix, $this->resourceName, $message);
 
         return $this->get('flash', $message);
+    }
+
+    public function getSortablePosition()
+    {
+        return $this->get('sortable_position', 'position');
     }
 
     protected function get($parameter, $default = null)

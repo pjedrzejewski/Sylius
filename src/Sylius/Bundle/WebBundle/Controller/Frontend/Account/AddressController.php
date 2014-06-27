@@ -11,10 +11,14 @@
 
 namespace Sylius\Bundle\WebBundle\Controller\Frontend\Account;
 
-use Sylius\Bundle\AddressingBundle\Model\AddressInterface;
-use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
+use Doctrine\Common\Persistence\ObjectManager;
+use Sylius\Component\Addressing\Model\AddressInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -22,112 +26,137 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  *
  * @author Julien Janvier <j.janvier@gmail.com>
  */
-class AddressController extends ResourceController
+class AddressController extends Controller
 {
     /**
      * Get collection of user's addresses.
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
-        $addresses = $this->getUser()->getAddresses();
-
-        $view = $this
-            ->view()
-            ->setTemplate($config->getTemplate('index.html'))
-            ->setTemplateVar($pluralName)
-            ->setData($addresses)
-        ;
-
-        return $this->handleView($view);
+        return $this->render('SyliusWebBundle:Frontend/Account:Address/index.html.twig', array(
+            'addresses' => $this->getUser()->getAddresses()
+        ));
     }
 
     /**
-     * Create new address or just display the form.
+     * Create new user address.
      */
     public function createAction(Request $request)
     {
-        $config = $this->getConfiguration();
+        $user = $this->getUser();
+        $address = $this->getAddressRepository()->createNew();
+        $form = $this->getAddressForm($address);
 
-        $resource = $this->createNew();
-        $form = $this->getForm($resource);
+        if ($form->handleRequest($request)->isValid()) {
+            $user->addAddress($address);
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $this->getUser()->addAddress($resource);
-            $event = $this->create($resource);
+            $manager = $this->getUserManager();
+            $manager->persist($user);
+            $manager->flush();
 
-            if (!$event->isStopped()) {
-                $this->setFlash('success', 'create');
+            $this->addFlash('success', 'sylius.account.address.create');
 
-                return $this->redirectTo($resource);
-            }
-
-            $this->setFlash($event->getMessageType(), $event->getMessage(), $event->getMessageParams());
+            return $this->redirectToIndex();
         }
 
-        if ($config->isApiRequest()) {
-            return $this->handleView($this->view($form));
-        }
-
-        $view = $this
-            ->view()
-            ->setTemplate($config->getTemplate('create.html'))
-            ->setData(array(
-                $config->getResourceName() => $resource,
-                'form'                     => $form->createView()
-            ))
-        ;
-
-        return $this->handleView($view);
+        return $this->render('SyliusWebBundle:Frontend/Account:Address/create.html.twig', array(
+            'user' => $this->getUser(),
+            'form' => $form->createView()
+        ));
     }
 
     /**
-     * Set an address as default billing address for the current user.
-     *
-     * @return RedirectResponse
+     * Update existing user address.
      */
-    public function setAsDefaultBillingAddressAction()
+    public function updateAction(Request $request, $id)
     {
-        $address = $this->findOr404();
-        $this->accessOr403($address);
+        $user = $this->getUser();
+        $address = $this->findUserAddressOr404($id);
+        $form = $this->getAddressForm($address);
+
+        if ($form->handleRequest($request)->isValid()) {
+            $manager = $this->getUserManager();
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash('success', 'sylius.account.address.update');
+
+            return $this->redirectToIndex();
+        }
+
+        return $this->render('SyliusWebBundle:Frontend/Account:Address/update.html.twig', array(
+            'user'    => $this->getUser(),
+            'address' => $address,
+            'form'    => $form->createView()
+        ));
+    }
+
+    /**
+     * Delete user address.
+     */
+    public function deleteAction($id)
+    {
+        $user = $this->getUser();
+        $address = $this->findUserAddressOr404($id);
+
+        $user->removeAddress($address);
 
         $manager = $this->getUserManager();
-        $user = $this->getUser();
-
-        $user->setBillingAddress($address);
         $manager->persist($user);
         $manager->flush();
 
-        $this->setFlash('success', $this->get('translator')->trans('sylius.account.address.flash.billing.success'));
+        $this->addFlash('success', 'sylius.account.address.delete');
 
-        return $this->redirect($this->generateUrl('sylius_account_address_index'));
+        return $this->redirectToIndex();
     }
 
     /**
-     * Set an address as shipping billing address for the current user.
+     * Set an address as default billing/shipping address for the current user.
+     *
+     * @param int    $id
+     * @param string $type
      *
      * @return RedirectResponse
+     *
+     * @throws NotFoundHttpException
      */
-    public function setAsDefaultShippingAddressAction()
+    public function setAddressAsAction($id, $type)
     {
-        $address = $this->findOr404();
-        $this->accessOr403($address);
+        $address = $this->findUserAddressOr404($id);
 
-        $manager = $this->getUserManager();
         $user = $this->getUser();
 
-        $user->setShippingAddress($address);
+        if ('billing' === $type) {
+            $user->setBillingAddress($address);
+
+            $this->addFlash('success', 'sylius.account.address.set_as_billing');
+        } elseif ('shipping' === $type) {
+            $user->setShippingAddress($address);
+
+            $this->addFlash('success', 'sylius.account.address.set_as_shipping');
+        } else {
+            throw new NotFoundHttpException();
+        }
+
+        $manager = $this->getUserManager();
         $manager->persist($user);
         $manager->flush();
 
-        $this->setFlash('success', $this->get('translator')->trans('sylius.account.address.flash.shipping.success'));
-
-        return $this->redirect($this->generateUrl('sylius_account_address_index'));
+        return $this->redirectToIndex();
     }
 
     /**
-     * @return object
+     * @param AddressInterface $address
+     *
+     * @return FormInterface
+     */
+    private function getAddressForm(AddressInterface $address)
+    {
+        return $this->get('form.factory')->create('sylius_address', $address);
+    }
+
+    /**
+     * @return ObjectManager
      */
     private function getUserManager()
     {
@@ -135,16 +164,44 @@ class AddressController extends ResourceController
     }
 
     /**
-     * Accesses address or throws 403
+     * @return RepositoryInterface
+     */
+    private function getAddressRepository()
+    {
+        return $this->get('sylius.repository.address');
+    }
+
+    private function redirectToIndex()
+    {
+        return $this->redirect($this->generateUrl('sylius_account_address_index'));
+    }
+
+    private function addFlash($type, $message)
+    {
+        $translator = $this->get('translator');
+        $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
+    }
+
+    /**
+     * Accesses address or throws 403/404
      *
-     * @param AddressInterface $address
+     * @param integer $id
      *
+     * @return AddressInterface
+     *
+     * @throws NotFoundHttpException
      * @throws AccessDeniedException
      */
-    private function accessOr403(AddressInterface $address)
+    private function findUserAddressOr404($id)
     {
+        if (!$address = $this->getAddressRepository()->find($id)) {
+            throw new NotFoundHttpException('Requested address does not exist.');
+        }
+
         if (!$this->getUser()->hasAddress($address)) {
             throw new AccessDeniedException();
         }
+
+        return $address;
     }
 }

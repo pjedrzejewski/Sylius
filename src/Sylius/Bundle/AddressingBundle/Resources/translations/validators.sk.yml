@@ -1,0 +1,31 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius:
+  address:
+    city:
+      max_length: Mesto nesmie byť dlhšie ako 255 znakov|Mesto nesmie byť dlhšie ako 255 znakov.
+      min_length: Mesto musí mať minimálne 2 znaky|Mesto musí mať minimálne 2 znaky.
+      not_blank: Prosím zadajte mesto.
+    country:
+      not_blank: Prosím vyberte krajinu.
+    first_name:
+      max_length: Meno nesmie byť dlhšie ako 255 znakov|Meno nesmie byť dlhšie ako 255 znakov.
+      min_length: Meno musí mať minimálne 2 znaky|Meno musí mať minimálne 2 znaky.
+      not_blank: Prosím zadajte vaše meno.
+    last_name:
+      max_length: Priezvisko nesmie byť dlhšie ako 255 znakov|Priezvisko nesmie byť dlhšie ako 255 znakov.
+      min_length: Priezvisko musí mať minimálne 2 znaky|Priezvisko musí mať minimálne 2 znaky.
+      not_blank: Prosím zadajte vaše priezvisko.
+    postcode:
+      not_blank: Prosím zadajte vaše PSČ.
+    street:
+      not_blank: Prosím zadajte ulicu.
+  country:
+    iso_name:
+      not_blank: Prosím zadajte ISO kód krajiny.
+    name:
+      not_blank: Prosím zadajte názov krajiny.
+  zone:
+    name:
+      not_blank: Prosím zadajte názov zóny.

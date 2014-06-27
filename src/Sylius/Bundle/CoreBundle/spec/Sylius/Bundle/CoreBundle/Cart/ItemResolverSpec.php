@@ -12,21 +12,30 @@
 namespace spec\Sylius\Bundle\CoreBundle\Cart;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Component\Addressing\Checker\RestrictedZoneCheckerInterface;
+use Sylius\Component\Cart\Model\CartItemInterface;
+use Sylius\Component\Cart\Provider\CartProviderInterface;
+use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
+use Sylius\Component\Pricing\Calculator\DelegatingCalculatorInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class ItemResolverSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface             $productRepository
-     * @param Symfony\Component\Form\FormFactory                                 $formFactory
-     * @param Sylius\Bundle\InventoryBundle\Checker\AvailabilityCheckerInterface $availabilityChecker
-     * @param Symfony\Component\HttpFoundation\Request                           $request
-     */
-    function let($productRepository, $formFactory, $availabilityChecker)
+    function let(
+        CartProviderInterface $cartProvider,
+        RepositoryInterface $productRepository,
+        FormFactoryInterface $formFactory,
+        AvailabilityCheckerInterface $availabilityChecker,
+        RestrictedZoneCheckerInterface $restrictedZoneChecker,
+        DelegatingCalculatorInterface $priceCalculator
+    )
     {
-        $this->beConstructedWith($productRepository, $formFactory, $availabilityChecker);
+        $this->beConstructedWith($cartProvider, $productRepository, $formFactory, $availabilityChecker, $restrictedZoneChecker, $priceCalculator);
     }
 
     function it_is_initializable()
@@ -36,40 +45,32 @@ class ItemResolverSpec extends ObjectBehavior
 
     function it_implements_Sylius_cart_item_resolver_interface()
     {
-        $this->shouldImplement('Sylius\Bundle\CartBundle\Resolver\ItemResolverInterface');
+        $this->shouldImplement('Sylius\Component\Cart\Resolver\ItemResolverInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_unless_request_method_is_POST($item, $request)
+    function it_throws_exception_unless_request_method_is_POST_or_PUT(CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(false);
+        $request->isMethod('PUT')->willReturn(false);
 
         $this
-            ->shouldThrow('Sylius\Bundle\CartBundle\Resolver\ItemResolvingException')
+            ->shouldThrow('Sylius\Component\Cart\Resolver\ItemResolvingException')
             ->duringResolve($item, $request)
         ;
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_when_product_id_is_missing_on_request($item, $request)
+    function it_throws_exception_when_product_id_is_missing_on_request(CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(true);
         $request->get('id')->willReturn(null);
 
         $this
-            ->shouldThrow('Sylius\Bundle\CartBundle\Resolver\ItemResolvingException')
+            ->shouldThrow('Sylius\Component\Cart\Resolver\ItemResolvingException')
             ->duringResolve($item, $request)
         ;
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartItemInterface $item
-     */
-    function it_throws_exception_if_product_with_given_id_does_not_exist($productRepository, $item, $request)
+    function it_throws_exception_if_product_with_given_id_does_not_exist($productRepository, CartItemInterface $item, Request $request)
     {
         $request->isMethod('POST')->willReturn(true);
         $request->get('id')->willReturn(5);
@@ -77,7 +78,7 @@ class ItemResolverSpec extends ObjectBehavior
         $productRepository->find(5)->willReturn(null);
 
         $this
-            ->shouldThrow('Sylius\Bundle\CartBundle\Resolver\ItemResolvingException')
+            ->shouldThrow('Sylius\Component\Cart\Resolver\ItemResolvingException')
             ->duringResolve($item, $request)
         ;
     }

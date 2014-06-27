@@ -10,14 +10,14 @@ Feature: Products
             | name          | presentation | values           |
             | T-Shirt color | Color        | Red, Blue, Green |
             | T-Shirt size  | Size         | S, M, L          |
-          And there are following properties:
+          And there are following attributes:
             | name               | presentation      | type     | choices   |
             | T-Shirt fabric     | T-Shirt           | text     |           |
             | T-Shirt fare trade | Faretrade product | checkbox |           |
             | Color              | color             | choice   | red, blue |
             | Size               | size              | number   |           |
           And the following products exist:
-            | name          | price | options                     | properties             |
+            | name          | price | options                     | attributes             |
             | Super T-Shirt | 19.99 | T-Shirt size, T-Shirt color | T-Shirt fabric: Wool   |
             | Black T-Shirt | 19.99 | T-Shirt size                | T-Shirt fabric: Cotton |
             | Mug           | 5.99  |                             |                        |
@@ -39,7 +39,6 @@ Feature: Products
             | Featured |
             | New      |
 
-    Scenario: Seeing index of all products
     Scenario: Seeing index of all products
         Given I am on the dashboard page
          When I follow "Products"
@@ -90,7 +89,7 @@ Feature: Products
          Then I should still be on the product creation page
           And I should see "Price must not be negative."
 
-    Scenario: Creating simple product without any properties and options
+    Scenario: Creating simple product without any attributes and options
         Given I am on the product creation page
          When I fill in the following:
             | Name        | Book about Everything   |
@@ -109,7 +108,7 @@ Feature: Products
           And I select "T-Shirt size" from "Options"
           And I press "Create"
          Then I should be on the page of product "Manchester United tee"
-          And I "Product has been successfully created." should appear on the page
+          And "Product has been successfully created." should appear on the page
           And I should see "T-Shirt size"
 
     @javascript
@@ -128,65 +127,65 @@ Feature: Products
           And "Options matching" should appear on the page
 
     @javascript
-    Scenario: Creating product with string property
+    Scenario: Creating product with string attribute
         Given I am on the product creation page
          When I fill in the following:
             | Name        | Manchester United tee   |
             | Description | Interesting description |
             | Price       | 59.99                   |
-          And go to "Properties" tab
-          And I click "Add property"
-          And I select "T-Shirt fabric" from "Property"
+          And go to "attributes" tab
+          And I click "Add attribute"
+          And I select "T-Shirt fabric" from "Attribute"
           And I fill in "Value" with "Cotton"
           And I press "Create"
          Then I should be on the page of product "Manchester United tee"
-          And I "Product has been successfully created." should appear on the page
+          And "Product has been successfully created." should appear on the page
           And I should see "Cotton"
 
     @javascript
-    Scenario: Creating product with boolean property
+    Scenario: Creating product with boolean attribute
         Given I am on the product creation page
          When I fill in the following:
             | Name        | Manchester United tee   |
             | Description | Interesting description |
             | Price       | 59.99                   |
-          And go to "Properties" tab
-          And I click "Add property"
-          And I select "T-Shirt fare trade" from "Property"
+          And go to "attributes" tab
+          And I click "Add attribute"
+          And I select "T-Shirt fare trade" from "Attribute"
           And I check "Value"
          When I press "Create"
          Then I should be on the page of product "Manchester United tee"
-          And I "Product has been successfully created." should appear on the page
+          And "Product has been successfully created." should appear on the page
 
     @javascript
-    Scenario: Creating product with properties to choose
+    Scenario: Creating product with attributes to choose
         Given I am on the product creation page
          When I fill in the following:
             | Name        | Manchester United tee   |
             | Description | Interesting description |
             | Price       | 59.99                   |
-          And go to "Properties" tab
-          And I click "Add property"
-          And I select "Color" from "Property"
+          And go to "attributes" tab
+          And I click "Add attribute"
+          And I select "Color" from "Attribute"
           And I select "red" from "Value"
          When I press "Create"
          Then I should be on the page of product "Manchester United tee"
-          And I "Product has been successfully created." should appear on the page
+          And "Product has been successfully created." should appear on the page
 
     @javascript
-    Scenario: Creating product with number property
+    Scenario: Creating product with number attribute
         Given I am on the product creation page
          When I fill in the following:
             | Name        | Manchester United tee   |
             | Description | Interesting description |
             | Price       | 59.99                   |
-          And go to "Properties" tab
-          And I click "Add property"
-          And I select "Color" from "Property"
+          And go to "Attributes" tab
+          And I click "Add attribute"
+          And I select "Color" from "Attribute"
           And I fill in "Value" with "12"
          When I press "Create"
          Then I should be on the page of product "Manchester United tee"
-          And I "Product has been successfully created." should appear on the page
+          And "Product has been successfully created." should appear on the page
 
     Scenario: Created products appear in the list
         Given I am on the product creation page
@@ -251,32 +250,16 @@ Feature: Products
           And I should see "Product has been successfully updated."
           And "Featured" should appear on the page
 
-    Scenario: Deleting product
-        Given I am on the page of product "Mug"
-         When I press "delete"
-         Then I should see "Do you want to delete this item"
-         When I press "delete"
-         Then I should be on the product index page
-          And I should see "Product has been successfully deleted."
-
     @javascript
-    Scenario: Deleting product with js modal
+    Scenario: Deleting product
         Given I am on the page of product "Mug"
          When I press "delete"
           And I click "delete" from the confirmation modal
          Then I should be on the product index page
           And I should see "Product has been successfully deleted."
 
-    Scenario: Deleted product disappears from the list
-        Given I am on the page of product "Sticker"
-         When I press "delete"
-         Then I should see "Do you want to delete this item"
-         When I press "delete"
-         Then I should be on the product index page
-          And I should not see product with name "Sticker" in that list
-
     @javascript
-    Scenario: Deleted product disappears from the list with js modal
+    Scenario: Deleted product disappears from the list
         Given I am on the page of product "Sticker"
          When I press "delete"
           And I click "delete" from the confirmation modal

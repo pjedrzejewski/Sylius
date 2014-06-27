@@ -16,28 +16,19 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 /**
  * Resource event.
  *
- * @author Jérémy Leherpeur <jeremy@lehepeur.net>
+ * @author Jérémy Leherpeur <jeremy@leherpeur.net>
  */
 class ResourceEvent extends GenericEvent
 {
-    const TYPE_ERROR    = 'error';
-    const TYPE_WARNING  = 'warning';
-    const TYPE_INFO     = 'info';
-    const TYPE_SUCCESS  = 'success';
-
-    public function stop($message, $type = self::TYPE_ERROR, $params = array())
-    {
-        $this->error = true;
-        $this->messageType = $type;
-        $this->message = $message;
-        $this->messageParams = $params;
-        $this->stopPropagation();
-    }
+    const TYPE_ERROR   = 'error';
+    const TYPE_WARNING = 'warning';
+    const TYPE_INFO    = 'info';
+    const TYPE_SUCCESS = 'success';
 
     /**
      * Indicate if an error has been detected
      *
-     * @var boolean
+     * @var Boolean
      */
     protected $error = false;
 
@@ -60,12 +51,29 @@ class ResourceEvent extends GenericEvent
      *
      * @var array
      */
-    protected $messageParams = array();
+    protected $messageParameters = array();
+
+    /**
+     * Stop event propagation
+     *
+     * @param string $message
+     * @param string $type
+     * @param array  $parameters
+     */
+    public function stop($message, $type = self::TYPE_ERROR, $parameters = array())
+    {
+        $this->error = true;
+        $this->messageType = $type;
+        $this->message = $message;
+        $this->messageParameters = $parameters;
+
+        $this->stopPropagation();
+    }
 
     /**
      * Get error property
      *
-     * @return boolean $error
+     * @return Boolean $error
      */
     public function isStopped()
     {
@@ -93,12 +101,12 @@ class ResourceEvent extends GenericEvent
     }
 
     /**
-     * Get messageParams property
+     * Get messageParameters property
      *
-     * @return string $messageParams
+     * @return string $messageParameters
      */
-    public function getMessageParams()
+    public function getMessageParameters()
     {
-        return $this->messageParams;
+        return $this->messageParameters;
     }
 }

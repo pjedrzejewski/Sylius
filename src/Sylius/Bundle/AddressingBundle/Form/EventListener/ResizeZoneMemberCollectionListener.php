@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Util\ClassUtils;
  * A form resize listener capable of coping with a zone member collection.
  *
  * @author Tim Nagel <t.nagel@infinite.net.au>
- * @author Саша Стаменковић <umpirsky@gmail.com>
+ * @author Saša Stamenković <umpirsky@gmail.com>
  */
 class ResizeZoneMemberCollectionListener extends ResizeFormListener
 {
@@ -65,43 +65,6 @@ class ResizeZoneMemberCollectionListener extends ResizeFormListener
         $defaultType = reset($prototypes)->getConfig()->getType()->getName();
 
         parent::__construct($defaultType, $options, $allowAdd, $allowDelete);
-    }
-
-    /**
-     * Returns the form type for the supplied object. If a specific
-     * form type is not found, it will return the default form type.
-     *
-     * @param object $object
-     *
-     * @return string
-     */
-    protected function getTypeForObject($object)
-    {
-        $class = ClassUtils::getRealClass(get_class($object));
-
-        if (array_key_exists($class, $this->classMap)) {
-            return $this->classMap[$class];
-        }
-
-        return $this->type;
-    }
-
-    /**
-     * Checks the form data for a hidden _type field that indicates
-     * the form type to use to process the data.
-     *
-     * @param array $data
-     *
-     * @return string|FormTypeInterface
-     * @throws \InvalidArgumentException when _type is not present or is invalid
-     */
-    protected function getTypeForData(array $data)
-    {
-        if (!array_key_exists('_type', $data) || !array_key_exists($data['_type'], $this->typeMap)) {
-            throw new \InvalidArgumentException('Unable to determine the Type for given data');
-        }
-
-        return $this->typeMap[$data['_type']];
     }
 
     /**
@@ -150,22 +113,47 @@ class ResizeZoneMemberCollectionListener extends ResizeFormListener
 
         $form = $event->getForm();
         // Remove all empty rows
-        if ($this->allowDelete) {
-            foreach ($form as $name => $child) {
-                if (!isset($data[$name])) {
-                    $form->remove($name);
-                }
-            }
-        }
+        $this->removeFormFields($form);
 
         // Add all additional rows
-        if ($this->allowAdd) {
-            foreach ($data as $name => $value) {
-                if (!$form->has($name)) {
-                    $this->createFormField($form, $this->getTypeForData($value), $name);
-                }
-            }
+        $this->createFormFields($form, $data);
+    }
+
+    /**
+     * Returns the form type for the supplied object. If a specific
+     * form type is not found, it will return the default form type.
+     *
+     * @param object $object
+     *
+     * @return string
+     */
+    protected function getTypeForObject($object)
+    {
+        $class = ClassUtils::getRealClass(get_class($object));
+
+        if (isset($this->classMap[$class])) {
+            return $this->classMap[$class];
         }
+
+        return $this->type;
+    }
+
+    /**
+     * Checks the form data for a hidden _type field that indicates
+     * the form type to use to process the data.
+     *
+     * @param array $data
+     *
+     * @return string|FormTypeInterface
+     * @throws \InvalidArgumentException when _type is not present or is invalid
+     */
+    protected function getTypeForData(array $data)
+    {
+        if (!array_key_exists('_type', $data) || !array_key_exists($data['_type'], $this->typeMap)) {
+            throw new \InvalidArgumentException('Unable to determine the Type for given data');
+        }
+
+        return $this->typeMap[$data['_type']];
     }
 
     /**
@@ -179,5 +167,27 @@ class ResizeZoneMemberCollectionListener extends ResizeFormListener
             'property_path'   => '['.$name.']',
             'auto_initialize' => false
         ), $this->options)));
+    }
+
+    private function removeFormFields(FormInterface $form)
+    {
+        if ($this->allowDelete) {
+            foreach ($form as $name => $child) {
+                if (!isset($data[$name])) {
+                    $form->remove($name);
+                }
+            }
+        }
+    }
+
+    private function createFormFields(FormInterface $form, $data)
+    {
+        if ($this->allowAdd) {
+            foreach ($data as $name => $value) {
+                if (!$form->has($name)) {
+                    $this->createFormField($form, $this->getTypeForData($value), $name);
+                }
+            }
+        }
     }
 }

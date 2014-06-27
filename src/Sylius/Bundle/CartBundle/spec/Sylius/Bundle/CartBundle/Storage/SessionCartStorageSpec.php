@@ -12,17 +12,16 @@
 namespace spec\Sylius\Bundle\CartBundle\Storage;
 
 use PhpSpec\ObjectBehavior;
-use Sylius\Bundle\CartBundle\Storage\SessionCartStorage as SessionCartStorageClass;
+use Sylius\Bundle\CartBundle\Storage\SessionCartStorage;
+use Sylius\Component\Cart\Model\CartInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class SessionCartStorageSpec extends ObjectBehavior
 {
-    /**
-     * @param Symfony\Component\HttpFoundation\Session\SessionInterface $session
-     */
-    function let($session)
+    function let(SessionInterface $session)
     {
         $this->beConstructedWith($session);
     }
@@ -34,30 +33,33 @@ class SessionCartStorageSpec extends ObjectBehavior
 
     function it_implements_Sylius_cart_storage_interface()
     {
-        $this->shouldImplement('Sylius\Bundle\CartBundle\Storage\CartStorageInterface');
+        $this->shouldImplement('Sylius\Component\Cart\Storage\CartStorageInterface');
     }
 
     function it_returns_cart_identifier_via_session($session)
     {
-        $session->get(SessionCartStorageClass::KEY)->willReturn(7);
+        $session->get(SessionCartStorage::KEY)->willReturn(7);
 
         $this->getCurrentCartIdentifier()->shouldReturn(7);
     }
 
-    /**
-     * @param Sylius\Bundle\CartBundle\Model\CartInterface $cart
-     */
-    function it_sets_cart_identifier_via_session($session, $cart)
+    function it_sets_cart_identifier_via_session($session, CartInterface $cart)
     {
-        $cart->getIdentifier()->willReturn(3);
-        $session->set(SessionCartStorageClass::KEY, 3)->shouldBeCalled();
+        $cart->getIdentifier()->will(function () {
+            return 3;
+        });
+        $session->set(SessionCartStorage::KEY, 3)->will(function () use ($session) {
+            $session->get(SessionCartStorage::KEY)->willReturn(3);
+        });
 
         $this->setCurrentCartIdentifier($cart);
+
+        $this->getCurrentCartIdentifier()->shouldReturn(3);
     }
 
     function it_removes_the_saved_identifier_from_session_on_reset($session)
     {
-        $session->remove(SessionCartStorageClass::KEY)->shouldBeCalled();
+        $session->remove(SessionCartStorage::KEY)->shouldBeCalled();
 
         $this->resetCurrentCartIdentifier();
     }

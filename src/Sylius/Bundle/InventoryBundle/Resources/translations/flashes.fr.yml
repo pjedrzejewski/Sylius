@@ -1,0 +1,8 @@
+# This file is part of the Sylius package.
+# (c) Paweł Jędrzejewski
+
+sylius:
+  inventory_unit:
+    backordered: Unité de stock en réapprovisionnement.
+    sold: Unité de stock vendue.
+    returned: Unité de stock retournée.

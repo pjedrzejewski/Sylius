@@ -4,7 +4,7 @@
 
 {% block javascripts %}
     {% javascripts output='assets/compiled/backend_addressing_zone.js'
-        '@SyliusAddressingBundle/Resources/assets/js/sylius-addressing-zone.js'
+        'bundles/syliusaddressing/js/sylius-addressing-zone.js'
     %}
         {{ parent() }}
         <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -22,7 +22,7 @@
 
 {% block content %}
 <div class="page-header">
-    <h1><i class="icon-pencil"></i> {{ 'sylius.zone.update_header'|trans|raw }}</h1>
+    <h1><i class="glyphicon glyphicon-pencil"></i> {{ 'sylius.zone.update_header'|trans|raw }}</h1>
 </div>
 
 {{ form_errors(form) }}

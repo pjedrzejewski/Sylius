@@ -11,17 +11,19 @@
 
 namespace spec\Sylius\Bundle\CoreBundle\EventListener;
 
+use SM\Event\TransitionEvent;
 use PhpSpec\ObjectBehavior;
+use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Core\OrderProcessing\StateResolverInterface;
+use Sylius\Component\Resource\StateMachine\StateMachineInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class OrderStateListenerSpec extends ObjectBehavior
 {
-    /**
-      @param Sylius\Bundle\CoreBundle\OrderProcessing\StateResolverInterface $stateResolver
-     */
-    function let($stateResolver)
+    function let(StateResolverInterface $stateResolver)
     {
         $this->beConstructedWith($stateResolver);
     }
@@ -31,30 +33,32 @@ class OrderStateListenerSpec extends ObjectBehavior
         $this->shouldHaveType('Sylius\Bundle\CoreBundle\EventListener\OrderStateListener');
     }
 
-    /**
-     * @param Symfony\Component\EventDispatcher\GenericEvent $event
-     * @param \stdClass                                      $invalidSubject
-     */
-    function it_throws_exception_if_event_has_non_order_subject($event, $invalidSubject)
-    {
-        $event->getSubject()->willReturn($invalidSubject);
-
-        $this
-            ->shouldThrow('InvalidArgumentException')
-            ->duringOnCheckoutFinalizePreComplete($event)
-        ;
-    }
-
-    /**
-     * @param Symfony\Component\EventDispatcher\GenericEvent $event
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface  $order
-     */
-    function it_resolves_order_states_before_after_finalizing_the_checkout($stateResolver, $event, $order)
+    function it_resolves_order_states(
+            StateResolverInterface $stateResolver,
+            GenericEvent $event,
+            OrderInterface $order
+    )
     {
         $event->getSubject()->willReturn($order);
         $stateResolver->resolveShippingState($order)->shouldBeCalled();
         $stateResolver->resolvePaymentState($order)->shouldBeCalled();
 
-        $this->onCheckoutFinalizePreComplete($event);
+        $this->resolveOrderStates($event);
+    }
+
+    function it_resolves_order_states_with_state_machine_event(
+        StateResolverInterface $stateResolver,
+        TransitionEvent $event,
+        OrderInterface $order,
+        StateMachineInterface $sm
+    )
+    {
+        $event->getStateMachine()->willReturn($sm);
+        $sm->getObject()->willReturn($order);
+
+        $stateResolver->resolveShippingState($order)->shouldBeCalled();
+        $stateResolver->resolvePaymentState($order)->shouldBeCalled();
+
+        $this->resolveOrderStatesOnTransition($event);
     }
 }

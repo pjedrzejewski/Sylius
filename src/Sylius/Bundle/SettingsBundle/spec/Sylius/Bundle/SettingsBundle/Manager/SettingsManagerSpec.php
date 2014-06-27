@@ -11,22 +11,27 @@
 
 namespace spec\Sylius\Bundle\SettingsBundle\Manager;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Persistence\ObjectManager;
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\SettingsBundle\Schema\SchemaRegistryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Symfony\Component\Validator\ValidatorInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class SettingsManagerSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\SettingsBundle\Schema\SchemaRegistryInterface $registry
-     * @param Doctrine\Common\Cache\Cache                                 $cache
-     * @param Doctrine\Common\Persistence\ObjectManager                   $manager
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface      $repository
-     */
-    function let($registry, $cache, $manager, $repository)
+    function let(
+        SchemaRegistryInterface $registry,
+        Cache $cache,
+        ObjectManager $manager,
+        RepositoryInterface $repository,
+        ValidatorInterface $validator
+    )
     {
-        $this->beConstructedWith($registry, $manager, $repository, $cache);
+        $this->beConstructedWith($registry, $manager, $repository, $cache, $validator);
     }
 
     function it_should_be_initializable()

@@ -11,7 +11,7 @@
 
 namespace Sylius\Bundle\MoneyBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\SyliusResourceExtension;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -19,15 +19,19 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@sylius.pl>
  */
-class SyliusMoneyExtension extends SyliusResourceExtension
+class SyliusMoneyExtension extends AbstractResourceExtension
 {
+    protected $configFiles = array(
+        'services',
+        'templating',
+        'twig',
+    );
+
     /**
      * {@inheritdoc}
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $this->configDir = __DIR__.'/../Resources/config';
-
         list($config) = $this->configure($config, new Configuration(), $container, self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS);
 
         $container->setParameter('sylius.money.locale', $config['locale']);

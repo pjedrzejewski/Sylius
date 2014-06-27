@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+### v0.9.0
+
+* Release before the components extraction.
+
+### v0.8.0
+
+* Convert translations to YAML.
+
+### v0.7.0
+
+* Minor clean ups and fixes.
+
+### v0.6.0
+
+* Release before components introduction. (delayed)
+
+### v0.5.0
+
+* Release after repositories reorganization.
+
 ### v0.2.0
 
 * Symfony 2.3 upgrade.

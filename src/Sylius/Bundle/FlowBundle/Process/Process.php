@@ -17,7 +17,7 @@ use Sylius\Bundle\FlowBundle\Validator\ProcessValidatorInterface;
 /**
  * Base class for process.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class Process implements ProcessInterface
 {
@@ -33,14 +33,14 @@ class Process implements ProcessInterface
      *
      * @var array
      */
-    protected $steps;
+    protected $steps = array();
 
     /**
      * Ordered steps.
      *
      * @var array
      */
-    protected $orderedSteps;
+    protected $orderedSteps = array();
 
     protected $validator;
 
@@ -52,22 +52,39 @@ class Process implements ProcessInterface
     protected $displayRoute;
 
     /**
+     * Display action route params.
+     *
+     * @var array
+     */
+    protected $displayRouteParams = array();
+
+    /**
      * Forward action route.
      *
      * @var string
      */
     protected $forwardRoute;
 
+    /**
+     * Forward action route params.
+     *
+     * @var array
+     */
+    protected $forwardRouteParams = array();
+
+    /**
+     * Redirect route.
+     *
+     * @var string
+     */
     protected $redirect;
 
     /**
-     * Constructor.
+     * Redirect route params.
+     *
+     * @var array
      */
-    public function __construct()
-    {
-        $this->steps = array();
-        $this->orderedSteps = array();
-    }
+    protected $redirectParams = array();
 
     /**
      * {@inheritdoc}
@@ -218,6 +235,22 @@ class Process implements ProcessInterface
     /**
      * {@inheritdoc}
      */
+    public function getDisplayRouteParams()
+    {
+        return $this->displayRouteParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDisplayRouteParams(array $params)
+    {
+        $this->displayRouteParams = $params;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getForwardRoute()
     {
         return $this->forwardRoute;
@@ -234,6 +267,22 @@ class Process implements ProcessInterface
     /**
      * {@inheritdoc}
      */
+    public function getForwardRouteParams()
+    {
+        return $this->forwardRouteParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setForwardRouteParams(array $params)
+    {
+        $this->forwardRouteParams = $params;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRedirect()
     {
         return $this->redirect;
@@ -245,6 +294,22 @@ class Process implements ProcessInterface
     public function setRedirect($redirect)
     {
         $this->redirect = $redirect;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRedirectParams()
+    {
+        return $this->redirectParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRedirectParams(array $params)
+    {
+        $this->redirectParams = $params;
     }
 
     /**

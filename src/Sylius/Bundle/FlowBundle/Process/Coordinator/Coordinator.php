@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\FlowBundle\Process\Coordinator;
 
+use FOS\RestBundle\View\View;
 use Sylius\Bundle\FlowBundle\Process\Builder\ProcessBuilderInterface;
 use Sylius\Bundle\FlowBundle\Process\Context\ProcessContextInterface;
 use Sylius\Bundle\FlowBundle\Process\ProcessInterface;
@@ -22,12 +23,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
-use FOS\RestBundle\View\View;
 
 /**
  * Default coordinator implementation.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class Coordinator implements CoordinatorInterface
 {
@@ -172,7 +172,7 @@ class Coordinator implements CoordinatorInterface
             if ($this->context->isLastStep()) {
                 $this->context->close();
 
-                $url = $this->router->generate($process->getRedirect());
+                $url = $this->router->generate($process->getRedirect(), $process->getRedirectParams());
 
                 return new RedirectResponse($url);
             }
@@ -190,7 +190,7 @@ class Coordinator implements CoordinatorInterface
     public function registerScenario($alias, ProcessScenarioInterface $scenario)
     {
         if (isset($this->scenarios[$alias])) {
-            throw new \InvalidArgumentException(sprintf('Process scenario with alias "%s" is already registered', $alias));
+            throw new InvalidArgumentException(sprintf('Process scenario with alias "%s" is already registered', $alias));
         }
 
         $this->scenarios[$alias] = $scenario;
@@ -202,7 +202,7 @@ class Coordinator implements CoordinatorInterface
     public function loadScenario($alias)
     {
         if (!isset($this->scenarios[$alias])) {
-            throw new \InvalidArgumentException(sprintf('Process scenario with alias "%s" is not registered', $alias));
+            throw new InvalidArgumentException(sprintf('Process scenario with alias "%s" is not registered', $alias));
         }
 
         return $this->scenarios[$alias];
@@ -222,9 +222,9 @@ class Coordinator implements CoordinatorInterface
         $this->context->addStepToHistory($step->getName());
 
         if (null !== $route = $process->getDisplayRoute()) {
-            $url = $this->router->generate($route, array(
-                'stepName' => $step->getName()
-            ));
+            $url = $this->router->generate($route, array_merge($process->getDisplayRouteParams(), array(
+                'stepName' => $step->getName(),
+            )));
 
             return new RedirectResponse($url);
         }

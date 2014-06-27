@@ -16,6 +16,8 @@ use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\UserEvent;
 use FOS\UserBundle\FOSUserEvents;
 use Sylius\Bundle\FlowBundle\Process\Context\ProcessContextInterface;
+use Sylius\Component\Core\Model\UserInterface;
+use Sylius\Component\Core\SyliusCheckoutEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * If user is not logged in, displays login & registration form.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class SecurityStep extends CheckoutStep
 {
@@ -35,8 +37,13 @@ class SecurityStep extends CheckoutStep
     {
         // If user is already logged in, transparently jump to next step.
         if ($this->isUserLoggedIn()) {
+            $this->saveUser($this->getUser());
+
             return $this->complete();
         }
+
+        $order = $this->getCurrentCart();
+        $this->dispatchCheckoutEvent(SyliusCheckoutEvents::SECURITY_INITIALIZE, $order);
 
         $this->overrideSecurityTargetPath();
 
@@ -48,26 +55,24 @@ class SecurityStep extends CheckoutStep
      */
     public function forwardAction(ProcessContextInterface $context)
     {
+        $order = $this->getCurrentCart();
+        $this->dispatchCheckoutEvent(SyliusCheckoutEvents::SECURITY_INITIALIZE, $order);
+
         $request = $this->getRequest();
 
-        $userManager = $this->get('fos_user.user_manager');
-        $dispatcher = $this->get('event_dispatcher');
-
-        $user = $userManager->createUser();
+        $user = $this->get('fos_user.user_manager')->createUser();
         $user->setEnabled(true);
 
         $form = $this->getRegistrationForm();
         $form->setData($user);
 
-        $dispatcher->dispatch(FOSUserEvents::REGISTRATION_INITIALIZE, new UserEvent($user, $request));
+        $this->dispatchEvent(FOSUserEvents::REGISTRATION_INITIALIZE, new UserEvent($user, $request));
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $event = new FormEvent($form, $request);
-            $dispatcher->dispatch(FOSUserEvents::REGISTRATION_SUCCESS, $event);
+        if ($form->handleRequest($request)->isValid()) {
+            $this->dispatchEvent(FOSUserEvents::REGISTRATION_SUCCESS, new FormEvent($form, $request));
+            $this->dispatchEvent(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, new Response()));
 
-            $userManager->updateUser($user);
-
-            $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, new Response()));
+            $this->saveUser($user);
 
             return $this->complete();
         }
@@ -80,6 +85,8 @@ class SecurityStep extends CheckoutStep
      *
      * @param ProcessContextInterface $context
      * @param FormInterface           $registrationForm
+     *
+     * @return Response
      */
     protected function renderStep(ProcessContextInterface $context, FormInterface $registrationForm)
     {
@@ -104,9 +111,23 @@ class SecurityStep extends CheckoutStep
      */
     protected function overrideSecurityTargetPath()
     {
-        $url = $this->generateUrl('sylius_checkout_security', array(), true);
         $providerKey = $this->container->getParameter('fos_user.firewall_name');
 
-        $this->get('session')->set('_security.'.$providerKey.'.target_path', $url);
+        $this->get('session')->set('_security.'.$providerKey.'.target_path', $this->generateUrl('sylius_checkout_security', array(), true));
+    }
+
+    /**
+     * Dispatch security events, update user and flush
+     *
+     * @param UserInterface $user
+     */
+    protected function saveUser(UserInterface $user)
+    {
+        $order = $this->getCurrentCart();
+        $this->dispatchCheckoutEvent(SyliusCheckoutEvents::SECURITY_PRE_COMPLETE, $order);
+
+        $this->get('fos_user.user_manager')->updateUser($user, true);
+
+        $this->dispatchCheckoutEvent(SyliusCheckoutEvents::SECURITY_COMPLETE, $order);
     }
 }

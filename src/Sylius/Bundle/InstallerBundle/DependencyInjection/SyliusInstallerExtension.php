@@ -11,18 +11,16 @@
 
 namespace Sylius\Bundle\InstallerBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\SyliusResourceExtension;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class SyliusInstallerExtension extends SyliusResourceExtension
+class SyliusInstallerExtension extends AbstractResourceExtension
 {
     /**
      * {@inheritdoc}
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        $this->configDir = __DIR__.'/../Resources/config';
-
         list($config) = $this->configure($config, new Configuration(), $container);
 
         foreach ($config['classes'] as $model => $classes) {

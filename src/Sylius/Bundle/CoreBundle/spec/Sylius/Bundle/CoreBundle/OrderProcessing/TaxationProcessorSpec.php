@@ -11,23 +11,28 @@
 
 namespace spec\Sylius\Bundle\CoreBundle\OrderProcessing;
 
+use Doctrine\Common\Collections\Collection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Sylius\Bundle\CoreBundle\Model\Order;
+use Sylius\Bundle\SettingsBundle\Model\Settings;
+use Sylius\Component\Addressing\Matcher\ZoneMatcherInterface;
+use Sylius\Component\Core\Model\OrderInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Taxation\Calculator\CalculatorInterface;
+use Sylius\Component\Taxation\Resolver\TaxRateResolverInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class TaxationProcessorSpec extends ObjectBehavior
 {
-    /**
-     * @param Sylius\Bundle\ResourceBundle\Model\RepositoryInterface         $adjustmentRepository
-     * @param Sylius\Bundle\TaxationBundle\Calculator\CalculatorInterface    $calculator
-     * @param Sylius\Bundle\TaxationBundle\Resolver\TaxRateResolverInterface $taxRateResolver
-     * @param Sylius\Bundle\AddressingBundle\Matcher\ZoneMatcherInterface    $zoneMatcher
-     * @param Sylius\Bundle\SettingsBundle\Model\Settings                    $taxationSettings
-     */
-    function let($adjustmentRepository, $calculator, $taxRateResolver, $zoneMatcher, $taxationSettings)
+    function let(
+        RepositoryInterface $adjustmentRepository,
+        CalculatorInterface $calculator,
+        TaxRateResolverInterface $taxRateResolver,
+        ZoneMatcherInterface $zoneMatcher,
+        Settings $taxationSettings
+    )
     {
         $this->beConstructedWith($adjustmentRepository, $calculator, $taxRateResolver, $zoneMatcher, $taxationSettings);
     }
@@ -39,28 +44,31 @@ class TaxationProcessorSpec extends ObjectBehavior
 
     function it_implements_Sylius_taxation_processor_interface()
     {
-        $this->shouldImplement('Sylius\Bundle\CoreBundle\OrderProcessing\TaxationProcessorInterface');
+        $this->shouldImplement('Sylius\Component\Core\OrderProcessing\TaxationProcessorInterface');
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface $order
-     */
-    function it_doesnt_apply_any_taxes_if_order_has_no_items($order)
+    function it_removes_existing_tax_adjustments(OrderInterface $order, Collection $collection)
     {
-        $order->getItems()->willReturn(array());
+        $collection->isEmpty()->willReturn(true);
+
+        $order->getItems()->willReturn($collection);
         $order->removeTaxAdjustments()->shouldBeCalled();
-        $order->addAdjustment(Argument::any())->shouldNotBeCalled();
 
         $this->applyTaxes($order);
     }
 
-    /**
-     * @param Sylius\Bundle\CoreBundle\Model\OrderInterface $order
-     */
-    function it_removes_existing_tax_adjustments($order)
+    function it_doesnt_apply_any_taxes_if_zone_is_missing(OrderInterface $order, Collection $collection, $taxationSettings)
     {
-        $order->getItems()->willReturn(array());
+        $collection->isEmpty()->willReturn(false);
+
+        $order->getItems()->willReturn($collection);
         $order->removeTaxAdjustments()->shouldBeCalled();
+
+        $order->getShippingAddress()->willReturn(null);
+
+        $taxationSettings->has('default_tax_zone')->willReturn(false);
+
+        $order->addAdjustment(Argument::any())->shouldNotBeCalled();
 
         $this->applyTaxes($order);
     }

@@ -3,27 +3,18 @@
 namespace spec\Sylius\Bundle\ResourceBundle\Controller;
 
 use PhpSpec\ObjectBehavior;
+use Sylius\Bundle\ResourceBundle\Controller\Configuration;
 
 /**
  * Resource controller spec.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class ResourceControllerSpec extends ObjectBehavior
 {
-    /**
-     * @param Symfony\Component\DependencyInjection\ContainerInterface $container
-     * @param Symfony\Component\HttpFoundation\Request                 $request
-     * @param Symfony\Component\HttpFoundation\ParameterBag            $attributes
-     */
-    function let($container, $request, $attributes)
+    function let(Configuration $configuration)
     {
-        $this->beConstructedWith('sylius_resource', 'test', 'SyliusResourceBundle:Test');
-
-        $request->attributes = $attributes;
-        $container->get('request')->willReturn($request);
-
-        $this->setContainer($container);
+        $this->beConstructedWith($configuration);
     }
 
     function it_is_initializable()

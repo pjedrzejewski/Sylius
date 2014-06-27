@@ -11,10 +11,10 @@
 
 namespace Sylius\Bundle\PayumBundle\Payum\Action;
 
-use Payum\Action\ActionInterface;
 use Payum\Bundle\PayumBundle\Request\ResponseInteractiveRequest;
-use Payum\Exception\LogicException;
-use Payum\Exception\RequestNotSupportedException;
+use Payum\Core\Action\ActionInterface;
+use Payum\Core\Exception\LogicException;
+use Payum\Core\Exception\RequestNotSupportedException;
 use Sylius\Bundle\PayumBundle\Payum\Request\ObtainCreditCardRequest;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -71,8 +71,9 @@ class ObtainCreditCardAction implements ActionInterface
         }
 
         $form = $this->createCreditCardForm();
+
         $form->handleRequest($this->httpRequest);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $request->setCreditCard($form->getData());
 
             return;
@@ -81,7 +82,12 @@ class ObtainCreditCardAction implements ActionInterface
         throw new ResponseInteractiveRequest(new Response(
             $this->templating->render('SyliusPayumBundle::Payum\Action\obtainCreditCard.html.twig', array(
                 'form' => $form->createView()
-            ))
+            )),
+            200,
+            array(
+                'Cache-Control' => 'no-store, no-cache, max-age=0, post-check=0, pre-check=0',
+                'Pragma' => 'no-cache',
+            )
         ));
     }
 

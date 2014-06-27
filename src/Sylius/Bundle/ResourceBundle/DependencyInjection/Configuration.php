@@ -21,7 +21,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * This information is solely responsible for how the different configuration
  * sections are normalized, and merged.
  *
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -58,6 +58,7 @@ class Configuration implements ConfigurationInterface
                                     ->scalarNode('model')->isRequired()->cannotBeEmpty()->end()
                                     ->scalarNode('controller')->defaultValue('Sylius\Bundle\ResourceBundle\Controller\ResourceController')->end()
                                     ->scalarNode('repository')->end()
+                                    ->scalarNode('interface')->end()
                                 ->end()
                             ->end()
                         ->end()

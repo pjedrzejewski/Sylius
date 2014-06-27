@@ -13,9 +13,11 @@ namespace spec\Sylius\Bundle\ProductBundle\Form\Type;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class PrototypeTypeSpec extends ObjectBehavior
 {
@@ -34,10 +36,7 @@ class PrototypeTypeSpec extends ObjectBehavior
         $this->shouldImplement('Symfony\Component\Form\FormTypeInterface');
     }
 
-    /**
-     * @param Symfony\Component\Form\FormBuilder $builder
-     */
-    function it_builds_form_with_proper_fields($builder)
+    function it_builds_form_with_proper_fields(FormBuilder $builder)
     {
         $builder
             ->add('name', 'text', Argument::any())
@@ -46,7 +45,13 @@ class PrototypeTypeSpec extends ObjectBehavior
         ;
 
         $builder
-            ->add('properties', 'sylius_property_choice', Argument::any())
+            ->add('attributes', 'sylius_product_attribute_choice', Argument::any())
+            ->shouldBeCalled()
+            ->willReturn($builder)
+        ;
+
+        $builder
+            ->add('options', 'sylius_product_option_choice', Argument::any())
             ->shouldBeCalled()
             ->willReturn($builder)
         ;
@@ -54,10 +59,7 @@ class PrototypeTypeSpec extends ObjectBehavior
         $this->buildForm($builder, array());
     }
 
-    /**
-     * @param Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
-     */
-    function it_defines_assigned_data_class($resolver)
+    function it_defines_assigned_data_class(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array('data_class' => 'Prototype', 'validation_groups' => array('sylius')))->shouldBeCalled();
 
@@ -66,6 +68,6 @@ class PrototypeTypeSpec extends ObjectBehavior
 
     function it_has_valid_name()
     {
-        $this->getName()->shouldReturn('sylius_prototype');
+        $this->getName()->shouldReturn('sylius_product_prototype');
     }
 }

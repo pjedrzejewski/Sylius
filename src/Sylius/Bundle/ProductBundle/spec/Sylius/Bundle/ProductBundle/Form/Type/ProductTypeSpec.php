@@ -13,9 +13,11 @@ namespace spec\Sylius\Bundle\ProductBundle\Form\Type;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class ProductTypeSpec extends ObjectBehavior
 {
@@ -34,11 +36,14 @@ class ProductTypeSpec extends ObjectBehavior
         $this->shouldImplement('Symfony\Component\Form\FormTypeInterface');
     }
 
-    /**
-     * @param Symfony\Component\Form\FormBuilder $builder
-     */
-    function it_builds_form_with_proper_fields($builder)
+    function it_builds_form_with_proper_fields(FormBuilder $builder)
     {
+        $builder
+            ->add('masterVariant', 'sylius_product_variant', Argument::any())
+            ->shouldBeCalled()
+            ->willReturn($builder)
+        ;
+
         $builder
             ->add('name', 'text', Argument::any())
             ->shouldBeCalled()
@@ -52,7 +57,13 @@ class ProductTypeSpec extends ObjectBehavior
         ;
 
         $builder
-            ->add('availableOn', 'datetime', Argument::any())
+            ->add('attributes', 'collection', Argument::any())
+            ->shouldBeCalled()
+            ->willReturn($builder)
+        ;
+
+        $builder
+            ->add('options', 'sylius_product_option_choice', Argument::any())
             ->shouldBeCalled()
             ->willReturn($builder)
         ;
@@ -69,19 +80,10 @@ class ProductTypeSpec extends ObjectBehavior
             ->willReturn($builder)
         ;
 
-        $builder
-            ->add('properties', 'collection', Argument::any())
-            ->shouldBeCalled()
-            ->willReturn($builder)
-        ;
-
         $this->buildForm($builder, array());
     }
 
-    /**
-     * @param Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
-     */
-    function it_defines_assigned_data_class($resolver)
+    function it_defines_assigned_data_class(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array('data_class' => 'Product', 'validation_groups' => array('sylius')))->shouldBeCalled();
 
