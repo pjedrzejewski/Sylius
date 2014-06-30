@@ -21,7 +21,13 @@
             <generator strategy="AUTO" />
         </id>
 
-        <field name="value" column="value" type="text" />
+        <field name="varchar" column="value_varchar" type="string" nullable="true" />
+        <field name="integer" column="value_integer" type="integer" nullable="true" />
+        <field name="decimal" column="value_decimal" type="decimal" nullable="true" />
+        <field name="boolean" column="value_boolean" type="boolean" nullable="true" />
+        <field name="text" column="value_text" type="text" nullable="true" />
+        <field name="date" column="value_date" type="date" nullable="true" />
+        <field name="datetime" column="value_datetime" type="datetime" nullable="true" />
     </mapped-superclass>
 
 </doctrine-mapping>

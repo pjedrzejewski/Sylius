@@ -11,7 +11,6 @@
 
 namespace Sylius\Bundle\AttributeBundle\Form\Type;
 
-use Sylius\Bundle\AttributeBundle\Form\EventListener\BuildAttributeFormChoicesListener;
 use Sylius\Component\Attribute\Model\AttributeTypes;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -72,10 +71,12 @@ class AttributeType extends AbstractType
             ->add('presentation', 'text', array(
                 'label' => 'sylius.form.attribute.presentation'
             ))
-            ->add('type', 'choice', array(
-                'choices' => AttributeTypes::getChoices()
+            ->add('required', 'checkbox', array(
+                'label' => 'sylius.form.attribute.localizable'
             ))
-            ->addEventSubscriber(new BuildAttributeFormChoicesListener($builder->getFormFactory()))
+            ->add('localizable', 'checkbox', array(
+                'label' => 'sylius.form.attribute.localizable'
+            ))
         ;
     }
 

@@ -12,7 +12,8 @@
 namespace spec\Sylius\Component\Attribute\Model;
 
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\Attribute\Model\AttributeTypes;
+use Sylius\Component\Attribute\Model\AttributeStorage;
+use Sylius\Component\Attribute\Model\AttributeType;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
@@ -64,13 +65,57 @@ class AttributeSpec extends ObjectBehavior
 
     function it_has_text_type_by_default()
     {
-        $this->getType()->shouldReturn(AttributeTypes::TEXT);
+        $this->getType()->shouldReturn(AttributeType::TEXT);
     }
 
     function its_type_is_mutable()
     {
-        $this->setType(AttributeTypes::CHECKBOX);
-        $this->getType()->shouldReturn(AttributeTypes::CHECKBOX);
+        $this->setType(AttributeType::BOOLEAN);
+        $this->getType()->shouldReturn(AttributeType::BOOLEAN);
+    }
+
+    function it_has_varchar_storage_by_default()
+    {
+        $this->getStorage()->shouldReturn(AttributeStorage::VARCHAR);
+    }
+
+    function its_storage_is_mutable()
+    {
+        $this->setStorage(AttributeStorage::BOOLEAN);
+        $this->getStorage()->shouldReturn(AttributeStorage::BOOLEAN);
+    }
+
+    function it_does_not_have_default_value()
+    {
+        $this->getDefaultValue()->shouldReturn(null);
+    }
+
+    function its_default_value_is_mutable()
+    {
+        $this->setDefaultValue(45);
+        $this->getDefaultValue()->shouldReturn(45);
+    }
+
+    function it_is_not_required_by_default()
+    {
+        $this->shouldNotBeRequired();
+    }
+
+    function it_can_be_required()
+    {
+        $this->setRequired(true);
+        $this->shouldBeRequired();
+    }
+
+    function it_is_localizable_by_default()
+    {
+        $this->shouldBeLocalizable();
+    }
+
+    function it_can_be_not_localizable()
+    {
+        $this->setLocalizable(false);
+        $this->shouldNotBeLocalizable();
     }
 
     function it_initializes_empty_configuration_array_by_default()
@@ -116,7 +161,7 @@ class AttributeSpec extends ObjectBehavior
 
         $this->setName('T-Shirt brand')->shouldReturn($this);
         $this->setPresentation('Brand')->shouldReturn($this);
-        $this->setType(AttributeTypes::CHOICE)->shouldReturn($this);
+        $this->setType(AttributeType::CHOICE)->shouldReturn($this);
         $this->setConfiguration(array())->shouldReturn($this);
         $this->setCreatedAt($date)->shouldReturn($this);
         $this->setUpdatedAt($date)->shouldReturn($this);

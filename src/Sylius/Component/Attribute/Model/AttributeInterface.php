@@ -63,6 +63,62 @@ interface AttributeInterface extends TimestampableInterface
     public function setType($type);
 
     /**
+     * The database storage.
+     *
+     * @return string
+     */
+    public function getStorage();
+
+    /**
+     * Set the database storage.
+     *
+     * @param string $storage
+     */
+    public function setStorage($storage);
+
+    /**
+     * Is required?
+     *
+     * @return Boolean
+     */
+    public function isRequired();
+
+    /**
+     * Define if the attribute is required.
+     *
+     * @param Boolean $required
+     */
+    public function setRequired($required);
+
+    /**
+     * Get default value attribute.
+     *
+     * @return mixed
+     */
+    public function getDefaultValue();
+
+    /**
+     * Set the default value.
+     *
+     * @param mixed $value
+     */
+    public function setDefaultValue($value);
+
+    /**
+     * Can be translated?
+     *
+     * @return Boolean
+     */
+    public function isLocalizable();
+
+    /**
+     * Define if translatable?
+     *
+     * @param Boolean $localizable
+     */
+    public function setLocalizable($localizable);
+
+    /**
      * Get attribute configuration.
      *
      * @return array

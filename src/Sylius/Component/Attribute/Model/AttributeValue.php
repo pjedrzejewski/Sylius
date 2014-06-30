@@ -40,18 +40,60 @@ class AttributeValue implements AttributeValueInterface
     protected $attribute;
 
     /**
-     * Attribute value.
+     * Varchar value.
      *
-     * @var mixed
+     * @var string
      */
-    protected $value;
+    protected $varchar;
+
+    /**
+     * Integer values.
+     *
+     * @var integer
+     */
+    protected $integer;
+
+    /**
+     * Decimal value.
+     *
+     * @var double
+     */
+    protected $decimal;
+
+    /**
+     * Boolean value.
+     *
+     * @var Boolean
+     */
+    protected $boolean;
+
+    /**
+     * Text value.
+     *
+     * @var string
+     */
+    protected $text;
+
+    /**
+     * Date values.
+     *
+     * @var \DateTime
+     */
+    protected $date;
+
+    /**
+     * Datetime values.
+     *
+     * @var \DateTime
+     */
+    protected $datetime;
 
     /**
      * {@inheritdoc}
      */
     public function __toString()
     {
-        return $this->value;
+        return $this->getValue();
     }
 
     /**
@@ -93,6 +135,10 @@ class AttributeValue implements AttributeValueInterface
      */
     public function setAttribute(AttributeInterface $attribute)
     {
+        if (is_object($this->attribute) && $attribute !== $this->attribute) {
+            throw new \LogicException('Attribute has been already defined for this value.');
+        }
+
         $this->attribute = $attribute;
 
         return $this;
@@ -103,11 +149,13 @@ class AttributeValue implements AttributeValueInterface
      */
     public function getValue()
     {
-        if ($this->attribute && AttributeTypes::CHECKBOX === $this->attribute->getType()) {
-            return (Boolean) $this->value;
+        if (null === $this->attribute) {
+            return null;
         }
 
-        return $this->value;
+        $method = 'get'.ucfirst($this->attribute->getStorage());
+
+        return $this->$method();
     }
 
     /**
@@ -115,7 +163,135 @@ class AttributeValue implements AttributeValueInterface
      */
     public function setValue($value)
     {
-        $this->value = $value;
+        $this->assertAttributeIsSet();
+
+        $method = 'set'.ucfirst($this->attribute->getStorage());
+
+        return $this->$method($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVarchar()
+    {
+        return $this->varchar;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setVarchar($varchar)
+    {
+        $this->varchar = $varchar;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getInteger()
+    {
+        return $this->integer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setInteger($integer)
+    {
+        $this->integer = $integer;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDecimal()
+    {
+        return $this->decimal;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDecimal($decimal)
+    {
+        $this->decimal = $decimal;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBoolean()
+    {
+        return $this->boolean;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBoolean($boolean)
+    {
+        $this->boolean = $boolean;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDateTime()
+    {
+        return $this->datetime;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDateTime(\DateTime $datetime)
+    {
+        $this->datetime = $datetime;
 
         return $this;
     }

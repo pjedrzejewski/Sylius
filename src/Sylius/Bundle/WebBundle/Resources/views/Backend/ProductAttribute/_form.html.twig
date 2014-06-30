@@ -3,7 +3,8 @@
 <fieldset>
     {{ form_row(form.name, {'attr': {'class': 'input-lg'}}) }}
     {{ form_row(form.presentation, {'attr': {'class': 'input-lg'}}) }}
-    {{ form_row(form.type, {'attr': {'class': 'input-lg'}}) }}
+    {{ form_row(form.required) }}
+    {{ form_row(form.localizable) }}
     {% if form.choices is defined %}
     {% spaceless %}
         <div class="property-choices-container hidden">

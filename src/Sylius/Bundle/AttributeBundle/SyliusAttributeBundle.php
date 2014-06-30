@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\AttributeBundle;
 
 use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass;
+use Sylius\Bundle\AttributeBundle\DependencyInjection\Compiler\RegisterAttributeTypesPass;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -43,5 +44,7 @@ class SyliusAttributeBundle extends Bundle
         );
 
         $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings, array('doctrine.orm.entity_manager'), 'sylius_attribute.driver.doctrine/orm'));
+
+        $container->addCompilerPass(new RegisterAttributeTypesPass());
     }
 }

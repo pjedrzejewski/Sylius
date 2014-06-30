@@ -22,6 +22,10 @@
         <field name="name" column="name" type="string" />
         <field name="presentation" column="presentation" type="string" />
         <field name="type" column="type" type="string" />
+        <field name="storage" column="storage" type="string" />
+        <field name="defaultValue" column="default_value" type="json_array" nullable="true" />
+        <field name="required" column="required" type="boolean" />
+        <field name="localizable" column="localizable" type="boolean" />
         <field name="configuration" column="configuration" type="array" />
 
         <field name="createdAt" column="created_at" type="datetime">

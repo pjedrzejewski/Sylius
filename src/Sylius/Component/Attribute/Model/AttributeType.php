@@ -16,9 +16,10 @@ namespace Sylius\Component\Attribute\Model;
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-class AttributeTypes
+class AttributeType
 {
-    const CHECKBOX   = 'checkbox';
+    const DATE       = 'date';
+    const BOOLEAN    = 'boolean';
     const CHOICE     = 'choice';
     const MONEY      = 'money';
     const NUMBER     = 'number';

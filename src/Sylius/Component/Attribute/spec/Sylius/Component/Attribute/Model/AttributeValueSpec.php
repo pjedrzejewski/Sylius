@@ -13,8 +13,9 @@ namespace spec\Sylius\Component\Attribute\Model;
 
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Attribute\Model\AttributeInterface;
-use Sylius\Component\Attribute\Model\AttributeTypes;
+use Sylius\Component\Attribute\Model\AttributeStorage;
 use Sylius\Component\Attribute\Model\AttributeSubjectInterface;
+use Sylius\Component\Attribute\Model\AttributeType;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
@@ -72,26 +73,20 @@ class AttributeValueSpec extends ObjectBehavior
         $this->getValue()->shouldReturn(null);
     }
 
-    function its_value_is_mutable()
+    function its_value_is_mutable(AttributeInterface $attribute)
     {
+        $attribute->getStorage()->willReturn(AttributeStorage::TEXT);
+        $this->setAttribute($attribute);
+
         $this->setValue('XXL');
         $this->getValue()->shouldReturn('XXL');
     }
 
-    function it_converts_value_to_Boolean_if_attribute_has_checkbox_type(AttributeInterface $attribute)
+    function it_returns_its_value_when_converted_to_string(AttributeInterface $attribute)
     {
-        $attribute->getType()->willReturn(AttributeTypes::CHECKBOX);
+        $attribute->getStorage()->willReturn(AttributeStorage::TEXT);
         $this->setAttribute($attribute);
 
-        $this->setValue('1');
-        $this->getValue()->shouldReturn(true);
-
-        $this->setValue(0);
-        $this->getValue()->shouldReturn(false);
-    }
-
-    function it_returns_its_value_when_converted_to_string()
-    {
         $this->setValue('S');
         $this->__toString()->shouldReturn('S');
     }

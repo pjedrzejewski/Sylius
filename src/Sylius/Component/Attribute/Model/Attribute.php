@@ -33,19 +33,47 @@ class Attribute implements AttributeInterface
     protected $name;
 
     /**
-     * Type.
-     *
-     * @var string
-     */
-    protected $type = AttributeTypes::TEXT;
-
-    /**
      * Presentation.
      * Displayed to user.
      *
      * @var string
      */
     protected $presentation;
+
+    /**
+     * Type.
+     *
+     * @var string
+     */
+    protected $type = AttributeType::TEXT;
+
+    /**
+     * Database storage.
+     *
+     * @var string
+     */
+    protected $storage = AttributeStorage::VARCHAR;
+
+    /**
+     * Is required?
+     *
+     * @var Boolean
+     */
+    protected $required = false;
+
+    /**
+     * Default attribute value.
+     *
+     * @var mixed
+     */
+    protected $defaultValue;
+
+    /**
+     * Attribute can be translated?
+     *
+     * @var Boolean
+     */
+    protected $localizable = true;
 
     /**
      * Attribute configuration.
@@ -139,6 +167,78 @@ class Attribute implements AttributeInterface
     public function setType($type)
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setStorage($storage)
+    {
+        $this->storage = $storage;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultValue($value)
+    {
+        $this->defaultValue = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setRequired($required)
+    {
+        $this->required = (Boolean) $required;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isLocalizable()
+    {
+        return $this->localizable;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setLocalizable($localizable)
+    {
+        $this->localizable = (Boolean) $localizable;
 
         return $this;
     }

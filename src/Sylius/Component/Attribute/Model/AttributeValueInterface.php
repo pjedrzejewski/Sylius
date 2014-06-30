@@ -63,6 +63,104 @@ interface AttributeValueInterface
     public function setValue($value);
 
     /**
+     * Get varchar value.
+     *
+     * @return string
+     */
+    public function getVarchar();
+
+    /**
+     * Set varchar value.
+     *
+     * @param string $varchar
+     */
+    public function setVarchar($varchar);
+
+    /**
+     * Get integer value.
+     *
+     * @return integer
+     */
+    public function getInteger();
+
+    /**
+     * Set integer value.
+     *
+     * @param integer $integer
+     */
+    public function setInteger($integer);
+
+    /**
+     * Get decimal value.
+     *
+     * @return double
+     */
+    public function getDecimal();
+
+    /**
+     * Set decimal value.
+     *
+     * @param double $decimal
+     */
+    public function setDecimal($decimal);
+
+    /**
+     * Get boolean value.
+     *
+     * @return Boolean
+     */
+    public function getBoolean();
+
+    /**
+     * Set boolean value.
+     *
+     * @param Boolean $boolean
+     */
+    public function setBoolean($boolean);
+
+    /**
+     * Get text value.
+     *
+     * @return string
+     */
+    public function getText();
+
+    /**
+     * Set text value.
+     *
+     * @param string $text
+     */
+    public function setText($text);
+
+    /**
+     * Get date value.
+     *
+     * @return DateTime
+     */
+    public function getDate();
+
+    /**
+     * Set date value.
+     *
+     * @param DateTime $date
+     */
+    public function setDate(\DateTime $date);
+
+    /**
+     * Get datetime value.
+     *
+     * @return DateTime
+     */
+    public function getDateTime();
+
+    /**
+     * Set datetime value.
+     *
+     * @param DateTime $datetime
+     */
+    public function setDateTime(\DateTime $datetime);
+
+    /**
      * Proxy method to access the name from real attribute.
      *
      * @return string
