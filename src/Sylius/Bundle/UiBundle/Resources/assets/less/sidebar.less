@@ -1,33 +1,126 @@
-#sidebar-container {
-    padding: 0;
-    background-color: @color-gray;
-    overflow: hidden;
-    top:0px;
-    left:0px;
-    bottom:0px;
-    position:absolute;
-}
-.sidebar {
-    background-color: @color-gray;
+#sidebar-wrapper {
+    margin-left: -150px;
+    left: -30px;
+    width: 250px;
+    position: fixed;
     height: 100%;
-
-    li a {
-        color: @color-light-gray;
-        background-color: @color-gray;
-        font-size: 1em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    li.active a {
-        color: @color-white;
-        background-color: @color-sylius;
-    }
-    li a:visited {
-        color: @color-light-gray;
-    }
-    li a:hover {
-        color: #fff;
-        background-color: @color-sylius;
-    }
+}
+#page-wrapper, #sidebar-wrapper {
+    transition: all .4s ease 0s;
+}
+ul.sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 45px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-indent: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+#page-wrapper:not(.active) ul.sidebar {
+    bottom: 0;
+}
+ul.sidebar li a {
+    color: #fff;
+    display: block;
+    float: left;
+    text-decoration: none;
+    width: 250px;  
+}
+ul.sidebar .sidebar-main {
+    height: 65px;
+}
+ul.sidebar .sidebar-main a {
+    font-size: 18px;
+    line-height: 60px;
+}
+ul.sidebar .sidebar-main img {
+    width: 35px;
+    margin-left: -10px;
+    margin-right: 10px;
+}
+ul.sidebar .sidebar-main .menu-icon {
+    float: right;
+    font-size: 18px;
+    padding-right: 28px;
+    line-height: 60px;
+}
+ul.sidebar .sidebar-title {
+    font-size: 12px;
+    height: 35px;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-title {
+    display: none;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
+    display: block;
+    height: 2px;
+    margin: 13px 0;
+}
+ul.sidebar .sidebar-list {
+    height: 40px;
+}
+ul.sidebar .sidebar-list a {
+    text-indent: 25px;
+    font-size: 15px;
+    color: @color-white;
+    line-height: 40px;
+}
+ul.sidebar .sidebar-list a:hover {
+    color: @color-white;
+    border-left: 6px solid @color-sylius;
+    text-indent: 22px;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-list a:hover span {
+    border-left: 6px solid @color-sylius;
+    text-indent: 22px;
+}
+ul.sidebar .sidebar-list .menu-icon {
+    float: right;
+    padding-right: 29px;
+    line-height: 40px;
+    width: 70px;
+}
+ul.sidebar .sidebar-list a:hover .menu-icon {
+    text-indent: 25px;
+}
+.sidebar-footer {
+    position: absolute;
+    height: 40px;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+#page-wrapper:not(.active) .sidebar-footer {
+    display: none;
+}
+.sidebar-footer div a {
+    color: @color-white;
+    font-size: 12px;
+    line-height: 43px;
+}
+.sidebar-footer div a:hover {
+    color: @color-sylius;
+    text-decoration: none;
+}
+#page-wrapper.active #sidebar-wrapper {
+    left: 150px;
+}
+ul.sidebar .sidebar-main a, .sidebar-footer, ul.sidebar .sidebar-list a:hover {
+    background: @color-gray;
+}
+#sidebar-wrapper {
+    background: @color-dark-gray;
+}
+ul.sidebar .sidebar-title {
+    color: @color-light-gray;
+}
+#page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
+    background: @color-gray;
 }

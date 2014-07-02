@@ -9,6 +9,7 @@
     </title>
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% block stylesheets %}
         {% include 'SyliusUiBundle::_stylesheets.html.twig' %}
@@ -20,26 +21,44 @@
     <![endif]-->
 </head>
 <body>
-    <div id="wrap">
-        {% block navbar %}
-            {% include 'SyliusUiBundle:Navbar:_default.html.twig' %}
+    <div id="page-wrapper">
+    <div id="sidebar-wrapper">
+        {% block sidebar %}
+            {% include 'SyliusUiBundle:Sidebar:_default.html.twig' %}
         {% endblock %}
 
-        <div class="container-fluid" id="main-container">
-        {% block main %}
-            {% include 'SyliusUiBundle::_flashes.html.twig' %}
+        <div class="sidebar-footer">
+            <div class="col-xs-4">
+                <a href="https://sylius.org" target="_blank">&copy; Sylius</a>
+            </div>
+        </div>
+    </div>
 
-            {% block breadcrumb %}
-                {% include 'SyliusUiBundle:Breadcrumb:_default.html.twig' %}
-            {% endblock %}
-
-            <div class="col-md-12" id="content-container">
-            {% block content %}
-            {% endblock %}
+    <div id="content-wrapper">
+        <div class="page-content">
+            <div class="row header">
+                <div class="col-xs-12">
+                <div class="meta pull-left">
+                    {% block header %}{% endblock %}
+                </div>
+                {% block user %}
+                    {% include 'SyliusUiBundle:Header:_user.html.twig' %}
+                {% endblock %}
+                </div>
             </div>
 
-        {% endblock main %}
+            <div class="row">
+                <div class="col-xs-12">
+                    {% block flashes %}
+                        {% include 'SyliusUiBundle::_javascripts.html.twig' %}
+                    {% endblock %}
+
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
         </div>
+    </div>
     </div>
 
     {% block modals %}
@@ -50,5 +69,4 @@
     {% block javascripts %}
         {% include 'SyliusUiBundle::_javascripts.html.twig' %}
     {% endblock %}
-</body>
 </html>

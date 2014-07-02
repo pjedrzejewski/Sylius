@@ -1,26 +1,16 @@
-@media (max-width: 992px) {
+@media only screen and (min-width : 993px) {
+    .row.header .meta .page {
+        width: 380px;
+    }
+}
+@media only screen and (max-width : 992px) {
+    .row header .meta .page {
+        width: 180px;
+    }
     .btn i {
         margin-right: 0;
     }
     .btn span {
         display: none;
-    }
-    .table .btn {
-        margin-bottom: 3px;
-    }
-    .row {
-        margin-left: 0;
-        margin-right: 0;
-    }
-    .main-container .col-md-10 {
-        padding-left: 15px;
-    }
-}
-@media (min-width: 768px) {
-    ul.nav li.dropdown:hover > a {
-        background-color: @color-sylius;
-    }
-    ul.nav li.dropdown:hover > ul.dropdown-menu {
-        display: block;
     }
 }

@@ -1,13 +1,3 @@
-{% macro header(page, icon, actions = null, vars = {}) %}
-
-{% set header = 'sylius.'~page~'_header' %}
-
-<div class="page-header">
-    {% if actions is not null %}
-        <div class="actions-menu">
-        {% include actions ignore missing with vars %}
-        </div>
-    {% endif %}
-    <h1><i class="fa fa-{{ icon }}"></i> {{ header|trans|raw }}</h1>
-</div>
+{% macro header(title, icon = 'circle') %}
+<h1><i class="fa fa-{{ icon }}"></i> {{ title|trans|raw }}</h1>
 {% endmacro %}

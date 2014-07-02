@@ -4,6 +4,10 @@
 {% import 'SyliusUiBundle::page.html.twig' as page %}
 {% import 'SyliusUiBundle::pagination.html.twig' as pagination %}
 
+{% block header %}
+{{ page.header('sylius.tax_category.index_header', 'cog') }}
+{% endblock %}
+
 {% block breadcrumb %}
 <ol class="breadcrumb">
     <li>{{ 'sylius.breadcrumb.configuration'|trans }}</li>
@@ -12,8 +16,6 @@
 {% endblock %}
 
 {% block content %}
-{{ page.header('tax_category.index', 'cog', 'SyliusWebBundle:Backend/TaxCategory/Actions:_index.html.twig') }}
-
 {{ pagination.standard(tax_categories) }}
 {{ list(tax_categories) }}
 {{ pagination.standard(tax_categories) }}
