@@ -44,6 +44,20 @@ class Report implements ReportInterface
     private $dataFetcherConfiguration;
 
     /**
+     * Renderer name.
+     *
+     * @var string
+     */
+    private $renderer;
+
+    /**
+     * Renderers configuration.
+     *
+     * @var array
+     */
+    private $rendererConfiguration = array();
+
+    /**
      * Gets the value of id.
      *
      * @return integer
@@ -138,6 +152,29 @@ class Report implements ReportInterface
 
         return $this;
     }
+    /**
+     * Gets the Renderer name.
+     *
+     * @return string
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * Sets the Renderer name.
+     *
+     * @param string $renderer the renderer
+     *
+     * @return self
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
+
+        return $this;
+    }
 
     /**
      * Gets the value of dataFetcherConfiguration.
@@ -159,6 +196,30 @@ class Report implements ReportInterface
     public function setDataFetcherConfiguration(Array $dataFetcherConfiguration)
     {
         $this->dataFetcherConfiguration = $dataFetcherConfiguration;
+
+        return $this;
+    }
+        
+    /**
+     * Gets the Renderers configuration.
+     *
+     * @return array
+     */
+    public function getRendererConfiguration()
+    {
+        return $this->rendererConfiguration;
+    }
+
+    /**
+     * Sets the Renderers configuration.
+     *
+     * @param array $rendererConfiguration the renderer configuration
+     *
+     * @return self
+     */
+    public function setRendererConfiguration($rendererConfiguration)
+    {
+        $this->rendererConfiguration = $rendererConfiguration;
 
         return $this;
     }

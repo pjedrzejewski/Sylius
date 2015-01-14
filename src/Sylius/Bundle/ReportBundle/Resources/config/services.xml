@@ -15,19 +15,36 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                http://symfony.com/schema/dic/services/services-1.0.xsd">
+<<<<<<< HEAD
 
     <parameters>
-         <parameter key="sylius.registry.report.data_fetcher.class">Sylius\Component\Registry\ServiceRegistry</parameter>
-         <parameter key="sylius.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
-         <parameter key="sylius.form.type.data_fetcher_choice.class">Sylius\Bundle\ReportBundle\Form\Type\DataFetcherChoiceType</parameter>
+        <parameter key="sylius.registry.report.data_fetcher.class">Sylius\Component\Registry\ServiceRegistry</parameter>
+        <parameter key="sylius.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
+        <parameter key="sylius.report.renderer.class">Sylius\Component\Report\Renderer\DelegatingRenderer</parameter>
+
+        <parameter key="sylius.form.type.renderer_choice.class">Sylius\Bundle\ReportBundle\Form\Type\RendererChoiceType</parameter>
+
+        <parameter key="sylius.form.type.data_fetcher_choice.class">Sylius\Bundle\ReportBundle\Form\Type\DataFetcherChoiceType</parameter>
     </parameters>
 
     <services>
         <service id="sylius.registry.report.data_fetcher" class="%sylius.registry.report.data_fetcher.class%">
             <argument>Sylius\Component\Report\DataFetcher\DataFetcherInterface</argument>
         </service>
+        <service id="sylius.registry.report.renderer" class="%sylius.registry.report.renderer.class%">
+            <argument>Sylius\Component\Report\Renderer\RendererInterface</argument>
+        </service>
+
+        <service id="sylius.report.renderer" class="%sylius.report.renderer.class%">
+            <argument type="service" id="sylius.registry.report.renderer" />
+        </service>
          <service id="sylius.data_fetcher" class="%sylius.data_fetcher.class%">
             <argument type="service" id="sylius.registry.report.data_fetcher" />
+        </service>
+
+        <service id="sylius.form.type.renderer_choice" class="%sylius.form.type.renderer_choice.class%">
+            <argument>%sylius.report.renderers%</argument>
+            <tag name="form.type" alias="sylius_renderer_choice" />
         </service>
         <service id="sylius.form.type.data_fetcher_choice" class="%sylius.form.type.data_fetcher_choice.class%">
             <argument>%sylius.data_fetchers%</argument>
