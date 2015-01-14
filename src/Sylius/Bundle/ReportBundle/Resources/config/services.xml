@@ -15,7 +15,26 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                http://symfony.com/schema/dic/services/services-1.0.xsd">
+    
+    <parameters>
+        <parameter key="sylius.registry.report.renderer.class">Sylius\Component\Registry\ServiceRegistry</parameter>
+        <parameter key="sylius.report.renderer.class">Sylius\Component\Report\Renderer\DelegatingRenderer</parameter>
 
+        <parameter key="sylius.form.type.renderer_choice.class">Sylius\Bundle\ReportBundle\Form\Type\RendererChoiceType</parameter>
+    </parameters>
 
+    <services>
+        <service id="sylius.registry.report.renderer" class="%sylius.registry.report.renderer.class%">
+            <argument>Sylius\Component\Report\Renderer\RendererInterface</argument>
+        </service>
+        <service id="sylius.report.renderer" class="%sylius.report.renderer.class%">
+            <argument type="service" id="sylius.registry.report.renderer" />
+        </service>
+
+        <service id="sylius.form.type.renderer_choice" class="%sylius.form.type.renderer_choice.class%">
+            <argument>%sylius.report.renderers%</argument>
+            <tag name="form.type" alias="sylius_renderer_choice" />
+        </service>
+    </services>
 
 </container>

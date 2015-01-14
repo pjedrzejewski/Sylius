@@ -13,7 +13,11 @@ namespace Sylius\Bundle\ReportBundle\Form\Type;
 
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Sylius\Component\Report\Model\ReportInterface;
+use Sylius\Component\Registry\ServiceRegistryInterface;
+use Sylius\Bundle\ReportBundle\Form\EventListener\BuildReportRendererFormListener;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 /**
  * Report form type.
@@ -23,6 +27,20 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class ReportType extends AbstractResourceType
 {
+    /**
+     * Renderer registry
+     *
+     * @var ServiceRegistryInterface
+     */
+    protected $rendererRegistry;
+
+    public function __construct($dataClass, array $validationGroups, ServiceRegistryInterface $rendererRegistry)
+    {
+        parent::__construct($dataClass, $validationGroups);
+        
+        $this->rendererRegistry = $rendererRegistry;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +55,44 @@ class ReportType extends AbstractResourceType
                 'label'    => 'sylius.form.report.description',
                 'required' => false,
             ))
+            ->add('renderer', 'sylius_renderer_choice', array(
+                'label' => 'sylius.form.report.renderer'
+            ))
+            ->addEventSubscriber(new BuildReportRendererFormListener($this->rendererRegistry, $builder->getFormFactory()))
         ;
+
+        $prototypes = array();
+        $prototypes['renderers'] = array();
+
+        foreach ($this->rendererRegistry->all() as $type => $renderer) {
+            $formType = sprintf('sylius_renderer_%s', $renderer->getType());
+
+            if (!$formType) {
+                continue;
+            }
+
+            try {
+                $prototypes['renderers'][$type] = $builder->create('rendererConfiguration', $formType)->getForm();
+            } catch (\InvalidArgumentException $e) {
+                continue;
+            }
+        }
+
+        $builder->setAttribute('prototypes', $prototypes);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['prototypes'] = array();
+
+        foreach ($form->getConfig()->getAttribute('prototypes') as $group => $prototypes) {
+            foreach ($prototypes as $type => $prototype) {
+                $view->vars['prototype'][$group.'_'.$type] = $prototype->createView($view);
+            }
+        }
     }
 
     /**
