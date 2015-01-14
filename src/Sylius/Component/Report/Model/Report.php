@@ -11,6 +11,8 @@
 
 namespace Sylius\Component\Report\Model;
 
+use Sylius\Component\Report\Renderer\TableRenderer;
+
 /**
  * @author Łukasz Chruściel <lchrusciel@gmail.com>
  * @author Mateusz Zalewski <zaleslaw@gmail.com>
@@ -38,7 +40,7 @@ class Report implements ReportInterface
      *
      * @var string
      */
-    private $renderer;
+    private $renderer = 'table';
 
     /**
      * Renderers configuration.
