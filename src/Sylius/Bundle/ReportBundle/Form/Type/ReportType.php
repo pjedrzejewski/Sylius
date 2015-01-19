@@ -23,7 +23,7 @@ use Symfony\Component\Form\FormView;
  * Report form type.
  * 
  * @author Łukasz Chruściel <lchrusciel@gmail.com>
- * @author Mateusz Zalewski <zaleslaw@gmail.com>
+ * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
 class ReportType extends AbstractResourceType
 {
@@ -56,25 +56,25 @@ class ReportType extends AbstractResourceType
                 'required' => false,
             ))
             ->add('renderer', 'sylius_renderer_choice', array(
-                'label' => 'sylius.form.report.renderer'
+                'label' => 'sylius.form.report.renderer.label'
             ))
             ->addEventSubscriber(new BuildReportRendererFormListener($this->rendererRegistry, $builder->getFormFactory()))
         ;
 
         $prototypes = array();
-        $prototypes['renderers'] = array();
+        $prototypes['renderer'] = array();
 
         foreach ($this->rendererRegistry->all() as $type => $renderer) {
-            $formType = sprintf('sylius_renderer_%s', $renderer->getType());
+            $formType = sprintf('sylius_report_renderer_%s_configuration', $renderer->getType());
 
             if (!$formType) {
                 continue;
             }
-
+            
             try {
-                $prototypes['renderers'][$type] = $builder->create('rendererConfiguration', $formType)->getForm();
+                $prototypes['renderer'][$type] = $builder->create('rendererConfiguration', $formType)->getForm();
             } catch (\InvalidArgumentException $e) {
-                continue;
+                return;
             }
         }
 
@@ -90,7 +90,7 @@ class ReportType extends AbstractResourceType
 
         foreach ($form->getConfig()->getAttribute('prototypes') as $group => $prototypes) {
             foreach ($prototypes as $type => $prototype) {
-                $view->vars['prototype'][$group.'_'.$type] = $prototype->createView($view);
+                $view->vars['prototypes'][$group.'_'.$type] = $prototype->createView($view);
             }
         }
     }

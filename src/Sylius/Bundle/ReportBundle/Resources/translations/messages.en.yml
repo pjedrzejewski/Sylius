@@ -12,4 +12,8 @@ sylius:
         report:
             name: Name
             description: Description
-            renderer: Renderer
+            renderer:
+                label:  Renderer
+                template: Template
+            chart:
+                type: Type
