@@ -23,7 +23,7 @@ use Sylius\Component\Translation\Provider\LocaleProviderInterface;
 require_once __DIR__.'/../../../../../ResourceBundle/spec/Fixture/Document/TranslatableFoo.php';
 
 /**
- * Doctrine ODM MongoDB driver translatable document repository spec.
+ * @require Doctrine\ODM\MongoDB\DocumentManager
  *
  * @author Ivannis Suárez Jérez <ivannis.suarez@gmail.com>
  */

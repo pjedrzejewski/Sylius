@@ -76,16 +76,18 @@ class CoreContext extends DefaultContext
      */
     public function thereAreOrders(TableNode $table)
     {
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('order');
         $finite  = $this->getService('sm.factory');
         $orderRepository   = $this->getRepository('order');
         $shipmentProcessor = $this->getService('sylius.processor.shipment_processor');
 
         /** @var $paymentMethod PaymentMethodInterface */
-        $paymentMethod = $this->getRepository('payment_method')->createNew();
+        $paymentMethod = $this->getFactory('payment_method')->createNew();
         $paymentMethod->setName('Stripe');
         $paymentMethod->setGateway('stripe');
-        $manager->persist($paymentMethod);
+
+        $this->getManager('payment_method')->persist($paymentMethod);
+        $this->getManager('payment_method')->flush();
 
         $currentOrderNumber = 1;
         foreach ($table->getHash() as $data) {
@@ -132,8 +134,8 @@ class CoreContext extends DefaultContext
      */
     public function orderHasFollowingItems($number, TableNode $items)
     {
-        $manager = $this->getEntityManager();
-        $orderItemRepository = $this->getRepository('order_item');
+        $manager = $this->getManager('order');
+        $orderItemFactory = $this->getFactory('order_item');
 
         $order = $this->orders[$number];
 
@@ -141,7 +143,7 @@ class CoreContext extends DefaultContext
             $product = $this->findOneByName('product', trim($data['product']));
 
             /* @var $item OrderItemInterface */
-            $item = $orderItemRepository->createNew();
+            $item = $orderItemFactory->createNew();
             $item->setVariant($product->getMasterVariant());
             $item->setUnitPrice($product->getMasterVariant()->getPrice());
             $item->setQuantity($data['quantity']);
@@ -200,7 +202,7 @@ class CoreContext extends DefaultContext
             );
         }
 
-        $this->getEntityManager()->flush();
+        $this->getManager('user')->flush();
     }
 
     /**
@@ -210,11 +212,11 @@ class CoreContext extends DefaultContext
      */
     public function thereAreGroups(TableNode $table)
     {
-        $manager = $this->getEntityManager();
-        $repository = $this->getRepository('group');
+        $manager = $this->getManager('group');
+        $factory = $this->getFactory('group');
 
         foreach ($table->getHash() as $data) {
-            $group = $repository->createNew();
+            $group = $factory->createNew();
             $group->setName(trim($data['name']));
 
             $manager->persist($group);
@@ -228,14 +230,13 @@ class CoreContext extends DefaultContext
      */
     public function theFollowingAddressesExist(TableNode $table)
     {
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('address');
 
         foreach ($table->getHash() as $data) {
             $address = $this->createAddress($data['address']);
             $user = $this->thereIsUser($data['user'], 'sylius', 'ROLE_USER', 'yes', null, array(), false);
             $user->getCustomer()->addAddress($address);
             $manager->persist($address);
-            $manager->persist($user);
         }
 
         $manager->flush();
@@ -243,8 +244,23 @@ class CoreContext extends DefaultContext
 
     public function thereIsUser($email, $password, $role = null, $enabled = 'yes', $address = null, $groups = array(), $flush = true, array $authorizationRoles = array(), $createdAt = null)
     {
-        if (null !== $user = $this->getRepository('user')->findOneByEmail($email)) {
-            return $user;
+        if (null === $user = $this->getRepository('user')->findOneByEmail($email)) {
+            $addressData = explode(',', $address);
+            $addressData = array_map('trim', $addressData);
+
+            /* @var $user UserInterface */
+            $user = $this->getFactory('user')->createNew();
+            $user->setFirstname($this->faker->firstName);
+            $user->setLastname($this->faker->lastName);
+            $user->setFirstname(null === $address ? $this->faker->firstName : $addressData[0]);
+            $user->setLastname(null === $address ? $this->faker->lastName : $addressData[1]);
+            $user->setEmail($email);
+            $user->setEnabled('yes' === $enabled);
+            $user->setPlainPassword($password);
+
+            if (null !== $address) {
+                $user->setShippingAddress($this->createAddress($address));
+            }
         }
 
         /* @var $user UserInterface */
@@ -254,6 +270,7 @@ class CoreContext extends DefaultContext
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+            $this->getManager('user')->persist($user);
 
         return $user;
     }
@@ -305,7 +322,7 @@ class CoreContext extends DefaultContext
 
         $masterVariant->setPricingConfiguration($configuration);
 
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('product');
         $manager->persist($product);
         $manager->flush();
     }
@@ -329,7 +346,7 @@ class CoreContext extends DefaultContext
 
         $masterVariant->setPricingConfiguration($configuration);
 
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('product');
         $manager->persist($product);
         $manager->flush();
     }
@@ -344,7 +361,7 @@ class CoreContext extends DefaultContext
             $this->thereIsTaxRate($data['amount'], $data['name'], $data['category'], $data['zone'], isset($data['included in price?']) ? $data['included in price?'] : false, false);
         }
 
-        $this->getEntityManager()->flush();
+        $this->getManager('tax_rate')->flush();
     }
 
     /**
@@ -354,7 +371,7 @@ class CoreContext extends DefaultContext
     public function thereIsTaxRate($amount, $name, $category, $zone, $includedInPrice = false, $flush = true)
     {
         /* @var $rate TaxRateInterface */
-        $rate = $this->getRepository('tax_rate')->createNew();
+        $rate = $this->getFactory('tax_rate')->createNew();
         $rate->setName($name);
         $rate->setAmount($amount / 100);
         $rate->setIncludedInPrice($includedInPrice);
@@ -362,8 +379,9 @@ class CoreContext extends DefaultContext
         $rate->setZone($this->findOneByName('zone', $zone));
         $rate->setCalculator('default');
 
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('tax_rate');
         $manager->persist($rate);
+
         if ($flush) {
             $manager->flush();
         }
@@ -389,7 +407,7 @@ class CoreContext extends DefaultContext
             $this->thereIsShippingMethod($data['name'], $data['zone'], $calculator, $configuration, 'yes' === $data['enabled'], false);
         }
 
-        $this->getEntityManager()->flush();
+        $this->getManager('shipping_method')->flush();
     }
 
     /**
@@ -400,7 +418,7 @@ class CoreContext extends DefaultContext
     {
         /* @var $method ShippingMethodInterface */
         $method = $this
-            ->getRepository('shipping_method')
+            ->getFactory('shipping_method')
             ->createNew()
         ;
 
@@ -410,7 +428,7 @@ class CoreContext extends DefaultContext
         $method->setConfiguration($configuration ?: array('amount' => 2500));
         $method->setEnabled($enabled);
 
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('shipping_method');
         $manager->persist($method);
         if ($flush) {
             $manager->flush();
@@ -425,11 +443,11 @@ class CoreContext extends DefaultContext
      */
     public function thereAreLocales(TableNode $table)
     {
-        $repository = $this->getRepository('locale');
-        $manager = $this->getEntityManager();
+        $factory = $this->getFactory('locale');
+        $manager = $this->getManager('locale');
 
         foreach ($table->getHash() as $data) {
-            $locale = $repository->createNew();
+            $locale = $factory->createNew();
 
             if (isset($data['code'])) {
                 $locale->setCode($data['code']);
@@ -463,7 +481,7 @@ class CoreContext extends DefaultContext
             $variant->setPrice($product->getMasterVariant()->getPrice());
         }
 
-        $manager = $this->getEntityManager();
+        $manager = $this->getManager('product');
         $manager->persist($product);
         $manager->flush();
     }
@@ -517,7 +535,7 @@ class CoreContext extends DefaultContext
     private function createPayment(OrderInterface $order, PaymentMethodInterface $method)
     {
         /** @var $payment PaymentInterface */
-        $payment = $this->getRepository('payment')->createNew();
+        $payment = $this->getFactory('payment')->createNew();
         $payment->setOrder($order);
         $payment->setMethod($method);
         $payment->setAmount($order->getTotal());
@@ -543,7 +561,7 @@ class CoreContext extends DefaultContext
         $shippingMethod = $this->getRepository('shipping_method')->findOneBy(array('name' => $shipmentData[0]));
 
         /* @var $shipment ShipmentInterface */
-        $shipment = $this->getRepository('shipment')->createNew();
+        $shipment = $this->getFactory('shipment')->createNew();
         $shipment->setMethod($shippingMethod);
         if (isset($shipmentData[1])) {
             $shipment->setState($shipmentData[1]);

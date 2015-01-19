@@ -45,9 +45,7 @@ interface ProductBuilderInterface
     /**
      * Save the product
      *
-     * @param Boolean $flush
-     *
      * @return ProductInterface
      */
-    public function save($flush = true);
+    public function save();
 }

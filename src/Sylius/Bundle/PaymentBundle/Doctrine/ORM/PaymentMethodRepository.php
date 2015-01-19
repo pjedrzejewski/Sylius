@@ -12,30 +12,25 @@
 
 namespace Sylius\Bundle\PaymentBundle\Doctrine\ORM;
 
-use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
+use Sylius\Bundle\ResourceBundle\Doctrine\ORM\ResourceRepository;
 use Sylius\Component\Payment\Repository\PaymentMethodRepositoryInterface;
 
 /**
  * @author Arnaud Langlade <arn0d.dev@gmail.com>
  */
-class PaymentMethodRepository extends EntityRepository implements PaymentMethodRepositoryInterface
+class PaymentMethodRepository extends ResourceRepository implements PaymentMethodRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function getQueryBuidlerForChoiceType(array $options)
     {
-        $queryBuilder = $this->getCollectionQueryBuilder();
+        $queryBuilder = $this->objectRepository->createQueryBuilder('o');
 
         if (!$options['disabled']) {
-            $queryBuilder->where('method.enabled = true');
+            $queryBuilder->where('o.enabled = true');
         }
 
         return $queryBuilder;
-    }
-
-    protected function getAlias()
-    {
-        return 'method';
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Sylius\Component\Currency\Model;
 
+use Sylius\Component\Resource\Model\ResourceInterface;
 use Sylius\Component\Resource\Model\TimestampableInterface;
 
 /**
@@ -18,7 +19,7 @@ use Sylius\Component\Resource\Model\TimestampableInterface;
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-interface CurrencyInterface extends TimestampableInterface
+interface CurrencyInterface extends ResourceInterface, TimestampableInterface
 {
     /**
      * @return string

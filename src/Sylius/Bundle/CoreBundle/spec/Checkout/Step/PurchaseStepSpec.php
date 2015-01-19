@@ -11,7 +11,7 @@
 
 namespace spec\Sylius\Bundle\CoreBundle\Checkout\Step;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
 use Payum\Core\PaymentInterface;
 use Payum\Core\Registry\RegistryInterface;
 use Payum\Core\Security\HttpRequestVerifierInterface;
@@ -50,7 +50,7 @@ class PurchaseStepSpec extends ObjectBehavior
         PaymentInterface $payment,
         EventDispatcherInterface $eventDispatcher,
         DoctrinRegistryInterface $doctrine,
-        ObjectManager $objectManager,
+        ResourceManagerInterface $objectManager,
         Session $session,
         FlashBagInterface $flashBag,
         TranslatorInterface $translator,

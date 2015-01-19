@@ -11,17 +11,17 @@
 
 namespace spec\Sylius\Bundle\UserBundle\Doctrine\ORM;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManager;
 
 class GroupRepositorySpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, ClassMetadata $classMetadata)
+    public function let(EntityRepository $objectRepository, EntityManager $objectManager)
     {
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -31,14 +31,12 @@ class GroupRepositorySpec extends ObjectBehavior
 
     function it_is_a_repository()
     {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository');
+        $this->shouldHaveType('Sylius\Component\Resource\Repository\ResourceRepositoryInterface');
     }
 
-    function it_has_a_form_query_buidler($em, QueryBuilder $builder)
+    function it_has_a_form_query_buidler(EntityRepository $objectRepository, QueryBuilder $queryBuilder)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled();
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
 
         $this->getFormQueryBuilder();
     }

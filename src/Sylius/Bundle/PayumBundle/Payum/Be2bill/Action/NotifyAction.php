@@ -11,7 +11,6 @@
 
 namespace Sylius\Bundle\PayumBundle\Payum\Be2bill\Action;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Payum\Be2Bill\Api;
 use Payum\Core\ApiAwareInterface;
 use Payum\Core\Bridge\Symfony\Reply\HttpResponse;
@@ -22,7 +21,9 @@ use Payum\Core\Request\Notify;
 use SM\Factory\FactoryInterface;
 use Sylius\Bundle\PayumBundle\Payum\Action\AbstractPaymentStateAwareAction;
 use Sylius\Bundle\PayumBundle\Payum\Request\GetStatus;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -37,7 +38,12 @@ class NotifyAction extends AbstractPaymentStateAwareAction implements ApiAwareIn
     protected $paymentRepository;
 
     /**
-     * @var ObjectManager
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @var ResourceManagerInterface
      */
     protected $objectManager;
 
@@ -52,8 +58,9 @@ class NotifyAction extends AbstractPaymentStateAwareAction implements ApiAwareIn
     protected $api;
 
     public function __construct(
-        RepositoryInterface $paymentRepository,
-        ObjectManager $objectManager,
+        ResourceRepositoryInterface $paymentRepository,
+        EventDispatcherInterface $eventDispatcher,
+        ResourceManagerInterface $objectManager,
         FactoryInterface $factory,
         $identifier
     ) {

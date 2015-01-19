@@ -12,21 +12,21 @@
 namespace spec\Sylius\Bundle\UserBundle\Doctrine\ORM;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\FilterCollection;
-use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityManager;
 
 class CustomerRepositorySpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, ClassMetadata $classMetadata, FilterCollection $collection)
+    public function let(EntityRepository $objectRepository, EntityManager $objectManager, FilterCollection $filterCollection)
     {
-        $em->getFilters()->willReturn($collection);
+        $objectManager->getFilters()->willReturn($filterCollection);
 
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -36,62 +36,54 @@ class CustomerRepositorySpec extends ObjectBehavior
 
     function it_is_a_repository()
     {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository');
+        $this->shouldHaveType('Sylius\Component\Resource\Repository\ResourceRepositoryInterface');
     }
 
-    function it_finds_details($em, $collection, QueryBuilder $builder, Expr $expr, AbstractQuery $query)
+    function it_finds_details(EntityRepository $objectRepository, FilterCollection $filterCollection, QueryBuilder $queryBuilder, Expr $expr, AbstractQuery $query)
     {
-        $collection->disable('softdeleteable')->shouldBeCalled();
+        $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $builder->expr()->shouldBeCalled()->willReturn($expr);
+        $queryBuilder->expr()->shouldBeCalled()->willReturn($expr);
         $expr->eq('o.id', ':id')->shouldBeCalled()->willReturn($expr);
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere($expr)->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('id', 1)->shouldBeCalled()->willReturn($builder);
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->andWhere($expr)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('id', 1)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getOneOrNullResult()->shouldBeCalled();
 
-
-        $collection->enable('softdeleteable')->shouldBeCalled();
+        $filterCollection->enable('softdeleteable')->shouldBeCalled();
 
         $this->findForDetailsPage(1);
     }
 
     function it_creates_paginator(
-        $em,
-        $collection,
-        QueryBuilder $builder,
+        EntityRepository $objectRepository,
+        FilterCollection $filterCollection,
+        QueryBuilder $queryBuilder,
         Expr $expr,
         AbstractQuery $query
     ) {
-        $collection->disable('softdeleteable')->shouldBeCalled();
+        $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.user', 'user')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->leftJoin('o.user', 'user')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->expr()->willReturn($expr);
+        $queryBuilder->expr()->willReturn($expr);
         $expr->like(Argument::any(), Argument::any())->willReturn($expr);
         $expr->eq(Argument::any(), Argument::any())->willReturn($expr);
 
-        // enable
-        $builder->andWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('enabled', true)->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->andWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('enabled', true)->shouldBeCalled()->willReturn($queryBuilder);
 
-        // Query
-        $builder->where(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('query', '%arnaud%')->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->where(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('query', '%arnaud%')->shouldBeCalled()->willReturn($queryBuilder);
 
-        // Sort
-        $builder->addOrderBy('o.name', 'asc')->shouldBeCalled();
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->addOrderBy('o.name', 'asc')->shouldBeCalled();
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
 
         $this->createFilterPaginator(
             array(

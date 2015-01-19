@@ -12,18 +12,18 @@
 namespace spec\Sylius\Bundle\TaxonomyBundle\Doctrine\ORM;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityManager;
 use Sylius\Component\Taxonomy\Model\TaxonomyInterface;
 
 class TaxonRepositorySpec extends ObjectBehavior
 {
-    function let(EntityManager $em, ClassMetadata $classMetadata)
+    function let(EntityRepository $objectRepository, EntityManager $objectManager)
     {
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -31,36 +31,32 @@ class TaxonRepositorySpec extends ObjectBehavior
         $this->shouldHaveType('Sylius\Bundle\TaxonomyBundle\Doctrine\ORM\TaxonRepository');
     }
 
-    function it_finds_taxon_as_a_list($em, TaxonomyInterface $taxonomy, QueryBuilder $builder, AbstractQuery $query)
+    function it_finds_taxon_as_a_list(EntityRepository $objectRepository, TaxonomyInterface $taxonomy, QueryBuilder $queryBuilder, AbstractQuery $query)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->addSelect('translation')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.translations', 'translation')->shouldBeCalled()->willReturn($builder);
-        $builder->where('o.taxonomy = :taxonomy')->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere('o.parent IS NOT NULL')->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('taxonomy', $taxonomy)->shouldBeCalled()->willReturn($builder);
-        $builder->orderBy('o.left')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->addSelect('translation')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->leftJoin('o.translations', 'translation')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->where('o.taxonomy = :taxonomy')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->andWhere('o.parent IS NOT NULL')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('taxonomy', $taxonomy)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orderBy('o.left')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getResult()->shouldBeCalled();
 
         $this->getTaxonsAsList($taxonomy);
     }
 
-    function it_finds_one_taxon_by_permalink($em, QueryBuilder $builder, AbstractQuery $query)
+    function it_finds_one_taxon_by_permalink(EntityRepository $objectRepository, QueryBuilder $queryBuilder, AbstractQuery $query)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->addSelect('translation')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.translations', 'translation')->shouldBeCalled()->willReturn($builder);
-        $builder->where('translation.permalink = :permalink')->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('permalink', 'link')->shouldBeCalled()->willReturn($builder);
-        $builder->orderBy('o.left')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->addSelect('translation')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->leftJoin('o.translations', 'translation')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->where('translation.permalink = :permalink')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('permalink', 'link')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orderBy('o.left')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getOneOrNullResult()->shouldBeCalled();
 
         $this->findOneByPermalink('link');

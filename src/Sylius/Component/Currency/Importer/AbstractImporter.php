@@ -11,14 +11,14 @@
 
 namespace Sylius\Component\Currency\Importer;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ResourceManagerInterface;
 use Sylius\Component\Currency\Model\CurrencyInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 abstract class AbstractImporter implements ImporterInterface
 {
     /**
-     * @var ObjectManager
+     * @var ResourceManagerInterface
      */
     protected $manager;
 
@@ -27,7 +27,7 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected $repository;
 
-    public function __construct(ObjectManager $manager, RepositoryInterface $repository, array $options = array())
+    public function __construct(ResourceManagerInterface $manager, RepositoryInterface $repository, array $options = array())
     {
         $this->manager    = $manager;
         $this->repository = $repository;

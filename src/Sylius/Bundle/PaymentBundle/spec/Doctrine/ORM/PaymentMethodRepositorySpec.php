@@ -11,17 +11,17 @@
 
 namespace spec\Sylius\Bundle\PaymentBundle\Doctrine\ORM;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityManager;
 
 class PaymentMethodRepositorySpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, ClassMetadata $classMetadata)
+    public function let(EntityRepository $objectRepository, EntityManager $objectManager)
     {
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -31,30 +31,30 @@ class PaymentMethodRepositorySpec extends ObjectBehavior
 
     function it_is_a_repository()
     {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository');
+        $this->shouldHaveType('Sylius\Component\Resource\Repository\ResourceRepositoryInterface');
+    }
+
+    function it_implements_payment_method_repository_interface()
+    {
         $this->shouldImplement('Sylius\Component\Payment\Repository\PaymentMethodRepositoryInterface');
     }
 
-    function it_creates_query_builder_for_enable_status($em, QueryBuilder $builder)
+    function it_creates_query_builder_for_enabled_status(EntityRepository $objectRepository, QueryBuilder $queryBuilder)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('method')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'method')->shouldBeCalled()->willReturn($builder);
-        $builder->where('method.enabled = true')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->where('o.enabled = true')->shouldBeCalled()->willReturn($queryBuilder);
 
         $this->getQueryBuidlerForChoiceType(array(
             'disabled' => false
-        ))->shouldReturn($builder);
+        ))->shouldReturn($queryBuilder);
     }
 
-    function it_creates_query_builder_for_all_status($em, QueryBuilder $builder)
+    function it_creates_query_builder_for_all_statuses(EntityRepository $objectRepository, QueryBuilder $queryBuilder)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('method')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'method')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
 
         $this->getQueryBuidlerForChoiceType(array(
             'disabled' => true
-        ))->shouldReturn($builder);
+        ))->shouldReturn($queryBuilder);
     }
 }

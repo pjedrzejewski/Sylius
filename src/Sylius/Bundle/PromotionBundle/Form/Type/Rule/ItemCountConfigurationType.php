@@ -24,13 +24,6 @@ use Symfony\Component\Validator\Constraints\Type;
  */
 class ItemCountConfigurationType extends AbstractType
 {
-    protected $validationGroups;
-
-    public function __construct(array $validationGroups)
-    {
-        $this->validationGroups = $validationGroups;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -49,18 +42,6 @@ class ItemCountConfigurationType extends AbstractType
                 'constraints' => array(
                     new Type(array('type' => 'bool')),
                 ),
-            ))
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver
-            ->setDefaults(array(
-                'validation_groups' => $this->validationGroups,
             ))
         ;
     }

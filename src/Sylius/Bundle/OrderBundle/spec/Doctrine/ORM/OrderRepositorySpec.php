@@ -3,6 +3,7 @@
 namespace spec\Sylius\Bundle\OrderBundle\Doctrine\ORM;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\FilterCollection;
 use Doctrine\ORM\QueryBuilder;
@@ -13,9 +14,9 @@ use Doctrine\ORM\EntityManager;
 
 class OrderRepositorySpec extends ObjectBehavior
 {
-    function let(EntityManager $em, ClassMetadata $classMetadata)
+    function let(EntityRepository $entityRepository, EntityManager $entityManager)
     {
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($entityRepository, $entityManager);
     }
 
     function it_is_initializable()
@@ -25,29 +26,25 @@ class OrderRepositorySpec extends ObjectBehavior
 
     function it_is_repository()
     {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository');
         $this->shouldImplement('Sylius\Component\Order\Repository\OrderRepositoryInterface');
     }
 
     function it_finds_recent_orders(
-        $em,
+        $entityManager,
+        $entityRepository,
         QueryBuilder $builder,
         AbstractQuery $query,
         FilterCollection $filterCollection,
         Expr $expr
     ) {
-        $em->getFilters()->willReturn($filterCollection);
+        $entityManager->getFilters()->willReturn($filterCollection);
         $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
+        $entityRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($builder);
 
         $builder->expr()->shouldBeCalled()->willReturn($expr);
         $expr->isNotNull('o.completedAt')->willReturn($expr);
 
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.items', 'item')->shouldBeCalled()->willReturn($builder);
-        $builder->addSelect('item')->shouldBeCalled()->willReturn($builder);
         $builder->andWhere($expr)->shouldBeCalled()->willReturn($builder);
         $builder->setMaxResults(10)->shouldBeCalled()->willReturn($builder);
         $builder->orderBy('o.completedAt', 'desc')->shouldBeCalled()->willReturn($builder);
@@ -58,11 +55,9 @@ class OrderRepositorySpec extends ObjectBehavior
         $this->findRecentOrders(10);
     }
 
-    function it_checks_is_the_number_is_used($em, QueryBuilder $builder, AbstractQuery $query)
+    function it_checks_is_the_number_is_used($entityRepository, QueryBuilder $builder, AbstractQuery $query)
     {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
+        $entityRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($builder);
         $builder->select('COUNT(o.id)')->shouldBeCalled()->willReturn($builder);
         $builder->where('o.number = :number')->shouldBeCalled()->willReturn($builder);
         $builder->setParameter('number', 10)->shouldBeCalled()->willReturn($builder);

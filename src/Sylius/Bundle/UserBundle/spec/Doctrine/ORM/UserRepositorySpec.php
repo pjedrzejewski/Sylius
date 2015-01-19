@@ -12,22 +12,22 @@
 namespace spec\Sylius\Bundle\UserBundle\Doctrine\ORM;
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\FilterCollection;
-use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityManager;
 
 class UserRepositorySpec extends ObjectBehavior
 {
-    public function let(EntityManager $em, ClassMetadata $classMetadata, FilterCollection $collection)
+    public function let(EntityRepository $objectRepository, EntityManager $objectManager, FilterCollection $filterCollection)
     {
-        $em->getFilters()->willReturn($collection);
+        $objectManager->getFilters()->willReturn($filterCollection);
 
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -37,41 +37,36 @@ class UserRepositorySpec extends ObjectBehavior
 
     function it_is_a_repository()
     {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository');
+        $this->shouldHaveType('Sylius\Component\Resource\Repository\ResourceRepositoryInterface');
     }
 
-    function it_create_paginator(
-        $em,
-        $collection,
-        QueryBuilder $builder,
+    function it_creates_filtering_paginator(
+        EntityRepository $objectRepository,
+        FilterCollection $filterCollection,
+        QueryBuilder $queryBuilder,
         Expr $expr,
         AbstractQuery $query
     ) {
-        $collection->disable('softdeleteable')->shouldBeCalled();
+        $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->expr()->willReturn($expr);
+        $queryBuilder->expr()->willReturn($expr);
         $expr->like(Argument::any(), Argument::any())->willReturn($expr);
         $expr->eq(Argument::any(), Argument::any())->willReturn($expr);
 
-        // enable
-        $builder->andWhere('o.enabled = :enabled')->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('enabled', true)->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->andWhere('o.enabled = :enabled')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('enabled', true)->shouldBeCalled()->willReturn($queryBuilder);
 
-        // Query
-        $builder->leftJoin('o.customer', 'customer')->shouldBeCalled()->willReturn($builder);
-        $builder->where('customer.emailCanonical LIKE :query')->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere('customer.firstName LIKE :query')->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere('customer.lastName LIKE :query')->shouldBeCalled()->willReturn($builder);
-        $builder->orWhere('o.username LIKE :query')->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('query', '%arnaud%')->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->leftJoin('o.customer', 'customer')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->where('customer.emailCanonical LIKE :query')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere('customer.firstName LIKE :query')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere('customer.lastName LIKE :query')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->orWhere('o.username LIKE :query')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('query', '%arnaud%')->shouldBeCalled()->willReturn($queryBuilder);
 
-        // Sort
-        $builder->addOrderBy('o.name', 'asc')->shouldBeCalled();
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->addOrderBy('o.name', 'asc')->shouldBeCalled();
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
 
         $this->createFilterPaginator(
             array(
@@ -83,70 +78,64 @@ class UserRepositorySpec extends ObjectBehavior
         )->shouldHaveType('Pagerfanta\Pagerfanta');
     }
 
-    function it_finds_details($em, $collection, QueryBuilder $builder, Expr $expr, AbstractQuery $query)
+    function it_finds_details(EntityRepository $objectRepository, FilterCollection $filterCollection, QueryBuilder $queryBuilder, Expr $expr, AbstractQuery $query)
     {
-        $collection->disable('softdeleteable')->shouldBeCalled();
+        $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $builder->expr()->shouldBeCalled()->willReturn($expr);
+        $queryBuilder->expr()->shouldBeCalled()->willReturn($expr);
         $expr->eq('o.id', ':id')->shouldBeCalled()->willReturn($expr);
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.customer', 'customer')->shouldBeCalled()->willReturn($builder);
-        $builder->addSelect('customer')->shouldBeCalled()->willReturn($builder);
-        $builder->where($expr)->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('id', 10)->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->leftJoin('o.customer', 'customer')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->addSelect('customer')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->where($expr)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('id', 10)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getOneOrNullResult()->shouldBeCalled();
 
-        $collection->enable('softdeleteable')->shouldBeCalled();
+        $filterCollection->enable('softdeleteable')->shouldBeCalled();
 
         $this->findForDetailsPage(10);
     }
 
     function it_counts_user_user_repository(
-        $em,
-        QueryBuilder $builder,
+        EntityRepository $objectRepository,
+        QueryBuilder $queryBuilder,
         \DateTime $from,
         \DateTime $to,
         AbstractQuery $query,
         Expr $expr
     ) {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->expr()->shouldBeCalled()->willReturn($expr);
+        $queryBuilder->expr()->shouldBeCalled()->willReturn($expr);
         $expr->gte(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($expr);
         $expr->lte(Argument::any(), Argument::any())->shouldBeCalled()->willReturn($expr);
 
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('from', $from)->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('to', $to)->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere('o.status = :status')->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('status', 'status')->shouldBeCalled()->willReturn($builder);
-        $builder->select('count(o.id)')->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->andWhere(Argument::type('Doctrine\ORM\Query\Expr'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('from', $from)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('to', $to)->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->andWhere('o.status = :status')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('status', 'status')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->select('count(o.id)')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getSingleScalarResult()->shouldBeCalled();
 
         $this->countBetweenDates($from, $to, 'status');
     }
 
     function it_finds_one_by_email(
-        $collection,
-        $em,
+        $filterCollection,
+        $objectRepository,
         QueryBuilder $builder,
         Expr $expr,
         AbstractQuery $query
     ) {
-        $collection->disable('softdeleteable')->shouldBeCalled();
+        $filterCollection->disable('softdeleteable')->shouldBeCalled();
 
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($builder);
 
         $builder->leftJoin('o.customer', 'customer')->shouldBeCalled()->willReturn($builder);
         $builder->addSelect('customer')->shouldBeCalled()->willReturn($builder);
@@ -160,7 +149,7 @@ class UserRepositorySpec extends ObjectBehavior
         $builder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getOneOrNullResult()->shouldBeCalled();
 
-        $collection->enable('softdeleteable')->shouldBeCalled();
+        $filterCollection->enable('softdeleteable')->shouldBeCalled();
 
         $this->findForDetailsPage(10);
     }

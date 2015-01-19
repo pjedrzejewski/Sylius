@@ -11,7 +11,7 @@
 
 namespace Sylius\Component\Currency\Converter;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 
 /**
  * Default converter.
@@ -23,7 +23,7 @@ class CurrencyConverter implements CurrencyConverterInterface
     /**
      * Repository for currency model.
      *
-     * @var RepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     protected $currencyRepository;
 
@@ -35,9 +35,9 @@ class CurrencyConverter implements CurrencyConverterInterface
     private $cache;
 
     /**
-     * @param RepositoryInterface $currencyRepository
+     * @param ResourceRepositoryInterface $currencyRepository
      */
-    public function __construct(RepositoryInterface $currencyRepository)
+    public function __construct(ResourceRepositoryInterface $currencyRepository)
     {
         $this->currencyRepository = $currencyRepository;
     }

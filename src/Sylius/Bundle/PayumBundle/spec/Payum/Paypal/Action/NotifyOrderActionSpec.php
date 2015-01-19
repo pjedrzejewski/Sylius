@@ -12,7 +12,6 @@
 namespace spec\Sylius\Bundle\PayumBundle\Payum\Paypal\Action;
 
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Persistence\ObjectManager;
 use Payum\Core\Model\ModelAwareInterface;
 use Payum\Core\PaymentInterface;
 use Payum\Core\Request\Notify;
@@ -24,16 +23,19 @@ use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Payment\Model\Payment;
 use Sylius\Component\Payment\Model\PaymentInterface as PaymentModelInterface;
 use Sylius\Component\Payment\PaymentTransitions;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
 use Sylius\Component\Resource\StateMachine\StateMachineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class NotifyOrderActionSpec extends ObjectBehavior
 {
     function let(
-        ObjectManager $objectManager,
+        EventDispatcherInterface $eventDispatcher,
+        ResourceManagerInterface $objectManager,
         FactoryInterface $factory,
         PaymentInterface $payment
     ) {
-        $this->beConstructedWith($objectManager, $factory);
+        $this->beConstructedWith($eventDispatcher, $objectManager, $factory);
         $this->setPayment($payment);
     }
 
@@ -126,7 +128,7 @@ class NotifyOrderActionSpec extends ObjectBehavior
         OrderInterface $order,
         PaymentModelInterface $paymentModel,
         PaymentInterface $payment,
-        ObjectManager $objectManager,
+        ResourceManagerInterface $objectManager,
         StateMachineInterface $sm,
         Collection $payments,
         TokenInterface  $token

@@ -2,21 +2,21 @@
 
 namespace spec\Sylius\Bundle\CartBundle\Doctrine\ORM;
 
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query\Expr;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\QueryBuilder;
 use Sylius\Component\Cart\Model\CartInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 
 class CartRepositorySpec extends ObjectBehavior
 {
-    function let(EntityManager $em, ClassMetadata $classMetadata)
+    function let(EntityRepository $objectRepository, EntityManager $objectManager)
     {
-        $this->beConstructedWith($em, $classMetadata);
+        $this->beConstructedWith($objectRepository, $objectManager);
     }
 
     function it_is_initializable()
@@ -25,28 +25,26 @@ class CartRepositorySpec extends ObjectBehavior
     }
 
     function it_finds_expired_cart(
-        $em,
-        QueryBuilder $builder,
+        EntityRepository $objectRepository,
+        QueryBuilder $queryBuilder,
         AbstractQuery $query,
         Expr $expr,
         CartInterface $cart
     ) {
-        $em->createQueryBuilder()->shouldBeCalled()->willReturn($builder);
+        $objectRepository->createQueryBuilder('o')->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->expr()->shouldBeCalled()->willReturn($expr);
+        $queryBuilder->expr()->shouldBeCalled()->willReturn($expr);
         $expr->lt('o.expiresAt', ':now')->shouldBeCalled()->willReturn($expr);
         $expr->eq('o.state', ':state')->shouldBeCalled()->willReturn($expr);
 
-        $builder->select('o')->shouldBeCalled()->willReturn($builder);
-        $builder->from(Argument::any(), 'o')->shouldBeCalled()->willReturn($builder);
-        $builder->leftJoin('o.items', 'item')->shouldBeCalled()->willReturn($builder);
-        $builder->addSelect('item')->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere(Argument::any())->shouldBeCalled()->willReturn($builder);
-        $builder->andWhere(Argument::any())->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('now', Argument::type('\DateTime'))->shouldBeCalled()->willReturn($builder);
-        $builder->setParameter('state', OrderInterface::STATE_CART)->shouldBeCalled()->willReturn($builder);
+        $queryBuilder->leftJoin('o.items', 'item')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->addSelect('item')->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->andWhere(Argument::any())->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->andWhere(Argument::any())->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('now', Argument::type('\DateTime'))->shouldBeCalled()->willReturn($queryBuilder);
+        $queryBuilder->setParameter('state', OrderInterface::STATE_CART)->shouldBeCalled()->willReturn($queryBuilder);
 
-        $builder->getQuery()->shouldBeCalled()->willReturn($query);
+        $queryBuilder->getQuery()->shouldBeCalled()->willReturn($query);
         $query->getResult()->shouldBeCalled()->willReturn(array($cart));
 
         $this->findExpiredCarts()->shouldReturn(array($cart));

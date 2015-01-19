@@ -11,7 +11,6 @@
 
 namespace spec\Sylius\Bundle\CoreBundle\Context;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\CoreBundle\Context\CurrencyContext;
 use Sylius\Bundle\SettingsBundle\Manager\SettingsManagerInterface;
@@ -22,6 +21,7 @@ use Sylius\Component\Core\Model\Channel;
 use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\UserInterface;
 use Sylius\Component\Currency\Context\CurrencyContextInterface;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
 use Sylius\Component\Storage\StorageInterface;
 use Sylius\Component\User\Context\CustomerContextInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -33,7 +33,7 @@ class CurrencyContextSpec extends ObjectBehavior
         StorageInterface $storage,
         CustomerContextInterface $customerContext,
         SettingsManagerInterface $settingsManager,
-        ObjectManager $customerManager,
+        ResourceManagerInterface $customerManager,
         Settings $settings,
         ChannelContextInterface $channelContext
     ) {

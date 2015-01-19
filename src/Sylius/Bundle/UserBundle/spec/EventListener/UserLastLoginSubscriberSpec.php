@@ -16,6 +16,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Bundle\UserBundle\Event\UserEvent;
 use Sylius\Bundle\UserBundle\UserEvents;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -23,7 +24,7 @@ use Symfony\Component\Security\Http\SecurityEvents;
 
 class UserLastLoginSubscriberSpec extends ObjectBehavior
 {
-    function let(ObjectManager $userManager)
+    function let(ResourceManagerInterface $userManager)
     {
         $this->beConstructedWith($userManager);
     }

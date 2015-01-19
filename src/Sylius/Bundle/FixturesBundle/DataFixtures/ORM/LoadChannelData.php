@@ -56,11 +56,11 @@ class LoadChannelData extends DataFixture
     protected function createChannel($code, $name, $url, array $locales = array(), array $currencies = array(), array $shippingMethods = array(), array $paymentMethods = array())
     {
         /** @var ChannelInterface $channel */
-        $channel = $this->getChannelRepository()->createNew();
+        $channel = $this->getChannelFactory()->createNew();
         $channel->setUrl($url);
         $channel->setCode($code);
         $channel->setName($name);
-        $channel->setColor($this->faker->randomElement(array('Red', 'Green', 'Blue', 'Orange', 'Pink')));
+        $channel->setColor($this->faker->hexcolor);
 
         $this->setReference('Sylius.Channel.'.$code, $channel);
 

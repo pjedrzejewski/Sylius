@@ -12,12 +12,13 @@
 namespace Sylius\Bundle\SettingsBundle\Manager;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Bundle\SettingsBundle\Event\SettingsEvent;
 use Sylius\Bundle\SettingsBundle\Model\Settings;
 use Sylius\Bundle\SettingsBundle\Schema\SchemaRegistryInterface;
 use Sylius\Bundle\SettingsBundle\Schema\SettingsBuilder;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Factory\ResourceFactoryInterface;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidatorException;
@@ -40,16 +41,23 @@ class SettingsManager implements SettingsManagerInterface
     /**
      * Object manager.
      *
-     * @var ObjectManager
+     * @var ResourceManagerInterface
      */
     protected $parameterManager;
 
     /**
      * Parameter object repository.
      *
-     * @var RepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     protected $parameterRepository;
+
+    /**
+     * Parameter factory.
+     *
+     * @var ResourceFactoryInterface
+     */
+    protected $parameterFactory;
 
     /**
      * Cache.
@@ -82,24 +90,20 @@ class SettingsManager implements SettingsManagerInterface
     /**
      * Constructor.
      *
-     * @param SchemaRegistryInterface $schemaRegistry
-     * @param ObjectManager $parameterManager
-     * @param RepositoryInterface $parameterRepository
-     * @param Cache $cache
-     * @param ValidatorInterface $validator
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param SchemaRegistryInterface     $schemaRegistry
+     * @param ResourceManagerInterface    $parameterManager
+     * @param ResourceRepositoryInterface $parameterRepository
+     * @param ResourceFactoryInterface    $parameterFactory
+     * @param Cache                       $cache
+     * @param ValidatorInterface          $validator
+     * @param EventDispatcherInterface    $eventDispatcher
      */
-    public function __construct(
-        SchemaRegistryInterface $schemaRegistry,
-        ObjectManager $parameterManager,
-        RepositoryInterface $parameterRepository,
-        Cache $cache,
-        ValidatorInterface $validator,
-        EventDispatcherInterface $eventDispatcher
-    ) {
+    public function __construct(SchemaRegistryInterface $schemaRegistry, ResourceManagerInterface $parameterManager, ResourceRepositoryInterface $parameterRepository, ResourceFactoryInterface $parameterFactory, Cache $cache, ValidatorInterface $validator, EventDispatcherInterface $eventDispatcher)
+    {
         $this->schemaRegistry = $schemaRegistry;
         $this->parameterManager = $parameterManager;
         $this->parameterRepository = $parameterRepository;
+        $this->parameterFactory = $parameterFactory;
         $this->cache = $cache;
         $this->validator = $validator;
         $this->eventDispatcher = $eventDispatcher;
@@ -168,7 +172,7 @@ class SettingsManager implements SettingsManagerInterface
             if (isset($persistedParametersMap[$name])) {
                 $persistedParametersMap[$name]->setValue($value);
             } else {
-                $parameter = $this->parameterRepository->createNew();
+                $parameter = $this->parameterFactory->createNew();
 
                 $parameter
                     ->setNamespace($namespace)
@@ -183,6 +187,7 @@ class SettingsManager implements SettingsManagerInterface
                 }
 
                 $this->parameterManager->persist($parameter);
+                $this->parameterManager->flush();
             }
         }
 

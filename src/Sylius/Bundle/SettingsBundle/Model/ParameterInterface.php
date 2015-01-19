@@ -11,12 +11,14 @@
 
 namespace Sylius\Bundle\SettingsBundle\Model;
 
+use Sylius\Component\Resource\Model\ResourceInterface;
+
 /**
  * Settings parameter interface.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@sylius.pl>
  */
-interface ParameterInterface
+interface ParameterInterface extends ResourceInterface
 {
     /**
      * Get settings namespace.

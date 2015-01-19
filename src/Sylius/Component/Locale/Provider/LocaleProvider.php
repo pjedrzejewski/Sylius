@@ -11,7 +11,7 @@
 
 namespace Sylius\Component\Locale\Provider;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 use Sylius\Component\Locale\Model\LocaleInterface;
 
 /**
@@ -22,19 +22,21 @@ use Sylius\Component\Locale\Model\LocaleInterface;
 class LocaleProvider implements LocaleProviderInterface
 {
     /**
-     * @var RepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     protected $localeRepository;
 
     /**
      * @var string[]|null
      */
-    protected $localesCodes = null;
+    protected $localeCodes = null;
 
     /**
-     * @param RepositoryInterface $localeRepository
+     * @param ResourceRepositoryInterface $localeRepository
+     *
+     * @throws \Exception
      */
-    public function __construct(RepositoryInterface $localeRepository)
+    public function __construct(ResourceRepositoryInterface $localeRepository)
     {
         $this->localeRepository = $localeRepository;
     }
@@ -44,11 +46,11 @@ class LocaleProvider implements LocaleProviderInterface
      */
     public function getAvailableLocales()
     {
-        if (null === $this->localesCodes) {
-            $this->localesCodes = $this->getEnabledLocalesCodes();
+        if (null === $this->localeCodes) {
+            $this->localeCodes = $this->getEnabledLocaleCodes();
         }
 
-        return $this->localesCodes;
+        return $this->localeCodes;
     }
 
     /**
@@ -62,16 +64,17 @@ class LocaleProvider implements LocaleProviderInterface
     /**
      * @return string[]
      */
-    protected function getEnabledLocalesCodes()
+    protected function getEnabledLocaleCodes()
     {
-        $localesCodes = array();
+        $localeCodes = array();
 
         /** @var LocaleInterface[] $locales */
         $locales = $this->localeRepository->findBy(array('enabled' => true));
+
         foreach ($locales as $locale) {
-            $localesCodes[] = $locale->getCode();
+            $localeCodes[] = $locale->getCode();
         }
 
-        return $localesCodes;
+        return $localeCodes;
     }
 }

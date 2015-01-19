@@ -11,7 +11,7 @@
 
 namespace Sylius\Component\Currency\Provider;
 
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 
 /**
  * Default provider returns all enabled currencies.
@@ -23,14 +23,14 @@ class CurrencyProvider implements CurrencyProviderInterface
     /**
      * Repository for currency model.
      *
-     * @var RepositoryInterface
+     * @var ResourceRepositoryInterface
      */
     protected $currencyRepository;
 
     /**
-     * @param RepositoryInterface $currencyRepository
+     * @param ResourceRepositoryInterface $currencyRepository
      */
-    public function __construct(RepositoryInterface $currencyRepository)
+    public function __construct(ResourceRepositoryInterface $currencyRepository)
     {
         $this->currencyRepository = $currencyRepository;
     }

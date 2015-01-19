@@ -13,19 +13,16 @@
 
 namespace Sylius\Component\User\Model;
 
+use Sylius\Component\Resource\Model\ResourceInterface;
+
 /**
  * Group model.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-interface GroupInterface
+interface GroupInterface extends ResourceInterface
 {
-    /**
-     * @return integer
-     */
-    public function getId();
-
     /**
      * @return string
      */

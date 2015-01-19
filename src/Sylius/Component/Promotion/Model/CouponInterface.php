@@ -11,6 +11,7 @@
 
 namespace Sylius\Component\Promotion\Model;
 
+use Sylius\Component\Resource\Model\ResourceInterface;
 use Sylius\Component\Resource\Model\SoftDeletableInterface;
 use Sylius\Component\Resource\Model\TimestampableInterface;
 
@@ -19,7 +20,7 @@ use Sylius\Component\Resource\Model\TimestampableInterface;
  *
  * @author Saša Stamenković <umpirsky@gmail.com>
  */
-interface CouponInterface extends SoftDeletableInterface, TimestampableInterface
+interface CouponInterface extends ResourceInterface, SoftDeletableInterface, TimestampableInterface
 {
     /**
      * Get code

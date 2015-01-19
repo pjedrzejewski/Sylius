@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\ReportBundle;
 
+use Sylius\Bundle\ReportBundle\DependencyInjection\Compiler\ServicesPass;
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Sylius\Bundle\ReportBundle\DependencyInjection\Compiler\RegisterRenderersPass;
@@ -44,6 +45,7 @@ class SyliusReportBundle extends AbstractResourceBundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new ServicesPass());
         $container->addCompilerPass(new RegisterDataFetcherPass());
         $container->addCompilerPass(new RegisterRenderersPass());
     }

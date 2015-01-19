@@ -12,6 +12,7 @@
 namespace Sylius\Component\Taxonomy\Model;
 
 use Sylius\Component\Translation\Model\TranslatableInterface;
+use Sylius\Component\Resource\Model\ResourceInterface;
 
 /**
  * Taxonomy model interface.
@@ -19,7 +20,7 @@ use Sylius\Component\Translation\Model\TranslatableInterface;
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
-interface TaxonomyInterface extends TranslatableInterface, TaxonomyTranslationInterface, TaxonsAwareInterface
+interface TaxonomyInterface extends ResourceInterface, TranslatableInterface, TaxonomyTranslationInterface, TaxonsAwareInterface
 {
     /**
      * Get taxonomy id.

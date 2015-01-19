@@ -12,6 +12,7 @@
 namespace spec\Sylius\Bundle\UserBundle\Reloader;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
 use Sylius\Component\User\Model\UserInterface;
 use PhpSpec\ObjectBehavior;
 
@@ -20,9 +21,9 @@ use PhpSpec\ObjectBehavior;
  */
 class UserReloaderSpec extends ObjectBehavior
 {
-    function let(ObjectManager $objectManager)
+    function let(ResourceManagerInterface $manager)
     {
-        $this->beConstructedWith($objectManager);
+        $this->beConstructedWith($manager);
     }
 
     function it_is_initializable()
@@ -35,9 +36,9 @@ class UserReloaderSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Bundle\UserBundle\Reloader\UserReloaderInterface');
     }
 
-    function it_reloads_user($objectManager, UserInterface $user)
+    function it_reloads_user($manager, UserInterface $user)
     {
-        $objectManager->refresh($user)->shouldBeCalled();
+        $manager->refresh($user)->shouldBeCalled();
 
         $this->reloadUser($user);
     }

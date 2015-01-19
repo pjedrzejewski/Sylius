@@ -1,3 +1,6 @@
+extensions:
+    - Akeneo\SkipExampleExtension
+
 suites:
     Addressing        : { namespace: Sylius\Component\Addressing, psr4_prefix: Sylius\Component\Addressing, spec_path: src/Sylius/Component/Addressing, src_path: src/Sylius/Component/Addressing }
     Attribute         : { namespace: Sylius\Component\Attribute, psr4_prefix: Sylius\Component\Attribute, spec_path: src/Sylius/Component/Attribute, src_path: src/Sylius/Component/Attribute }

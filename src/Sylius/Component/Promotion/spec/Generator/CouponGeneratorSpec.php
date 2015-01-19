@@ -11,23 +11,23 @@
 
 namespace spec\Sylius\Component\Promotion\Generator;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\FilterCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Component\Promotion\Generator\Instruction;
 use Sylius\Component\Promotion\Model\CouponInterface;
 use Sylius\Component\Promotion\Model\PromotionInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Factory\ResourceFactoryInterface;
+use Sylius\Component\Resource\Manager\ResourceManagerInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class CouponGeneratorSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $repository, EntityManagerInterface $manager)
+    function let(ResourceFactoryInterface $factory, ResourceRepositoryInterface $repository, ResourceManagerInterface $manager)
     {
-        $this->beConstructedWith($repository, $manager);
+        $this->beConstructedWith($factory, $repository, $manager);
     }
 
     function it_should_be_initializable()
@@ -41,9 +41,9 @@ class CouponGeneratorSpec extends ObjectBehavior
     }
 
     function it_should_generate_coupons_according_to_instruction(
+        $factory,
         $repository,
         $manager,
-        FilterCollection $filters,
         PromotionInterface $promotion,
         CouponInterface $coupon,
         Instruction $instruction
@@ -51,16 +51,15 @@ class CouponGeneratorSpec extends ObjectBehavior
         $instruction->getAmount()->willReturn(1);
         $instruction->getUsageLimit()->willReturn(null);
 
-        $repository->createNew()->willReturn($coupon);
+        $factory->createNew()->willReturn($coupon);
         $repository->findOneBy(Argument::any())->willReturn(null);
 
         $coupon->setPromotion($promotion)->shouldBeCalled();
         $coupon->setCode(Argument::any())->shouldBeCalled();
         $coupon->setUsageLimit(null)->shouldBeCalled();
 
-        $manager->getFilters()->shouldBeCalled()->willReturn($filters);
-        $filters->disable('softdeleteable')->shouldBeCalled();
-        $filters->enable('softdeleteable')->shouldBeCalled();
+        $repository->disableFilter('softdeleteable')->shouldBeCalled();
+        $repository->enableFilter('softdeleteable')->shouldBeCalled();
 
         $manager->persist($coupon)->shouldBeCalled();
         $manager->flush()->shouldBeCalled();

@@ -19,7 +19,7 @@ use Sylius\Component\Channel\Context\ChannelContextInterface;
 use Sylius\Component\Channel\Model\ChannelInterface;
 use Sylius\Component\Inventory\Checker\AvailabilityCheckerInterface;
 use Sylius\Component\Pricing\Calculator\DelegatingCalculatorInterface;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\Resource\Repository\ResourceRepositoryInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,7 +30,7 @@ class ItemResolverSpec extends ObjectBehavior
 {
     function let(
         CartProviderInterface $cartProvider,
-        RepositoryInterface $productRepository,
+        ResourceRepositoryInterface $productRepository,
         FormFactoryInterface $formFactory,
         AvailabilityCheckerInterface $availabilityChecker,
         RestrictedZoneCheckerInterface $restrictedZoneChecker,

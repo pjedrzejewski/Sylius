@@ -11,12 +11,14 @@
 
 namespace Sylius\Component\Variation\Model;
 
+use Sylius\Component\Resource\Model\ResourceInterface;
+
 /**
  * Option value interface.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-interface OptionValueInterface
+interface OptionValueInterface extends ResourceInterface
 {
     /**
      * Get option.
