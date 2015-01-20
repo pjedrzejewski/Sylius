@@ -194,7 +194,7 @@ class Report implements ReportInterface
      *
      * @return self
      */
-    public function setDataFetcher(DataFetcher $dataFetcher)
+    public function setDataFetcher($dataFetcher)
     {
         $this->dataFetcher = $dataFetcher;
 
@@ -218,7 +218,7 @@ class Report implements ReportInterface
      *
      * @return self
      */
-    public function setDataFetcherConfiguration(Array $dataFetcherConfiguration)
+    public function setDataFetcherConfiguration(array $dataFetcherConfiguration)
     {
         $this->dataFetcherConfiguration = $dataFetcherConfiguration;
 
