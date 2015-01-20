@@ -16,8 +16,28 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ReportController extends ResourceController
 {
-    public function reportAction(Request $request)
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function renderAction(Request $request)
     {
-        
+        $report = $this->findOr404($request);
+
+        $dataFetcher = $this->getDataFetcherRegistry()->get($report->getDataFetcher());
+        $data = $dataFetcher->fetch($report->getDataFetcherConfiguration());
+        var_dump($data);
+    }
+
+    private function getDataFetcherRegistry()
+    {
+        return $this->get('sylius.registry.report.data_fetcher');
+    }
+
+    private function getRendererRegistry()
+    {
+        return $this->get('sylius.registry.report.renderer');
     }
 }

@@ -18,7 +18,8 @@
 
     <parameters>
          <parameter key="sylius.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
-         <parameter key="sylius.form.type.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\DataFetcher\UserRegistrationDataFetcher</parameter>
+         <parameter key="sylius.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\DataFetcher\UserRegistrationDataFetcher</parameter>
+         <parameter key="sylius.form.type.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\Form\Type\UserRegistrationType</parameter>
          <parameter key="sylius.form.type.data_fetcher_choice.class">Sylius\Bundle\ReportBundle\Form\Type\DataFetcherChoiceType</parameter>
          <parameter key="sylius.registry.report.data_fetcher.class">Sylius\Component\Registry\ServiceRegistry</parameter>
     </parameters>
@@ -34,11 +35,12 @@
             <argument>%sylius.data_fetchers%</argument>
             <tag name="form.type" alias="sylius_data_fetcher_choice" />
         </service>
-        <service id="sylius.form.type.data_fetcher_choice" class="%sylius.form.type.data_fetcher_choice.class%">
-            <argument>%sylius.data_fetchers%</argument>
-            <tag name="form.type" alias="sylius_data_fetcher_choice" />
-        </service>
+
         <service id="sylius.form.type.data_fetcher.user_registration" class="%sylius.form.type.data_fetcher.user_registration.class%">
+            <tag name="form.type" alias="sylius_data_fetcher_user_registration" />
+        </service>
+
+        <service id="sylius.data_fetcher.user_registration" class="%sylius.data_fetcher.user_registration.class%">
             <argument type="service" id="sylius.repository.user" />
             <tag name="sylius.report.data_fetcher" fetcher="user_registration" label="User registration" />
         </service>
