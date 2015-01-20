@@ -34,7 +34,11 @@ class ReportController extends ResourceController
         $data = $dataFetcher->fetch($report->getDataFetcherConfiguration());
 
         $renderer = $this->getRendererRegistry()->get($report->getRenderer());
-        return $renderer->render(array(), array('template' => 0, 'type' => 'line'));
+        $rendererConfiguration = $report->getRendererConfiguration();
+
+        $reportData = array("report" => $report, 'data' => $data);
+
+        return $renderer->render($reportData, array('template' => $rendererConfiguration["template"], 'type' => $rendererConfiguration["type"]));
     }
 
     private function getDataFetcherRegistry()
