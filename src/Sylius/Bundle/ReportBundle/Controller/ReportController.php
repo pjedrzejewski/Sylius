@@ -13,8 +13,6 @@ namespace Sylius\Bundle\ReportBundle\Controller;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Sylius\Component\Report\Renderer\TableRenderer;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -34,7 +32,11 @@ class ReportController extends ResourceController
         $data = $dataFetcher->fetch($report->getDataFetcherConfiguration());
 
         $renderer = $this->getRendererRegistry()->get($report->getRenderer());
-        return $renderer->render(array(), array('template' => 0, 'type' => 'line'));
+        $rendererConfiguration = $report->getRendererConfiguration();
+
+        $reportData = array("report" => $report, 'data' => $data);
+
+        return $renderer->render($reportData, $rendererConfiguration);
     }
 
     private function getDataFetcherRegistry()

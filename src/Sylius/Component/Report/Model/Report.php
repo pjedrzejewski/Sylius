@@ -13,7 +13,7 @@ namespace Sylius\Component\Report\Model;
 
 /**
  * @author Łukasz Chruściel <lchrusciel@gmail.com>
- * @author Mateusz Zalewski <zaleslaw@gmail.com>
+ * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
 
 class Report implements ReportInterface

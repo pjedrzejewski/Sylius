@@ -21,9 +21,9 @@
 
         <parameter key="sylius.report.renderer.class">Sylius\Component\Report\Renderer\DelegatingRenderer</parameter>
         <parameter key="sylius.form.type.renderer_choice.class">Sylius\Bundle\ReportBundle\Form\Type\RendererChoiceType</parameter>
-        <parameter key="sylius.form.type.renderer.table.class">Sylius\Component\Report\Renderer\TableRenderer</parameter>
+        <parameter key="sylius.form.type.renderer.table.class">Sylius\Bundle\ReportBundle\Renderer\TableRenderer</parameter>
         <parameter key="sylius.form.type.report.renderer.table_configuration.class">Sylius\Bundle\ReportBundle\Form\Type\TableConfigurationType</parameter>
-        <parameter key="sylius.form.type.renderer.chart.class">Sylius\Component\Report\Renderer\ChartRenderer</parameter>
+        <parameter key="sylius.form.type.renderer.chart.class">Sylius\Bundle\ReportBundle\Renderer\ChartRenderer</parameter>
         <parameter key="sylius.form.type.report.renderer.chart_configuration.class">Sylius\Bundle\ReportBundle\Form\Type\ChartConfigurationType</parameter>
 
         <parameter key="sylius.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
