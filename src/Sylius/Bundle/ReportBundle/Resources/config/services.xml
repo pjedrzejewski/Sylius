@@ -15,16 +15,22 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services
                                http://symfony.com/schema/dic/services/services-1.0.xsd">
+<<<<<<< HEAD
     
     <parameters>
         <parameter key="sylius.registry.report.renderer.class">Sylius\Component\Registry\ServiceRegistry</parameter>
-        <parameter key="sylius.report.renderer.class">Sylius\Component\Report\Renderer\DelegatingRenderer</parameter>
 
+        <parameter key="sylius.report.renderer.class">Sylius\Component\Report\Renderer\DelegatingRenderer</parameter>
         <parameter key="sylius.form.type.renderer_choice.class">Sylius\Bundle\ReportBundle\Form\Type\RendererChoiceType</parameter>
         <parameter key="sylius.form.type.renderer.table.class">Sylius\Component\Report\Renderer\TableRenderer</parameter>
         <parameter key="sylius.form.type.report.renderer.table_configuration.class">Sylius\Bundle\ReportBundle\Form\Type\TableConfigurationType</parameter>
         <parameter key="sylius.form.type.renderer.chart.class">Sylius\Component\Report\Renderer\ChartRenderer</parameter>
         <parameter key="sylius.form.type.report.renderer.chart_configuration.class">Sylius\Bundle\ReportBundle\Form\Type\ChartConfigurationType</parameter>
+
+        <parameter key="sylius.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
+        <parameter key="sylius.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\DataFetcher\UserRegistrationDataFetcher</parameter>
+        <parameter key="sylius.form.type.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\Form\Type\UserRegistrationType</parameter>
+        <parameter key="sylius.form.type.data_fetcher_choice.class">Sylius\Bundle\ReportBundle\Form\Type\DataFetcherChoiceType</parameter>
     </parameters>
 
     <services>
@@ -54,6 +60,26 @@
         </service>
         <service id="sylius.form.type.report.renderer.chart_configuration" class="%sylius.form.type.report.renderer.chart_configuration.class%">
             <tag name="form.type" alias="sylius_report_renderer_chart_configuration" />
+        </service>
+
+        <service id="sylius.registry.report.data_fetcher" class="%sylius.registry.report.data_fetcher.class%">
+            <argument>Sylius\Component\Report\DataFetcher\DataFetcherInterface</argument>
+        </service>
+        <service id="sylius.data_fetcher" class="%sylius.data_fetcher.class%">
+            <argument type="service" id="sylius.registry.report.data_fetcher" />
+        </service>
+        <service id="sylius.form.type.data_fetcher_choice" class="%sylius.form.type.data_fetcher_choice.class%">
+            <argument>%sylius.data_fetchers%</argument>
+            <tag name="form.type" alias="sylius_data_fetcher_choice" />
+        </service>
+
+        <service id="sylius.form.type.data_fetcher.user_registration" class="%sylius.form.type.data_fetcher.user_registration.class%">
+            <tag name="form.type" alias="sylius_data_fetcher_user_registration" />
+        </service>
+
+        <service id="sylius.data_fetcher.user_registration" class="%sylius.data_fetcher.user_registration.class%">
+            <argument type="service" id="sylius.repository.user" />
+            <tag name="sylius.report.data_fetcher" fetcher="user_registration" label="User registration" />
         </service>
     </services>
 

@@ -15,6 +15,7 @@ use Sylius\Bundle\TranslationBundle\AbstractTranslationBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Sylius\Bundle\ReportBundle\DependencyInjection\Compiler\RegisterRenderersPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Sylius\Bundle\ReportBundle\DependencyInjection\Compiler\RegisterDataFetcherPass;
 
 /**
  * Report component for Symfony2 applications.
@@ -44,6 +45,7 @@ class SyliusReportBundle extends AbstractTranslationBundle
         parent::build($container);
 
         $container->addCompilerPass(new RegisterRenderersPass());
+        $container->addCompilerPass(new RegisterDataFetcherPass());
     }
 
     /**
