@@ -11,7 +11,8 @@
 
     $(document).ready(function() {
         $('#sylius_report_renderer').handlePrototypes({
-            'prototypePrefix': 'sylius_report_renderer_renderer'
+            'prototypePrefix': 'sylius_report_renderer_renderers'
+        });        
         $('#sylius_report_dataFetcher').handlePrototypes({
             'prototypePrefix': 'sylius_report_dataFetcher_dataFetchers'
         });
