@@ -13,6 +13,10 @@ sylius:
             name: Name
             description: Description
             data_fetcher: Data Fetcher
+            user_registration:
+                start: Start date
+                end: End date
+                period: Time period
             renderer:
                 label:  Renderer
                 template: Template
