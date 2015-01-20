@@ -21,13 +21,6 @@ use Sylius\Component\Report\Renderer\TableRenderer;
  */
 class ReportController extends ResourceController
 {
-<<<<<<< HEAD
-    public function renderAction(Request $request)
-    {
-        $rendererType = "chart";
-        $renderer = $this->get(sprintf("sylius.form.type.renderer.%s", $rendererType));
-        return $renderer->render(array(), array('template' => 0, 'type' => 'line'));
-=======
 
     /**
      * @param Request $request
@@ -40,7 +33,15 @@ class ReportController extends ResourceController
 
         $dataFetcher = $this->getDataFetcherRegistry()->get($report->getDataFetcher());
         $data = $dataFetcher->fetch($report->getDataFetcherConfiguration());
-        var_dump($data);
+
+        $rendererType = "chart";
+
+        $renderer = $this->getRendererRegistry()->get($report->getRenderer());
+        $rendererConfiguration = $report->getRendererConfiguration();
+
+        $reportData = array("report" => $report, 'data' => $data);
+
+        return $renderer->render($reportData, array('template' => $rendererConfiguration["template"], 'type' => $rendererConfiguration["type"]));
     }
 
     private function getDataFetcherRegistry()
@@ -51,6 +52,5 @@ class ReportController extends ResourceController
     private function getRendererRegistry()
     {
         return $this->get('sylius.registry.report.renderer');
->>>>>>> test dataFetcher
     }
 }
