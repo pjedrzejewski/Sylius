@@ -27,7 +27,12 @@ class UserRegistrationDataFetcher implements DataFetcherInterface
      * {@inheritdoc}
      */
     public function fetch(array $configuration){
-        return $this->userRepository->findByMonth();
+        $fetched = array();
+        $data = $this->userRepository->findByMonth();
+        foreach ($data as $row) {
+            $fetched[$row['month']] = $row['user_total'];
+        }
+        return $fetched;
     }
 
     /**
@@ -35,5 +40,10 @@ class UserRegistrationDataFetcher implements DataFetcherInterface
      */
     public function getType(){
         return 'user_registration';
+    }
+
+    public static function getPeriodChoices()
+    {
+        return array('day', 'week', 'month', 'year');
     }
 }
