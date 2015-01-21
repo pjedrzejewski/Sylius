@@ -17,6 +17,7 @@ sylius:
                 start: Start date
                 end: End date
                 period: Time period
+                empty_records: Print empty records?
             renderer:
                 label:  Renderer
                 template: Template
