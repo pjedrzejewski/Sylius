@@ -22,3 +22,4 @@ sylius:
                 start: Start date
                 end: End date
                 period: Time period
+            nodata: There is no data to display.
