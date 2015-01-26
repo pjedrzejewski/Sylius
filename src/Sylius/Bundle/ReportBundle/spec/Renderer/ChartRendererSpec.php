@@ -21,7 +21,7 @@ use Prophecy\Argument;
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
  */
-class TableRendererSpec extends ObjectBehavior
+class ChartRendererSpec extends ObjectBehavior
 {
     function let(EngineInterface $templating)
     {
@@ -30,7 +30,7 @@ class TableRendererSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\ReportBundle\Renderer\TableRenderer');
+        $this->shouldHaveType('Sylius\Bundle\ReportBundle\Renderer\ChartRenderer');
     }
 
     function it_should_implement_renderer_interface()
@@ -40,7 +40,6 @@ class TableRendererSpec extends ObjectBehavior
 
     function it_renders_data_with_given_configuration(Report $report, Response $response, Data $reportData, $templating)
     {
-        $reportData->getLabels()->willReturn(array('month', 'user_total'));
         $reportData->getData()->willReturn(array('month1' => '50', 'month2' => '40'));
         $data = array(
             'report' => $report,
@@ -49,10 +48,9 @@ class TableRendererSpec extends ObjectBehavior
         $renderData = array(
             'report' => $report,
             'values' => array('month1' => '50', 'month2' => '40'),
-            'labels' => array('month', 'user_total'),
-            'fields' => array('month1', 'month2')
+            'labels' => array('month1', 'month2')
         );
-        $configuration = array('template' => 'SyliusReportBundle:Table:default.html.twig');
+        $configuration = array('template' => 'SyliusReportBundle:Chart:default.html.twig');
 
         $templating->renderResponse($configuration["template"], array('data' => $renderData, 'configuration' => $configuration))->willReturn($response);
         $this->render($data, $configuration)->shouldReturn($response);
@@ -60,6 +58,6 @@ class TableRendererSpec extends ObjectBehavior
 
     function it_has_type()
     {
-        $this->getType()->shouldReturn('table');
+        $this->getType()->shouldReturn('chart');
     }
 }
