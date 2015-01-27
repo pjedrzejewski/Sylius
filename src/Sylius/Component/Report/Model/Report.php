@@ -11,6 +11,9 @@
 
 namespace Sylius\Component\Report\Model;
 
+use Sylius\Component\Report\DataFetcher\DefaultDataFetchers;
+use Sylius\Component\Report\Renderer\DefaultRenderers;
+
 /**
  * @author Łukasz Chruściel <lchrusciel@gmail.com>
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -38,7 +41,7 @@ class Report implements ReportInterface
      *
      * @var string
      */
-    private $renderer = 'table';
+    private $renderer = DefaultRenderers::TABLE;
 
     /**
      * Renderer configuration.
@@ -52,7 +55,7 @@ class Report implements ReportInterface
      *
      * @var String
      */
-    private $dataFetcher = 'user_registration';
+    private $dataFetcher = DefaultDataFetchers::USER_REGISTRATION;
 
     /**
      * DataFetcher configuration
