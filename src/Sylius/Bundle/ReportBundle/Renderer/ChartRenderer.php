@@ -16,6 +16,7 @@ use Sylius\Component\Report\Model\ReportInterface;
 use Sylius\Component\Report\Renderer\RendererInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Sylius\Component\Report\Renderer\DefaultRenderers;
 
 /**
  * @author Mateusz Zalewski <mateusz.zalewski@lakion.com>
@@ -45,6 +46,6 @@ class ChartRenderer implements RendererInterface
 
     public function getType()
     {
-        return 'chart';
+        return DefaultRenderers::CHART;
     }
 }

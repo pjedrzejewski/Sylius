@@ -30,10 +30,6 @@ class ReportContext extends DefaultContext
         $manager = $this->getEntityManager();
         $repository = $this->getRepository('report');
 
-        foreach ($repository->findAll() as $report) {
-            $manager->remove($report);
-        }
-
         $manager->flush();
 
         foreach ($table->getHash() as $data) {
@@ -60,6 +56,7 @@ class ReportContext extends DefaultContext
         $dataFetcherConfiguration = $this->getConfiguration($dataFetcherConfiguration);
         $dataFetcherConfiguration["start"] = new \DateTime($dataFetcherConfiguration["start"]);
         $dataFetcherConfiguration["end"] = new \DateTime($dataFetcherConfiguration["end"]);
+        $dataFetcherConfiguration["empty_records"] = ($dataFetcherConfiguration["empty_records"] == "false") ? false : true;
 
         $report->setDataFetcher($dataFetcherType);
         $report->setDataFetcherConfiguration($dataFetcherConfiguration);
