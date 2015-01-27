@@ -158,7 +158,7 @@ class Report implements ReportInterface
         $this->renderer = $renderer;
     }
 
-    /** 
+    /**
      * Gets the Renderers configuration.
      *
      * @return array
