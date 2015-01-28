@@ -42,10 +42,10 @@ class ReportType extends AbstractResourceType
     }
 
     /**
-    * Calculator registry.
-    *
-    * @var ServiceRegistryInterface
-    */
+     * DataFetcher registry.
+     *
+     * @var ServiceRegistryInterface
+     */
     protected $dataFetcherRegistry;
 
     /**
