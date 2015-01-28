@@ -266,22 +266,59 @@ class OrderRepository extends CartRepository implements OrderRepositoryInterface
         $groupBy = substr($groupBy, 0, -1);
         $groupBy = str_replace(' ', ', ', $groupBy);
         
-        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        $queryBuilder = $this->getQueryBuilderBetweenDatesGroupByDate(
+            $configuration['start'],
+            $configuration['end'],
+            $groupBy);
         
         $queryBuilder
-            ->select('DATE(o.completed_at) as date','TRUNCATE(SUM(o.total)/ 100,2)')
-            ->from('sylius_order', 'o')
-            ->where($queryBuilder->expr()->gte('o.completed_at', ':from'))
-            ->andWhere($queryBuilder->expr()->lte('o.completed_at', ':to'))
-            ->setParameter('from', $configuration['start']->format('Y-m-d H:i:s'))
-            ->setParameter('to', $configuration['end']->format('Y-m-d H:i:s'))
-            ->groupBy($groupBy)
-            ->orderBy($groupBy)
+            ->select('DATE(o.completed_at) as date','TRUNCATE(SUM(o.total)/ 100,2) as "total sum"')
         ;
         
         return $queryBuilder
             ->execute()
             ->fetchAll();
+    }
+
+    public function ordersBetweenDatesGroupByDate(array $configuration=array())
+    {
+        $groupBy = '';
+
+        foreach ($configuration['groupBy'] as $groupByArray ) {
+            $groupBy = $groupByArray.'(date)'.' '.$groupBy;
+        }
+
+        $groupBy = substr($groupBy, 0, -1);
+        $groupBy = str_replace(' ', ', ', $groupBy);
+        
+        $queryBuilder = $this->getQueryBuilderBetweenDatesGroupByDate(
+            $configuration['start'],
+            $configuration['end'],
+            $groupBy);
+        
+        $queryBuilder
+            ->select('DATE(o.completed_at) as date','COUNT(o.id) as "Number of orders"')
+        ;
+        
+        return $queryBuilder
+            ->execute()
+            ->fetchAll();
+    }
+
+    protected function getQueryBuilderBetweenDatesGroupByDate(\DateTime $from, \DateTime $to, $groupBy = 'Date(date)')
+    {        
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        
+        return $queryBuilder
+            ->from('sylius_order', 'o')
+            ->where($queryBuilder->expr()->gte('o.completed_at', ':from'))
+            ->andWhere($queryBuilder->expr()->lte('o.completed_at', ':to'))
+            ->setParameter('from', $from->format('Y-m-d H:i:s'))
+            ->setParameter('to', $to->format('Y-m-d H:i:s'))
+            ->groupBy($groupBy)
+            ->orderBy($groupBy)
+        ;
+
     }
 
     public function findExpired(\DateTime $expiresAt, $state = OrderInterface::STATE_PENDING)
