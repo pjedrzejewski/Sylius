@@ -13,6 +13,7 @@ sylius:
         report:
             name: Name
             description: Description
+            code: Code
             renderer:
                 label:  Renderer
                 template: Template
