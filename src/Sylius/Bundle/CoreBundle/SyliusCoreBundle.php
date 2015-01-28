@@ -13,7 +13,7 @@ namespace Sylius\Bundle\CoreBundle;
 
 use Sylius\Bundle\CoreBundle\DependencyInjection\Compiler\DoctrineSluggablePass;
 use Sylius\Bundle\CoreBundle\DependencyInjection\Compiler\RoutingRepositoryPass;
-use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
+use Sylius\Bundle\TranslationBundle\AbstractTranslationBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
-class SyliusCoreBundle extends AbstractResourceBundle
+class SyliusCoreBundle extends AbstractTranslationBundle
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class SyliusCoreBundle extends AbstractResourceBundle
     public static function getSupportedDrivers()
     {
         return array(
-            SyliusResourceBundle::DRIVER_DOCTRINE_ORM
+            SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
         );
     }
 
@@ -44,14 +44,6 @@ class SyliusCoreBundle extends AbstractResourceBundle
 
         $container->addCompilerPass(new DoctrineSluggablePass());
         $container->addCompilerPass(new RoutingRepositoryPass());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getBundlePrefix()
-    {
-        return 'sylius_core';
     }
 
     /**

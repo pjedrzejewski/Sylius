@@ -8,9 +8,7 @@ sylius:
   form:
     configuration:
       database:
-        0: Database connectie
         driver:
-          0: Driver
           microsoft_sql_server: Microsoft SQL Server
           mysql: MySQL
           oracle: Oracle
@@ -22,15 +20,12 @@ sylius:
         port: Poort
         user: Gebruiker
       locale:
-        0: Locatie instellingen
         currency: Valuta
         locale: Locatie
       mailer:
-        0: Mailer instellingen
         host: Host
         password: Wachtwoord
         transport:
-          0: Transport
           gmail: Gmail
           mail: Mail
           sendmail: Sendmail

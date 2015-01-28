@@ -17,7 +17,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                                       http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Sylius\Component\Order\Model\Order">
+    <mapped-superclass name="Sylius\Component\Order\Model\Order" table="sylius_order">
         <id name="id" column="id" type="integer">
             <generator strategy="AUTO" />
         </id>
@@ -45,6 +45,12 @@
         <one-to-many field="comments" target-entity="Sylius\Component\Order\Model\CommentInterface" mapped-by="order" orphan-removal="true">
             <cascade>
                 <cascade-all/>
+            </cascade>
+        </one-to-many>
+
+        <one-to-many field="identities" target-entity="Sylius\Component\Order\Model\IdentityInterface" mapped-by="order" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
             </cascade>
         </one-to-many>
 

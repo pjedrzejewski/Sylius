@@ -38,13 +38,14 @@
         {% block javascripts %}
             <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
             <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
-        {% javascripts output='assets/compiled/frontend.js'
-            'bundles/syliusweb/js/jquery.blueimp-gallery.min.js'
-            'bundles/syliusweb/js/confirm-modal.js'
-            'bundles/syliusweb/js/frontend.js'
-        %}
-            <script type="text/javascript" src="{{ asset_url }}"></script>
-        {% endjavascripts %}
+            {% javascripts output='assets/compiled/frontend.js'
+                'bundles/syliusweb/js/jquery.blueimp-gallery.min.js'
+                'bundles/syliusweb/js/confirm-modal.js'
+                'bundles/syliusweb/js/frontend.js'
+            %}
+                <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
     <div class="container">
         {% block header %}
             <div class="masthead pull-right">
@@ -76,7 +77,12 @@
         <div class="row">
             <div class="col-md-3" id="sidebar">
                 {% block sidebar %}
+                <div class="pull-left" style="margin-bottom: 10px;">
+                    {% render controller('sylius.controller.search:formAction', {'request':app.request}) %}
+                </div>
                 <h4>{{ 'sylius.shop_by'|trans }}</h4><br>
+                {% include 'SyliusSearchBundle::filter_form.html.twig' %}<br>
+
                 {{ knp_menu_render('sylius.frontend.taxonomies', {'template': 'SyliusWebBundle:Frontend:menu.html.twig'}) }}
                 {{ render(url('sylius_partial_product_latest', {'limit': 5, 'template': 'SyliusWebBundle:Frontend/Product:latestSidebar.html.twig'})) }}
                 {{ sonata_block_render({'name': '/cms/blocks/contact'}) }}
@@ -134,6 +140,5 @@
                 {'_locale': app.request.locale, 'editor': 'hallo'}
             )) %}
         {% endif %}
-        {% endblock %}
     </body>
 </html>

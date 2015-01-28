@@ -24,11 +24,11 @@
 
         "symfony/framework-bundle": "~2.3",
         "symfony/intl":             "~2.3",
-        "sylius/resource-bundle":   "0.12.*@dev",
+        "sylius/resource-bundle":   "0.13.*@dev",
         "mathiasverraes/money":     "*@dev"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.0",
+        "phpspec/phpspec": "~2.1",
         "twig/twig":       "~1.0",
         "symfony/form":    "~2.3"
     },
@@ -43,8 +43,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.12-dev"
+            "dev-master": "0.13-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

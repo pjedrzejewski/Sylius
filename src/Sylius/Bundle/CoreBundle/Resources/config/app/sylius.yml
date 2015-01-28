@@ -61,10 +61,15 @@ sylius_taxonomy:
     classes:
         taxonomy:
             model: Sylius\Component\Core\Model\Taxonomy
+            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository
             form: Sylius\Bundle\CoreBundle\Form\Type\TaxonomyType
+        taxonomy_translation:
+            model: Sylius\Component\Core\Model\TaxonomyTranslation
         taxon:
             model: Sylius\Component\Core\Model\Taxon
             form: Sylius\Bundle\CoreBundle\Form\Type\TaxonType
+        taxon_translation:
+            model: Sylius\Component\Core\Model\TaxonTranslation
 
 sylius_product:
     driver: doctrine/orm
@@ -73,7 +78,8 @@ sylius_product:
             model: Sylius\Component\Core\Model\Product
             controller: Sylius\Bundle\CoreBundle\Controller\ProductController
             repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductRepository
-            form: Sylius\Bundle\CoreBundle\Form\Type\ProductType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\ProductType
 
 sylius_attribute: ~
 
@@ -100,7 +106,10 @@ sylius_shipping:
             model: Sylius\Component\Core\Model\InventoryUnit
         shipping_method:
             model: Sylius\Component\Core\Model\ShippingMethod
+            repository: Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository
             form: Sylius\Bundle\CoreBundle\Form\Type\ShippingMethodType
+        shipping_method_translation:
+            model: Sylius\Component\Core\Model\ShippingMethodTranslation
 
 sylius_promotion:
     classes:
@@ -129,6 +138,7 @@ sylius_payment:
         stripe: Stripe
         be2bill: Be2Bill
         stripe_checkout: Stripe Checkout
+        paypal_express_checkout: Paypal Express Checkout
 
 sylius_payum: ~
 
@@ -177,3 +187,53 @@ sylius_resource:
 sylius_pricing:
     forms:
         - sylius_product_variant
+
+sylius_search:
+    search_form_template: 'SyliusSearchBundle::search_form.html.twig'
+    engine: orm
+    classes:
+       search:
+          model: Sylius\Bundle\SearchBundle\Model\SearchIndex
+       log:
+          model: Sylius\Bundle\SearchBundle\Model\SearchLog
+    orm_indexes:
+        product:
+            class: %sylius.model.product.class%
+            mappings:
+                id: ~
+                name: ~
+                description: ~
+
+    custom_accessors:
+        - Sylius\Component\Product\Accessor\ProductAccessor
+    filters:
+        pre_search_filter:
+            enabled: true
+            taxonomy: category
+        facet_groups:
+            search_set:
+                values: [taxons, price, made_of, color]
+            categories_set:
+                values: [price, made_of, color]
+            all_set:
+                values: [taxons, price, made_of]
+        facets:
+            taxons:
+                display_name: 'Basic categories'
+                type: terms
+                value: ~
+            price:
+                display_name: 'Available prices'
+                type: range
+                values:
+                    - { from: 0, to: 2000}
+                    - { from: 2001, to: 5000}
+                    - { from: 5001, to: 10000}
+            made_of:
+                display_name: 'Material'
+                type: terms
+                value: ~
+            color:
+                display_name: 'Available colors'
+                type: terms
+                value: ~

@@ -8,9 +8,7 @@ sylius:
   form:
     configuration:
       database:
-        0: Conexiune la baza de date
         driver:
-          0: Driver
           microsoft_sql_server: Microsoft SQL Server
           mysql: MySQL
           oracle: Oracle

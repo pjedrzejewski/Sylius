@@ -31,7 +31,7 @@ class AddressController extends FOSRestController
     /**
      * Get collection of user's addresses.
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $view = $this
             ->view()
@@ -163,6 +163,12 @@ class AddressController extends FOSRestController
         return $this->redirectToIndex();
     }
 
+    protected function addFlash($type, $message)
+    {
+        $translator = $this->get('translator');
+        $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
+    }
+
     /**
      * @param AddressInterface $address
      *
@@ -192,12 +198,6 @@ class AddressController extends FOSRestController
     private function redirectToIndex()
     {
         return $this->redirect($this->generateUrl('sylius_account_address_index'));
-    }
-
-    private function addFlash($type, $message)
-    {
-        $translator = $this->get('translator');
-        $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
     }
 
     /**

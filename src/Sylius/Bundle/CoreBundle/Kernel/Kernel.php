@@ -18,13 +18,14 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
  * Sylius base application kernel.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
 abstract class Kernel extends BaseKernel
 {
-    const VERSION         = '0.12.0-dev';
-    const VERSION_ID      = '00120';
+    const VERSION         = '0.13.0-dev';
+    const VERSION_ID      = '00130';
     const MAJOR_VERSION   = '0';
-    const MINOR_VERSION   = '12';
+    const MINOR_VERSION   = '13';
     const RELEASE_VERSION = '0';
     const EXTRA_VERSION   = 'DEV';
 
@@ -49,6 +50,7 @@ abstract class Kernel extends BaseKernel
             new \Sylius\Bundle\ShippingBundle\SyliusShippingBundle(),
             new \Sylius\Bundle\PaymentBundle\SyliusPaymentBundle(),
             new \Sylius\Bundle\PayumBundle\SyliusPayumBundle(),
+            new \Sylius\Bundle\ReportBundle\SyliusReportBundle(),
             new \Sylius\Bundle\PromotionBundle\SyliusPromotionBundle(),
             new \Sylius\Bundle\AddressingBundle\SyliusAddressingBundle(),
             new \Sylius\Bundle\InventoryBundle\SyliusInventoryBundle(),
@@ -57,6 +59,8 @@ abstract class Kernel extends BaseKernel
             new \Sylius\Bundle\PricingBundle\SyliusPricingBundle(),
             new \Sylius\Bundle\SequenceBundle\SyliusSequenceBundle(),
             new \Sylius\Bundle\ContentBundle\SyliusContentBundle(),
+            new \Sylius\Bundle\SearchBundle\SyliusSearchBundle(),
+            new \Sylius\Bundle\TranslationBundle\SyliusTranslationBundle(),
 
             new \Sylius\Bundle\CoreBundle\SyliusCoreBundle(),
             new \Sylius\Bundle\WebBundle\SyliusWebBundle(),
@@ -88,6 +92,7 @@ abstract class Kernel extends BaseKernel
             new \FOS\RestBundle\FOSRestBundle(),
 
             new \FOS\UserBundle\FOSUserBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \Knp\Bundle\GaufretteBundle\KnpGaufretteBundle(),
             new \Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new \Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
@@ -98,6 +103,8 @@ abstract class Kernel extends BaseKernel
             new \HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+
+            new \A2lix\TranslationFormBundle\A2lixTranslationFormBundle(),
         );
 
         if (in_array($this->environment, array('dev', 'test'))) {

@@ -23,11 +23,11 @@
         "php": ">=5.3.3",
 
         "doctrine/common":         "~2.3",
-        "sylius/resource":         "0.12.*@dev",
+        "sylius/resource":         "0.13.*@dev",
         "symfony/property-access": "~2.3"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.0"
+        "phpspec/phpspec": "~2.1"
     },
     "config": {
         "bin-dir": "bin"
@@ -40,8 +40,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.12-dev"
+            "dev-master": "0.13-dev"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }

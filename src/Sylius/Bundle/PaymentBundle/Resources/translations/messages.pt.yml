@@ -23,6 +23,8 @@ sylius:
         processing: Processando
         unknown: DESCONHECIDO
         void: Vazio
+        cancelled: Cancelado
+        refunded: Reembolsado
     payment_method:
       description: Descrição
       enabled: Habilitado?

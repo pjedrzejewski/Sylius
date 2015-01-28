@@ -21,6 +21,7 @@ use Symfony\Component\Form\Exception\UnexpectedTypeException;
  * Transforms arrays of selected taxons into one collection.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Patrick Berenschot <p.berenschot@taka-a-byte.eu>
  */
 class TaxonSelectionToCollectionTransformer extends ObjectSelectionToIdentifierCollectionTransformer
 {
@@ -30,7 +31,6 @@ class TaxonSelectionToCollectionTransformer extends ObjectSelectionToIdentifierC
     public function transform($value)
     {
         $taxons = array();
-
         foreach ($this->objects as $taxonomy) {
             $taxons[$taxonomy->getId()] = array();
         }
@@ -46,12 +46,14 @@ class TaxonSelectionToCollectionTransformer extends ObjectSelectionToIdentifierC
         return $this->processObjects($value, $taxons);
     }
 
-    private function processObjects($value, array $taxons)
+    private function processObjects(Collection $value, array $taxons)
     {
-        /* @var $taxonomy TaxonomyInterface[] */
+        /* @var $taxonomy TaxonomyInterface */
         foreach ($this->objects as $taxonomy) {
-            /* @var $taxon TaxonInterface[] */
+            /* @var $taxon TaxonInterface */
             foreach ($taxonomy->getTaxons() as $taxon) {
+                $this->addChildren($taxonomy, $value, $taxon->getChildren(), $taxons);
+
                 if ($value->contains($this->saveObjects ? $taxon : $taxon->getId())) {
                     $taxons[$taxonomy->getId()][] = $taxon;
                 }
@@ -59,5 +61,31 @@ class TaxonSelectionToCollectionTransformer extends ObjectSelectionToIdentifierC
         }
 
         return $taxons;
+    }
+
+    /**
+     * Add taxon childs to the taxons array recursively.
+     *
+     * @param TaxonomyInterface $taxonomy
+     * @param Collection        $value
+     * @param \Traversable      $children
+     * @param array             $taxons
+     */
+    private function addChildren(TaxonomyInterface $taxonomy, Collection $value, $children, array &$taxons)
+    {
+        if (!is_array($children) && !$children instanceof \Traversable) {
+            throw new \InvalidArgumentException('Expecting array or Traversable!');
+        }
+
+        /* @var $children TaxonInterface[] */
+        foreach ($children as $child) {
+            if ($value->contains($this->saveObjects ? $child : $child->getId())) {
+                $taxons[$taxonomy->getId()][] = $child;
+            }
+
+            if (!$child->getChildren()->isEmpty()) {
+                $this->addChildren($taxonomy, $value, $child->getChildren(), $taxons);
+            }
+        }
     }
 }

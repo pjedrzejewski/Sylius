@@ -23,11 +23,15 @@ Feature: Users management
             | name   | type    | members |
             | Poland | country | Poland  |
           And the following orders were placed:
-            | user | address                                        |
-            | john | Jan Kowalski, Wawel 5 , 31-001, Kraków, Poland |
+            | user         | address                                        |
+            | john         | Jan Kowalski, Wawel 5 , 31-001, Kraków, Poland |
+            | rick@foo.com | Rick Foo, Wawel 5 , 31-001, Kraków, Poland     |
         And order #000000001 has following items:
             | product | quantity |
             | Mug     | 2        |
+        And order #000000002 has following items:
+            | product | quantity |
+            | Mug     | 3        |
 
     Scenario: Seeing index of all users
         Given I am on the dashboard page
@@ -53,6 +57,16 @@ Feature: Users management
          When I click "details" near "john"
          Then I should be on the page of user with username "john"
           And I should see 1 orders in the list
+
+    Scenario: Prevent self-deletion possibility for current logged user on details page
+        Given I am on the user index page
+         When I click "details" near "sylius@example.com"
+         Then I should be on the page of user with username "sylius@example.com"
+          And I should not see "delete" button
+
+    Scenario: Prevent self-deletion possibility for current logged user on user index page
+        Given I am on the user index page
+         Then I should not see "delete" button near "sylius@example.com" in "users" table
 
     Scenario: Accessing the user creation form
         Given I am on the user index page
@@ -93,6 +107,14 @@ Feature: Users management
          Then I should be on the page of user with username "umpirsky@gmail.com"
           And "User has been successfully updated." should appear on the page
           And "umpirsky@gmail.com" should appear on the page
+
+    Scenario: Accessing the user details page from users list for deleted user
+        Given I deleted user with username "rick@foo.com"
+          And I am on the user index page
+          And I view deleted elements
+         When I click "details" near "rick@foo.com"
+         Then I should be on the page of user with username "rick@foo.com"
+          And I should see 1 orders in the list
 
     Scenario: Deleting user
         Given I am on the page of user with username "rick@foo.com"

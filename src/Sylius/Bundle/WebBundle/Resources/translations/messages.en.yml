@@ -175,6 +175,8 @@ sylius:
             index: Prototypes
         redirect_route:
             index: Redirect routes
+        report:
+            index: Reports
         route:
             index: Routes
         sales: Sales
@@ -562,7 +564,7 @@ sylius:
         method: Method
         no_results: There are no payments configured.
         state:
-            0: State
+            header: State
             cancelled: Cancelled
             checkout: Checkout
             completed: Completed
@@ -679,6 +681,7 @@ sylius:
         no_results: There are no coupon to display.
         total_results: Total: %total%
         update_header: Editing coupon
+        expires_at: Expires at
     promotion_rule:
         configuration: Configuration
         type: Type
@@ -709,6 +712,20 @@ sylius:
     province:
         provinces: Provinces
     remember_me: Remember me?
+    report:
+        create: Create report
+        create_header: Create new report
+        no_results: There are no reports created.
+        show_header: Report details
+        details: details
+        id: id
+        name: Name
+        code: Code
+        description: Description
+        manage: Manage
+        update_header: Edit report
+        renderer: Renderer type
+        data_fetcher: Data fetcher type
     save_changes: Save changes
     search: Search
     settings:

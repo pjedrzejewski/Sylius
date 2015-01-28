@@ -32,6 +32,7 @@ class SyliusProductExtension extends AbstractResourceExtension implements Prepen
             new Configuration(),
             $container,
             self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS
+            | self::CONFIGURE_FORMS
         );
     }
 
@@ -61,7 +62,11 @@ class SyliusProductExtension extends AbstractResourceExtension implements Prepen
                 'product' => array(
                     'subject'         => $config['classes']['product']['model'],
                     'attribute'       => array(
-                        'model' => 'Sylius\Component\Product\Model\Attribute'
+                        'model' => 'Sylius\Component\Product\Model\Attribute',
+                        'repository' => 'Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository'
+                    ),
+                    'attribute_translation' => array(
+                        'model' => 'Sylius\Component\Product\Model\AttributeTranslation'
                     ),
                     'attribute_value' => array(
                         'model' => 'Sylius\Component\Product\Model\AttributeValue'
@@ -91,7 +96,11 @@ class SyliusProductExtension extends AbstractResourceExtension implements Prepen
                         'form'       => 'Sylius\Bundle\ProductBundle\Form\Type\VariantType'
                     ),
                     'option'       => array(
-                        'model' => 'Sylius\Component\Product\Model\Option'
+                        'model' => 'Sylius\Component\Product\Model\Option',
+                        'repository' => 'Sylius\Bundle\ResourceBundle\Doctrine\ORM\TranslatableEntityRepository'
+                    ),
+                    'option_translation'       => array(
+                        'model' => 'Sylius\Component\Product\Model\OptionTranslation'
                     ),
                     'option_value' => array(
                         'model' => 'Sylius\Component\Product\Model\OptionValue'

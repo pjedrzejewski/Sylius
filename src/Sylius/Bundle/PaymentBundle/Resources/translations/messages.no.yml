@@ -23,6 +23,8 @@ sylius:
         processing: Behandler
         unknown: Ukjent
         void: Ugyldig
+        cancelled: Avbrutt
+        refunded: Refundert
     payment_method:
       description: Beskrivelse
       enabled: Aktivert?

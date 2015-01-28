@@ -6,6 +6,9 @@ Feature: taxonomies
 
     Background:
         Given there is default currency configured
+        And there are following locales configured:
+            | code | enabled |
+            | en   | yes     |
           And I am logged in as administrator
           And there are following taxonomies defined:
             | name     |
@@ -100,6 +103,15 @@ Feature: taxonomies
           And I press "Create"
          Then I should be on the page of taxonomy "Category"
           And I should see "Taxon has been successfully created."
+
+    Scenario: Creating new taxon with existing name under given taxonomy
+        Given I am on the page of taxonomy "Category"
+          And I follow "Create taxon"
+         When I fill in "Name" with "Electronics"
+          And I press "Create"
+         Then I should be on the page of taxonomy "Category"
+          And I should see "Taxon has been successfully created."
+          And I should see 9 taxons in the list
 
     Scenario: Creating new taxon with parent
         Given I am on the page of taxonomy "Category"

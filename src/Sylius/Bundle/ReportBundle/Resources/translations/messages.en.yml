@@ -1,0 +1,27 @@
+sylius:
+    report:
+        index_header: Reports
+        nodata: There is no data to display.
+    form:
+        rule:
+            item_count_configuration:
+                count: sylius.form.rule.item_count_configuration.count   # FIXME
+                equal: sylius.form.rule.item_count_configuration.equal   # FIXME
+
+            type: sylius.form.rule.type   # FIXME
+
+        report:
+            name: Name
+            description: Description
+            code: Code
+            renderer:
+                label:  Renderer
+                template: Template
+            chart:
+                type: Type
+            data_fetcher: Data Fetcher
+            user_registration:
+                start: Start date
+                end: End date
+                period: Time period
+                empty_records: Print empty records?

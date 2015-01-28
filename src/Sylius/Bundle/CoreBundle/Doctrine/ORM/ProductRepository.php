@@ -19,6 +19,7 @@ use Sylius\Component\Core\Model\TaxonInterface;
  * Product repository.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
 class ProductRepository extends BaseProductRepository
 {
@@ -27,18 +28,25 @@ class ProductRepository extends BaseProductRepository
      * under given taxon.
      *
      * @param TaxonInterface $taxon
+     * @param array          $criteria
      *
-     * @return PagerfantaInterface
+     * @return \Pagerfanta\Pagerfanta
      */
-    public function createByTaxonPaginator(TaxonInterface $taxon)
+    public function createByTaxonPaginator(TaxonInterface $taxon, array $criteria = array())
     {
         $queryBuilder = $this->getCollectionQueryBuilder();
-
         $queryBuilder
             ->innerJoin('product.taxons', 'taxon')
             ->andWhere('taxon = :taxon')
             ->setParameter('taxon', $taxon)
         ;
+
+        foreach ($criteria as $attributeName => $value) {
+            $queryBuilder
+                ->andWhere('product.' . $attributeName . ' IN (:' . $attributeName . ')')
+                ->setParameter($attributeName, $value)
+            ;
+        }
 
         return $this->getPaginator($queryBuilder);
     }
@@ -46,22 +54,23 @@ class ProductRepository extends BaseProductRepository
     /**
      * Create filter paginator.
      *
-     * @param array   $criteria
-     * @param array   $sorting
-     * @param Boolean $deleted
+     * @param array $criteria
+     * @param array $sorting
+     * @param bool  $deleted
      *
      * @return PagerfantaInterface
      */
     public function createFilterPaginator($criteria = array(), $sorting = array(), $deleted = false)
     {
         $queryBuilder = parent::getCollectionQueryBuilder()
-            ->select('product, variant')
+            ->select('product, variant, translation')
             ->leftJoin('product.variants', 'variant')
+            ->leftJoin('product.translations', 'translation')
         ;
 
         if (!empty($criteria['name'])) {
             $queryBuilder
-                ->andWhere('product.name LIKE :name')
+                ->andWhere('translation.name LIKE :name')
                 ->setParameter('name', '%'.$criteria['name'].'%')
             ;
         }
@@ -91,7 +100,7 @@ class ProductRepository extends BaseProductRepository
     /**
      * Get the product data for the details page.
      *
-     * @param integer $id
+     * @param int $id
      *
      * @return null|ProductInterface
      */
@@ -107,10 +116,14 @@ class ProductRepository extends BaseProductRepository
             ->setParameter('id', $id)
         ;
 
-        return $queryBuilder
+        $result = $queryBuilder
             ->getQuery()
             ->getOneOrNullResult()
         ;
+
+        $this->_em->getFilters()->enable('softdeleteable');
+
+        return $result;
     }
 
     /**

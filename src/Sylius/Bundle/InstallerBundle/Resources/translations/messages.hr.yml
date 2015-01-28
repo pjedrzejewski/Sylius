@@ -8,9 +8,7 @@ sylius:
   form:
     configuration:
       database:
-        0: Spajanje na bazu
         driver:
-          0: Driver
           microsoft_sql_server: Microsoft SQL Server
           mysql: MySQL
           oracle: Oracle
@@ -22,15 +20,12 @@ sylius:
         port: Port
         user: Korisnik
       locale:
-        0: Lokalne postavke
         currency: Valuta
         locale: Lokalni kod
       mailer:
-        0: Postavke za e-mail
         host: Server
         password: Lozinka
         transport:
-          0: Prenos
           gmail: Gmail
           mail: Mail
           sendmail: Sendmail

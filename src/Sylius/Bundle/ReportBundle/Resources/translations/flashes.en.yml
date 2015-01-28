@@ -1,0 +1,3 @@
+sylius:
+    report:
+        noData: There is no data to display.

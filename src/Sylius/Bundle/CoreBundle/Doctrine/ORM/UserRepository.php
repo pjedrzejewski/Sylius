@@ -14,6 +14,7 @@ namespace Sylius\Bundle\CoreBundle\Doctrine\ORM;
 use Pagerfanta\PagerfantaInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository;
 use Sylius\Component\Core\Model\UserInterface;
+use Doctrine\ORM\Query\ResultSetMapping;
 
 /**
  * User repository.
@@ -88,7 +89,6 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
-
         $this->_em->getFilters()->enable('softdeleteable');
 
         return $result;
@@ -116,6 +116,33 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getSingleScalarResult()
         ;
+    }
+
+    public function getRegistrationStatistic(array $configuration=array())
+    {
+        $groupBy = '';
+        foreach ($configuration['groupBy'] as $groupByArray ) {
+            $groupBy = $groupByArray.'(date)'.' '.$groupBy;
+        }
+        $groupBy = substr($groupBy, 0, -1);
+        $groupBy = str_replace(' ', ', ', $groupBy);
+
+        $queryBuilder = $this->getEntityManager()->getConnection()->createQueryBuilder();
+        
+        $queryBuilder
+            ->select('DATE(u.created_at) as date',' count(u.id) as user_total')
+            ->from('sylius_user', 'u')
+            ->where($queryBuilder->expr()->gte('u.created_at', ':from'))
+            ->andWhere($queryBuilder->expr()->lte('u.created_at', ':to'))
+            ->setParameter('from', $configuration['start']->format('Y-m-d H:i:s'))
+            ->setParameter('to', $configuration['end']->format('Y-m-d H:i:s'))
+            ->groupBy($groupBy)
+            ->orderBy($groupBy)
+        ;
+        
+        return $queryBuilder
+            ->execute()
+            ->fetchAll();
     }
 
     protected function getCollectionQueryBuilderBetweenDates(\DateTime $from, \DateTime $to)

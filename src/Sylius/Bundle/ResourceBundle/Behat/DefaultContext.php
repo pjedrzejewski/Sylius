@@ -71,12 +71,15 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     public function purgeDatabase(BeforeScenarioScope $scope)
     {
         $entityManager = $this->getService('doctrine.orm.entity_manager');
+        $entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $entityManager->getConnection()->executeUpdate("SET foreign_key_checks = 0;");
 
         $purger = new ORMPurger($entityManager);
         $purger->purge();
 
         $entityManager->getConnection()->executeUpdate("SET foreign_key_checks = 1;");
+        $entityManager->clear();
     }
 
     /**
@@ -175,7 +178,7 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
         $list = explode(',', $configurationString);
 
         foreach ($list as $parameter) {
-            list($key, $value) = explode(':', $parameter);
+            list($key, $value) = explode(':', $parameter, 2);
             $key = strtolower(trim(str_replace(' ', '_', $key)));
 
             switch ($key) {

@@ -23,6 +23,8 @@ sylius:
         processing: Verwerken
         unknown: Onbekend
         void: Leeg
+        cancelled: Geannuleerd
+        refunded: Terugbetaald
     payment_method:
       description: Omschrijving
       enabled: Actief?

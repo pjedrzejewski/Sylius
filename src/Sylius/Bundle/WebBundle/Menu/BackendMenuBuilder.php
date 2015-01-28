@@ -25,11 +25,9 @@ class BackendMenuBuilder extends MenuBuilder
     /**
      * Builds backend main menu.
      *
-     * @param Request $request
-     *
      * @return ItemInterface
      */
-    public function createMainMenu(Request $request)
+    public function createMainMenu()
     {
         $menu = $this->factory->createItem('root', array(
             'childrenAttributes' => array(
@@ -69,11 +67,9 @@ class BackendMenuBuilder extends MenuBuilder
     /**
      * Builds backend sidebar menu.
      *
-     * @param Request $request
-     *
      * @return ItemInterface
      */
-    public function createSidebarMenu(Request $request)
+    public function createSidebarMenu()
     {
         $menu = $this->factory->createItem('root', array(
             'childrenAttributes' => array(
@@ -242,6 +238,10 @@ class BackendMenuBuilder extends MenuBuilder
             'route' => 'sylius_backend_promotion_create',
             'labelAttributes' => array('icon' => 'glyphicon glyphicon-plus-sign'),
         ))->setLabel($this->translate(sprintf('sylius.backend.menu.%s.new_promotion', $section)));
+        $child->addChild('report', array(
+            'route' => 'sylius_backend_report_index',
+            'labelAttributes' => array('icon' => 'glyphicon glyphicon-list-alt'),
+        ))->setLabel($this->translate(sprintf('sylius.backend.menu.%s.report', $section)));
     }
 
     /**

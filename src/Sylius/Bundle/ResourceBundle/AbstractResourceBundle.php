@@ -14,6 +14,7 @@ namespace Sylius\Bundle\ResourceBundle;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Compiler\ResolveDoctrineTargetEntitiesPass;
 use Sylius\Component\Resource\Exception\Driver\UnknownDriverException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -27,9 +28,11 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
 {
     const MAPPING_XML = 'xml';
     const MAPPING_YAML = 'yml';
+    const MAPPING_ANNOTATION = 'annotation';
 
     /**
      * Configure format of mapping files.
+     *
      * @var string
      */
     protected $mappingFormat = self::MAPPING_XML;
@@ -52,23 +55,34 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
         if (null !== $this->getModelNamespace()) {
             $className = get_class($this);
             foreach ($className::getSupportedDrivers() as $driver) {
-                list($mappingsPassClassName, $manager) = $this->getMappingDriverInfo($driver);
+                $mappingsPassClassName = $this->getMappingDriverInfo($driver);
 
                 if (class_exists($mappingsPassClassName)) {
-                    if (self::MAPPING_XML === $this->mappingFormat) {
-                        $container->addCompilerPass($mappingsPassClassName::createXmlMappingDriver(
-                            array($this->getConfigFilesPath() => $this->getModelNamespace()),
-                            $manager,
-                            sprintf('%s.driver.%s', $this->getBundlePrefix(), $driver)
-                        ));
-                    } elseif (self::MAPPING_YAML === $this->mappingFormat) {
-                        $container->addCompilerPass($mappingsPassClassName::createYamlMappingDriver(
-                            array($this->getConfigFilesPath() => $this->getModelNamespace()),
-                            $manager,
-                            sprintf('%s.driver.%s', $this->getBundlePrefix(), $driver)
-                        ));
-                    } else {
-                        throw new InvalidConfigurationException("The 'mappingFormat' value is invalid, must be 'xml' or 'yml'.");
+                    switch ($this->mappingFormat){
+                        case self::MAPPING_XML:
+                            $container->addCompilerPass($mappingsPassClassName::createXmlMappingDriver(
+                                array($this->getConfigFilesPath() => $this->getModelNamespace()),
+                                array(sprintf('%s.object_manager', $this->getBundlePrefix())),
+                                sprintf('%s.driver.%s', $this->getBundlePrefix(), $driver)
+                            ));
+                            break;
+                        case self::MAPPING_YAML:
+                            $container->addCompilerPass($mappingsPassClassName::createYamlMappingDriver(
+                                array($this->getConfigFilesPath() => $this->getModelNamespace()),
+                                array(sprintf('%s.object_manager', $this->getBundlePrefix())),
+                                sprintf('%s.driver.%s', $this->getBundlePrefix(), $driver)
+                            ));
+                            break;
+                        case self::MAPPING_ANNOTATION:
+                            $container->addCompilerPass($mappingsPassClassName::createAnnotationMappingDriver(
+                                array($this->getModelNamespace()),
+                                array($this->getConfigFilesPath()),
+                                array(sprintf('%s.object_manager', $this->getBundlePrefix())),
+                                sprintf('%s.driver.%s', $this->getBundlePrefix(), $driver)
+                            ));
+                            break;
+                        default:
+                            throw new InvalidConfigurationException("The 'mappingFormat' value is invalid, must be 'xml', 'yml' or 'annotation'.");
                     }
                 }
             }
@@ -76,14 +90,17 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
     }
 
     /**
-     * Return the prefix of the bundle
+     * Return the prefix of the bundle.
      *
      * @return string
      */
-    abstract protected function getBundlePrefix();
+    protected function getBundlePrefix()
+    {
+        return Container::underscore(substr(strrchr(get_class($this), '\\'), 1, -6));
+    }
 
     /**
-     * Target entities resolver configuration (Interface - Model)
+     * Target entities resolver configuration (Interface - Model).
      *
      * @return array
      */
@@ -93,7 +110,7 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
     }
 
     /**
-     * Return the directory where are stored the doctrine mapping
+     * Return the directory where are stored the doctrine mapping.
      *
      * @return string
      */
@@ -103,7 +120,7 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
     }
 
     /**
-     * Return the entity namespace
+     * Return the entity namespace.
      *
      * @return string
      */
@@ -113,7 +130,7 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
     }
 
     /**
-     * Return informations used to initialize mapping driver
+     * Return information's used to initialize mapping driver.
      *
      * @param string $driverType
      *
@@ -125,27 +142,18 @@ abstract class AbstractResourceBundle extends Bundle implements ResourceBundleIn
     {
         switch ($driverType) {
             case SyliusResourceBundle::DRIVER_DOCTRINE_MONGODB_ODM:
-                return array(
-                    'Doctrine\\Bundle\\MongoDBBundle\\DependencyInjection\\Compiler\\DoctrineMongoDBMappingsPass',
-                    array('doctrine_mongodb.odm.document_manager'),
-                );
+                return 'Doctrine\\Bundle\\MongoDBBundle\\DependencyInjection\\Compiler\\DoctrineMongoDBMappingsPass';
             case SyliusResourceBundle::DRIVER_DOCTRINE_ORM:
-                return array(
-                    'Doctrine\\Bundle\\DoctrineBundle\\DependencyInjection\\Compiler\\DoctrineOrmMappingsPass',
-                    array('doctrine.orm.entity_manager'),
-                );
+                return 'Doctrine\\Bundle\\DoctrineBundle\\DependencyInjection\\Compiler\\DoctrineOrmMappingsPass';
             case SyliusResourceBundle::DRIVER_DOCTRINE_PHPCR_ODM:
-                return array(
-                    'Doctrine\\Bundle\\PHPCRBundle\\DependencyInjection\\Compiler\\DoctrinePhpcrMappingsPass',
-                    array('doctrine_phpcr.odm.document_manager'),
-                );
+                return 'Doctrine\\Bundle\\PHPCRBundle\\DependencyInjection\\Compiler\\DoctrinePhpcrMappingsPass';
         }
 
         throw new UnknownDriverException($driverType);
     }
 
     /**
-     * Return the absolute path where are stored the doctrine mapping
+     * Return the absolute path where are stored the doctrine mapping.
      *
      * @return string
      */

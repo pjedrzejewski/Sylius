@@ -46,8 +46,7 @@ class OrderPaymentCallback
 
         $total = 0;
         if (PaymentInterface::STATE_COMPLETED === $payment->getState()) {
-            $payments = $order->getPayments()->filter(function ($payment) {
-                /** @var $payment PaymentInterface */
+            $payments = $order->getPayments()->filter(function (PaymentInterface $payment) {
                 return PaymentInterface::STATE_COMPLETED === $payment->getState();
             });
 
@@ -60,7 +59,8 @@ class OrderPaymentCallback
             $order->setPaymentState($payment->getState());
         }
 
-        if ($total === $order->getTotal()) {
+        // be flexible over many payment methods
+        if ($total >= $order->getTotal()) {
             $this->factory->get($order, OrderTransitions::GRAPH)->apply(OrderTransitions::SYLIUS_CONFIRM, true);
         }
     }

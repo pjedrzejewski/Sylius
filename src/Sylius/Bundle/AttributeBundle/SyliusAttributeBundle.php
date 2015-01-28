@@ -11,13 +11,14 @@
 
 namespace Sylius\Bundle\AttributeBundle;
 
-use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
+use Sylius\Bundle\TranslationBundle\AbstractTranslationBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
-class SyliusAttributeBundle extends AbstractResourceBundle
+class SyliusAttributeBundle extends AbstractTranslationBundle
 {
     /**
      * {@inheritdoc}
@@ -25,16 +26,8 @@ class SyliusAttributeBundle extends AbstractResourceBundle
     public static function getSupportedDrivers()
     {
         return array(
-            SyliusResourceBundle::DRIVER_DOCTRINE_ORM
+            SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getBundlePrefix()
-    {
-        return 'sylius_attribute';
     }
 
     /**

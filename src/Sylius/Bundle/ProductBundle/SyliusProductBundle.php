@@ -12,7 +12,7 @@
 namespace Sylius\Bundle\ProductBundle;
 
 use Sylius\Bundle\ProductBundle\DependencyInjection\Compiler\ValidatorPass;
-use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
+use Sylius\Bundle\TranslationBundle\AbstractTranslationBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -20,12 +20,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * Product management bundle with highly flexible architecture.
  * Implements basic product model with properties support.
  *
- * Use *SyliusVariableProductBundle* to get variants, options and
+ * Use *SyliusVariationBundle* to get variants, options and
  * customizations support.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
-class SyliusProductBundle extends AbstractResourceBundle
+class SyliusProductBundle extends AbstractTranslationBundle
 {
     /**
      * {@inheritdoc}
@@ -33,7 +34,7 @@ class SyliusProductBundle extends AbstractResourceBundle
     public static function getSupportedDrivers()
     {
         return array(
-            SyliusResourceBundle::DRIVER_DOCTRINE_ORM
+            SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
         );
     }
 
@@ -50,19 +51,13 @@ class SyliusProductBundle extends AbstractResourceBundle
     /**
      * {@inheritdoc}
      */
-    protected function getBundlePrefix()
-    {
-        return 'sylius_product';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getModelInterfaces()
     {
         return array(
             'Sylius\Component\Product\Model\ProductInterface'        => 'sylius.model.product.class',
+            'Sylius\Component\Product\Model\ProductTranslationInterface' => 'sylius.model.product_translation.class',
             'Sylius\Component\Product\Model\AttributeInterface'      => 'sylius.model.product_attribute.class',
+            'Sylius\Component\Product\Model\AttributeTranslationInterface'  => 'sylius.model.product_attribute_translation.class',
             'Sylius\Component\Product\Model\AttributeValueInterface' => 'sylius.model.product_attribute_value.class',
             'Sylius\Component\Product\Model\VariantInterface'        => 'sylius.model.product_variant.class',
             'Sylius\Component\Product\Model\OptionInterface'         => 'sylius.model.product_option.class',
