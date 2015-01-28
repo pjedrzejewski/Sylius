@@ -35,10 +35,10 @@ class ReportType extends AbstractResourceType
     protected $rendererRegistry;
 
     /**
-    * DataFetcher registry.
-    *
-    * @var ServiceRegistryInterface
-    */
+     * DataFetcher registry.
+     *
+     * @var ServiceRegistryInterface
+     */
     protected $dataFetcherRegistry;
 
     public function __construct($dataClass, array $validationGroups, ServiceRegistryInterface $rendererRegistry, ServiceRegistryInterface $dataFetcherRegistry)
