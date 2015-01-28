@@ -37,6 +37,11 @@ class Report implements ReportInterface
     private $description;
 
     /**
+     * @var String
+     */
+    private $code;
+
+    /**
      * Renderer name.
      *
      * @var string
@@ -132,6 +137,30 @@ class Report implements ReportInterface
     public function setDescription($description)
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of code.
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Sets the value of code.
+     *
+     * @param string $code the code
+     *
+     * @return self
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
 
         return $this;
     }
