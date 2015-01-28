@@ -31,7 +31,6 @@
         <parameter key="sylius.form.type.data_fetcher_choice.class">Sylius\Bundle\ReportBundle\Form\Type\DataFetcher\DataFetcherChoiceType</parameter>
         <parameter key="sylius.report.data_fetcher.class">Sylius\Component\Report\DataFetcher\DelegatingDataFetcher</parameter>
         <parameter key="sylius.report.data_fetcher.sales_total.class">Sylius\Bundle\ReportBundle\DataFetcher\SalesTotalDataFetcher</parameter>
-        <parameter key="sylius.report.data_fetcher.user_registration.class">Sylius\Bundle\ReportBundle\DataFetcher\UserRegistrationDataFetcher</parameter>
     </parameters>
 
     <services>
