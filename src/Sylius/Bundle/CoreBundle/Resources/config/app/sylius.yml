@@ -184,6 +184,23 @@ sylius_sequence:
     generators:
         %sylius.model.order.class%: sylius.sequence.sequential_number_generator
 
+sylius_resource:
+    resources:
+        sylius.user:
+            driver: doctrine/orm
+            classes:
+                model: Sylius\Component\Core\Model\User
+                controller: Sylius\Bundle\CoreBundle\Controller\UserController
+                repository: Sylius\Bundle\UserBundle\Doctrine\ORM\UserRepository
+        sylius.user_oauth:
+            driver: doctrine/orm
+            classes:
+                model: Sylius\Component\User\Model\UserOAuth
+        sylius.group:
+            driver: doctrine/orm
+            classes:
+                model: Sylius\Component\User\Model\Group
+                
 sylius_pricing:
     forms:
         - sylius_product_variant
@@ -689,3 +706,5 @@ sylius_rbac:
     roles_hierarchy:
         administrator: [catalog_manager, sales_manager, marketing_manager, accounts_manager, shipping_manager, content_editor, tax_manager, it, support]
         it: [security_auditor, developer]
+
+sylius_user: ~
