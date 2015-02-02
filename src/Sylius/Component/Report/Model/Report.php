@@ -41,12 +41,14 @@ class Report implements ReportInterface
     /**
      * @var String
      */
-    private $dataFetcher = 'user_registration';
+    private $code;
 
     /**
-     * @var String
+     * Data fetcher name.
+     *
+     * @var string
      */
-    private $code;
+    private $dataFetcher = DefaultDataFetchers::USER_REGISTRATION;
 
     /**
      * Renderer name.
@@ -56,30 +58,18 @@ class Report implements ReportInterface
     private $renderer = DefaultRenderers::TABLE;
 
     /**
-     * @var Array
-     */
-    private $dataFetcherConfiguration = array();
-
-    /**
-     * Renderer name.
-     *
-     * @var string
-     */
-    private $renderer = 'table';
-
-    /**
-     * Renderer name.
-     *
-     * @var string
-     */
-    private $dataFetcher = DefaultDataFetchers::USER_REGISTRATION;
-
-    /**
      * Renderer configuration.
      *
      * @var array
      */
     private $rendererConfiguration = array();
+
+    /**
+     * Data fetcher configuration.
+     *
+     * @var array
+     */
+    private $dataFetcherConfiguration = array();
 
     /**
      * Gets the value of id.
