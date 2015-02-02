@@ -1,8 +1,9 @@
 <?php
 
-namespace Sylius\Bundle\ReportBundle\DataFetcher;
+namespace Sylius\Bundle\CoreBundle\DataFetcher;
 
 use Sylius\Bundle\CoreBundle\Doctrine\ORM\OrderRepository;
+use Sylius\Bundle\ReportBundle\DataFetcher\TimePeriod;
 use Sylius\Component\Report\DataFetcher\DefaultDataFetchers;
 
 /**
@@ -10,7 +11,7 @@ use Sylius\Component\Report\DataFetcher\DefaultDataFetchers;
  *
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class NumberOfOrdersDataFetcher extends TimePeriod
+class SalesTotalDataFetcher extends TimePeriod
 {
     /**
      * @var OrderRepository
@@ -27,7 +28,7 @@ class NumberOfOrdersDataFetcher extends TimePeriod
      */
     protected function getData(array $configuration = array())
     {
-        return $this->orderRepository->ordersBetweenDatesGroupByDate($configuration);
+        return $this->orderRepository->revenueBetweenDatesGroupByDate($configuration);
     }
 
     /**
@@ -35,6 +36,6 @@ class NumberOfOrdersDataFetcher extends TimePeriod
      */
     public function getType()
     {
-        return DefaultDataFetchers::NUMBER_OF_ORDERS;
+        return DefaultDataFetchers::SALES_TOTAL;
     }
 }

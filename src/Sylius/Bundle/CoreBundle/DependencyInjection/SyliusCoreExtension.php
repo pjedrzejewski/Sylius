@@ -57,6 +57,7 @@ class SyliusCoreExtension extends AbstractResourceExtension implements PrependEx
         'form',
         'templating',
         'twig',
+        'reports'
     );
 
     private $emails = array(
