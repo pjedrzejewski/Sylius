@@ -41,11 +41,6 @@ class ReportType extends AbstractResourceType
      */
     protected $dataFetcherRegistry;
 
-    /**
-    * Constructor.
-    *
-    * @param ServiceRegistryInterface $dataFetcherRegistry
-    */
     public function __construct($dataClass, array $validationGroups, ServiceRegistryInterface $rendererRegistry, ServiceRegistryInterface $dataFetcherRegistry)
     {
         parent::__construct($dataClass, $validationGroups);
@@ -74,23 +69,21 @@ class ReportType extends AbstractResourceType
                 'label'    => 'sylius.form.report.description',
                 'required' => false,
             ))
+            ->add('renderer', 'sylius_renderer_choice', array(
+                'label' => 'sylius.form.report.renderer.label',
+            ))
             ->add('dataFetcher', 'sylius_data_fetcher_choice', array(
                 'label'    => 'sylius.form.report.data_fetcher',
             ))
-            ->add('renderer', 'sylius_renderer_choice', array(
-                'label' => 'sylius.form.report.renderer.label'
-            ))
-            ->addEventSubscriber(new BuildReportRendererFormListener($this->rendererRegistry, $builder->getFormFactory()))
         ;
-        
+
         $prototypes = array();
         $prototypes['renderers'] = array();
         $prototypes['dataFetchers'] = array();
 
         foreach ($this->rendererRegistry->all() as $type => $renderer) {
-
             $formType = sprintf('sylius_renderer_%s', $renderer->getType());
-            
+
             if (!$formType) {
                 continue;
             }
@@ -103,8 +96,8 @@ class ReportType extends AbstractResourceType
         }
 
         foreach ($this->dataFetcherRegistry->all() as $type => $dataFetcher) {
-
             $formType = sprintf('sylius_data_fetcher_%s', $dataFetcher->getType());
+
             if (!$formType) {
                 continue;
             }

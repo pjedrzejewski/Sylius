@@ -11,15 +11,14 @@ sylius:
             name: Name
             description: Description
             code: Code
+            renderer:
+                label:  Renderer
+                template: Template
+            chart:
+                type: Type
             data_fetcher: Data Fetcher
             user_registration:
                 start: Start date
                 end: End date
                 period: Time period
                 empty_records: Print empty records?
-            nodata: There is no data to display.
-            renderer:
-                label:  Renderer
-                template: Template
-            chart:
-                type: Type

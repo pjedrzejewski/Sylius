@@ -11,8 +11,6 @@
 
 namespace Sylius\Component\Report\Model;
 
-use Sylius\Bundle\ReportBundle\DataFetcher\UserRegistrationDataFetcher;
-use Sylius\Component\Report\Renderer\TableRenderer;
 use Sylius\Component\Report\DataFetcher\DefaultDataFetchers;
 use Sylius\Component\Report\Renderer\DefaultRenderers;
 
@@ -44,13 +42,6 @@ class Report implements ReportInterface
     private $code;
 
     /**
-     * Data fetcher name.
-     *
-     * @var string
-     */
-    private $dataFetcher = DefaultDataFetchers::USER_REGISTRATION;
-
-    /**
      * Renderer name.
      *
      * @var string
@@ -65,9 +56,16 @@ class Report implements ReportInterface
     private $rendererConfiguration = array();
 
     /**
-     * Data fetcher configuration.
+     * DataFetcher name
      *
-     * @var array
+     * @var String
+     */
+    private $dataFetcher = DefaultDataFetchers::USER_REGISTRATION;
+
+    /**
+     * DataFetcher configuration
+     *
+     * @var Array
      */
     private $dataFetcherConfiguration = array();
 
@@ -168,6 +166,50 @@ class Report implements ReportInterface
     }
 
     /**
+     * Gets the Renderer name.
+     *
+     * @return string
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * Sets the Renderer name.
+     *
+     * @param string $renderer the renderer
+     *
+     * @return self
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
+    }
+
+    /**
+     * Gets the Renderers configuration.
+     *
+     * @return array
+     */
+    public function getRendererConfiguration()
+    {
+        return $this->rendererConfiguration;
+    }
+
+    /**
+     * Sets the Renderers configuration.
+     *
+     * @param array $rendererConfiguration the renderer configuration
+     *
+     * @return self
+     */
+    public function setRendererConfiguration($rendererConfiguration)
+    {
+        $this->rendererConfiguration = $rendererConfiguration;
+    }
+
+    /**
      * Gets the value of dataFetcher.
      *
      * @return DataFetcher
@@ -187,30 +229,6 @@ class Report implements ReportInterface
     public function setDataFetcher($dataFetcher)
     {
         $this->dataFetcher = $dataFetcher;
-        
-        return $this;
-    }
-
-    /**
-     * Gets the Renderers configuration.
-     *
-     * @return string
-     */
-    public function getRenderer()
-    {
-        return $this->renderer;
-    }
-
-    /**
-     * Sets the Renderer name.
-     *
-     * @param string $renderer the renderer
-     *
-     * @return self
-     */
-    public function setRenderer($renderer)
-    {
-        $this->renderer = $renderer;
 
         return $this;
     }
@@ -235,30 +253,6 @@ class Report implements ReportInterface
     public function setDataFetcherConfiguration(array $dataFetcherConfiguration)
     {
         $this->dataFetcherConfiguration = $dataFetcherConfiguration;
-
-        return $this;
-    }
-        
-    /**
-     * Gets the Renderers configuration.
-     *
-     * @return array
-     */
-    public function getRendererConfiguration()
-    {
-        return $this->rendererConfiguration;
-    }
-
-    /**
-     * Sets the Renderers configuration.
-     *
-     * @param array $rendererConfiguration the renderer configuration
-     *
-     * @return self
-     */
-    public function setRendererConfiguration($rendererConfiguration)
-    {
-        $this->rendererConfiguration = $rendererConfiguration;
 
         return $this;
     }
