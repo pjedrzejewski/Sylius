@@ -19,28 +19,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 /**
- * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class UserProvider implements UserProviderInterface
+abstract class UserProvider implements UserProviderInterface
 {
     /**
      * @var RepositoryInterface
      */
-    private $userRepository;
+    protected $userRepository;
 
     public function __construct(RepositoryInterface $userRepository) {
         $this->userRepository = $userRepository;    
     }
 
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($usernameOrEmail)
     {
 
-        $user = $this->userRepository->findOneBy(array('username' => $username));
+        $user = $this->findUser($usernameOrEmail);
 
         if (!$user) {
             throw new UsernameNotFoundException(
-                sprintf('Username "%s" does not exist.', $username)
+                sprintf('Username "%s" does not exist.', $usernameOrEmail)
             );
         }
 
@@ -55,8 +54,10 @@ class UserProvider implements UserProviderInterface
             );
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->userRepository->find($user->getId());
     }
+
+    protected abstract function findUser($usernameOrEmail);
 
     public function supportsClass($class)
     {

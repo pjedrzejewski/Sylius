@@ -3,10 +3,10 @@
 
 security:
     providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username_email
+        # fos_userbundle:
+        #     id: fos_user.user_provider.username_email
         sylius_userbundle:
-            id: sylius.provider.user_provider
+            id: sylius.provider.name_or_email_provider
     encoders:
         Sylius\Component\User\Model\UserInterface: sha512
     firewalls:

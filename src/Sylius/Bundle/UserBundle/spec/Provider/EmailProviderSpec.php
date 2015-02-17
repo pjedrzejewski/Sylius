@@ -15,7 +15,10 @@ use PhpSpec\ObjectBehavior;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\User\Model\User;
 
-class UserProviderSpec extends ObjectBehavior
+/**
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ */
+class EmailProviderSpec extends ObjectBehavior
 {
     function let(RepositoryInterface $userRepository)
     {
@@ -24,7 +27,7 @@ class UserProviderSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\UserBundle\Provider\UserProvider');
+        $this->shouldHaveType('Sylius\Bundle\UserBundle\Provider\EmailProvider');
     }
     
     function it_implements_symfony_user_provider_interface()
@@ -32,23 +35,28 @@ class UserProviderSpec extends ObjectBehavior
         $this->shouldImplement('Symfony\Component\Security\Core\User\UserProviderInterface');
     }
 
+    function it_should_extend_user_provider()
+    {
+        $this->shouldHaveType('Sylius\Bundle\UserBundle\Provider\UserProvider');
+    }
+
     function it_supports_sylius_user_model()
     {
         $this->supportsClass('Sylius\Component\User\Model\UserInterface')->shouldReturn(true);
     }
 
-    function it_loads_user_by_user_name($userRepository, User $user)
+    function it_loads_user_by_email($userRepository, User $user)
     {
-        $userRepository->findOneBy(array('username' => 'testUser'))->willReturn($user);
+        $userRepository->findOneBy(array('emailCanonical' => 'test@user.com'))->willReturn($user);
 
-        $this->loadUserByUsername('testUser')->shouldReturn($user);
+        $this->loadUserByUsername('test@user.com')->shouldReturn($user);
     }
 
     function it_updates_user_by_user_name($userRepository, User $user)
     {
-        $userRepository->findOneBy(array('username' => 'testUser'))->willReturn($user);
+        $userRepository->find(1)->willReturn($user);
 
-        $user->getUsername()->willReturn('testUser');
+        $user->getId()->willReturn(1);
 
         $this->refreshUser($user)->shouldReturn($user);
     }
