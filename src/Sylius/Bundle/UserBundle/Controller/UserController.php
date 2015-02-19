@@ -9,7 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Bundle\ShippingBundle\Controller;
+namespace Sylius\Bundle\UserBundle\Controller;
+
+use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 
 class UserController extends ResourceController
 {

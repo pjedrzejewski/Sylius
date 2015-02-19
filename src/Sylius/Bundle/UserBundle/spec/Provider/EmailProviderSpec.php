@@ -13,6 +13,7 @@ namespace spec\Sylius\Bundle\UserBundle\Provider;
 
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\User;
 
 /**
@@ -20,9 +21,9 @@ use Sylius\Component\User\Model\User;
  */
 class EmailProviderSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $userRepository)
+    function let(RepositoryInterface $userRepository, CanonicalizerInterface $canonicalizer)
     {
-        $this->beConstructedWith($userRepository);
+        $this->beConstructedWith($userRepository, $canonicalizer);
     }
 
     function it_is_initializable()
@@ -45,8 +46,10 @@ class EmailProviderSpec extends ObjectBehavior
         $this->supportsClass('Sylius\Component\User\Model\UserInterface')->shouldReturn(true);
     }
 
-    function it_loads_user_by_email($userRepository, User $user)
+    function it_loads_user_by_email($userRepository, $canonicalizer, User $user)
     {
+        $canonicalizer->canonicalize('test@user.com')->willReturn('test@user.com');
+
         $userRepository->findOneBy(array('emailCanonical' => 'test@user.com'))->willReturn($user);
 
         $this->loadUserByUsername('test@user.com')->shouldReturn($user);

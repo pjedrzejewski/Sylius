@@ -154,7 +154,7 @@ class FrontendMenuBuilder extends MenuBuilder
                 'labelAttributes' => array('icon' => 'icon-lock icon-large', 'iconOnly' => false)
             ))->setLabel($this->translate('sylius.frontend.menu.main.login'));
             $menu->addChild('register', array(
-                'route' => 'fos_user_registration_register',
+                'route' => 'sylius_user_registration',
                 'linkAttributes' => array('title' => $this->translate('sylius.frontend.menu.main.register')),
                 'labelAttributes' => array('icon' => 'icon-user icon-large', 'iconOnly' => false)
             ))->setLabel($this->translate('sylius.frontend.menu.main.register'));

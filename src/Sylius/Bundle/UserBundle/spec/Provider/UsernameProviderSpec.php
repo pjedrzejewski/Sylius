@@ -13,6 +13,7 @@ namespace spec\Sylius\Bundle\UserBundle\Provider;
 
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\User;
 
 /**
@@ -20,9 +21,9 @@ use Sylius\Component\User\Model\User;
  */
 class UsernameProviderSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $userRepository)
+    function let(RepositoryInterface $userRepository, CanonicalizerInterface $canonicalizer)
     {
-        $this->beConstructedWith($userRepository);
+        $this->beConstructedWith($userRepository, $canonicalizer);
     }
 
     function it_is_initializable()
@@ -45,9 +46,11 @@ class UsernameProviderSpec extends ObjectBehavior
         $this->supportsClass('Sylius\Component\User\Model\UserInterface')->shouldReturn(true);
     }
 
-    function it_loads_user_by_user_name($userRepository, User $user)
+    function it_loads_user_by_user_name($userRepository, $canonicalizer, User $user)
     {
-        $userRepository->findOneBy(array('usernameCanonical' => 'testUser'))->willReturn($user);
+        $canonicalizer->canonicalize('testUser')->willReturn('testuser');
+        
+        $userRepository->findOneBy(array('usernameCanonical' => 'testuser'))->willReturn($user);
 
         $this->loadUserByUsername('testUser')->shouldReturn($user);
     }

@@ -37,7 +37,6 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('driver')->cannotBeOverwritten()->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('currency_storage')->defaultValue('sylius.storage.session')->end()
             ->end()
         ;
 
@@ -86,7 +85,14 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->scalarNode('model')->defaultValue('Sylius\Component\User\Model\User')->end()
                                 ->scalarNode('controller')->defaultValue('Sylius\Bundle\UserBundle\Controller\UserController')->end()
-                                ->scalarNode('form')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserType')->end()
+                                ->arrayNode('form')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('default')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserType')->end()
+                                        ->scalarNode('registration')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserRegistrationType')->end()
+                                        // ->scalarNode('choice')->defaulValue('%sylius.form.type.resource_choice.class%')->end()
+                                    ->end()
+                                ->end()
                             ->end()
                         ->end()
                         ->arrayNode('user_oauth')

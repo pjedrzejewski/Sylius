@@ -50,3 +50,13 @@ sylius_contact:
 sylius_search:
     resource: @SyliusWebBundle/Resources/config/routing/frontend/search.yml
     prefix: /search
+
+sylius_user_registration:
+    path: /register
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.user:createAction
+        _sylius:
+            form: sylius_user_registration
+            event: register
+            template: SyliusWebBundle:Frontend/User:register.html.twig

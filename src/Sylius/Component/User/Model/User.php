@@ -433,8 +433,8 @@ class User implements UserInterface, GroupableInterface
      */
     public function setEmailCanonical($emailCanonical)
     {
-        $this->emailCanonical = $email;
-        $this->usernameCanonical = $email;
+        $this->emailCanonical = $emailCanonical;
+        $this->usernameCanonical = $emailCanonical;
 
         return $this;
     }
