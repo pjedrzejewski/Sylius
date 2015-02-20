@@ -11,24 +11,13 @@
 
 namespace Sylius\Bundle\UserBundle\Form\Type;
 
-use FOS\UserBundle\Form\Type\ProfileFormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class UserType extends ProfileFormType
+class UserRegistrationType extends AbstractResourceType
 {
-    /** @var string */
-    private $dataClass;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($dataClass)
-    {
-        $this->dataClass = $dataClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -44,12 +33,14 @@ class UserType extends ProfileFormType
             ->add('email', 'text', array(
                 'label' => 'sylius.form.user.last_name',
             ))
-            ->add('plainPassword', 'password', array(
-                'label' => 'sylius.form.user.password',
+            ->add('plainPassword', 'repeated', array(
+                'type'          => 'password',
+                'first_options' => array('label' => 'sylius.form.user.password'),
+                'second_options' => array('label' => 'sylius.form.user.password_confirmation'),
+                'invalid_message' => 'sylius.form.user.password.mismatch',
             ))
         ;
-
-        $this->buildUserForm($builder, $options);
+        ;
     }
 
     /**

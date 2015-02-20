@@ -18,6 +18,7 @@
 
     <parameters>
         <parameter key="sylius.user.canonicalizer.class">Sylius\Component\User\Canonicalizer\Canonicalizer</parameter>
+        <parameter key="sylius.user.password_updater.class">Sylius\Component\User\Security\PasswordUpdater</parameter>
 
         <parameter key="sylius.provider.name_provider.class">Sylius\Bundle\UserBundle\Provider\UsernameProvider</parameter>
         <parameter key="sylius.provider.name_or_email_provider.class">Sylius\Bundle\UserBundle\Provider\UsernameOrEmailProvider</parameter>
@@ -31,12 +32,16 @@
 
     <services>
         <service id="sylius.user.canonicalizer" class="%sylius.user.canonicalizer.class%" />
+        <service id="sylius.user.password_updater" class="%sylius.user.password_updater.class%">
+            <argument type="service" id="security.encoder_factory" />
+        </service>
 
         <service id="sylius.listener.user_aware" class="%sylius.listener.user_aware.class%">
             <argument type="service" id="security.context" />
         </service>
         <service id="sylius.listener.register" class="%sylius.listener.register.class%">
             <argument type="service" id="sylius.user.canonicalizer" />
+            <argument type="service" id="sylius.user.password_updater" />
             <tag name="kernel.event_listener" event="sylius.user.pre_register" method="preUserRegistration" />
             <!-- <tag name="kernel.event_listener" event="sylius.user.post_update" method="processUser" /> -->
         </service>

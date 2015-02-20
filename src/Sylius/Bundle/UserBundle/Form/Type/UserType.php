@@ -11,24 +11,13 @@
 
 namespace Sylius\Bundle\UserBundle\Form\Type;
 
-use FOS\UserBundle\Form\Type\ProfileFormType;
+use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class UserType extends ProfileFormType
+class UserType extends AbstractResourceType
 {
-    /** @var string */
-    private $dataClass;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($dataClass)
-    {
-        $this->dataClass = $dataClass;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -41,11 +30,9 @@ class UserType extends ProfileFormType
             ->add('lastName', 'text', array(
                 'label' => 'sylius.form.user.last_name',
             ))
-        ;
-
-        $this->buildUserForm($builder, $options);
-
-        $builder
+            ->add('email', 'text', array(
+                'label' => 'sylius.form.user.password',
+            ))
             ->add('plainPassword', 'password', array(
                 'label' => 'sylius.form.user.password',
             ))
@@ -65,27 +52,6 @@ class UserType extends ProfileFormType
             ))
             ->remove('username')
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class'         => $this->dataClass,
-            'validation_groups'  => function (FormInterface $form) {
-                $data = $form->getData();
-                $groups = array('Profile', 'sylius');
-                if ($data && !$data->getId()) {
-                    $groups[] = 'ProfileAdd';
-                }
-
-                return $groups;
-            },
-            'cascade_validation' => true,
-            'intention'          => 'profile',
-        ));
     }
 
     /**

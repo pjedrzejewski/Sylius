@@ -11,6 +11,7 @@ sylius:
             groups: Groups
             last_name: Last name
             password: Password
+            password_confirmation: Validate
             shipping_address: Shipping address
         user_filter:
             query: Search
