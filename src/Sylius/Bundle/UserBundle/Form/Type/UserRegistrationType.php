@@ -52,7 +52,7 @@ class UserRegistrationType extends AbstractResourceType
                 'label' => 'sylius.form.user.last_name',
             ))
             ->add('email', 'text', array(
-                'label' => 'sylius.form.user.last_name',
+                'label' => 'sylius.form.user.email',
             ))
             ->add('plainPassword', 'repeated', array(
                 'type'            => 'password',

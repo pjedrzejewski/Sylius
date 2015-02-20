@@ -902,8 +902,9 @@ sylius:
         orders: User orders
         recent_header: Recent users
         registration_date: Registration date
-        register_button: Registrater
-        register_header: Registration <small>Create an account in store</small>
+        register:
+            button: Register
+            header: Registration <small>Create an account in store</small>
         shipping_address: Shipping address
         show_header: User details
         update_header: Editing user

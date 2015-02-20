@@ -236,6 +236,9 @@ class CoreContext extends DefaultContext
             $user->setEnabled('yes' === $enabled);
             $user->setCreatedAt(null === $createdAt ? new \DateTime() : $createdAt);
             $user->setPlainPassword($password);
+            $user->setPassword($password);
+            $user->setUsernameCanonical($email);
+            $user->setEmailCanonical($email);
 
             if (null !== $address) {
                 $user->setShippingAddress($this->createAddress($address));
