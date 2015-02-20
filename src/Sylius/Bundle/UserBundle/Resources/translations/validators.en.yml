@@ -14,3 +14,12 @@ sylius:
             max: Last name must not be longer than {{ limit }} characters.
             min: Last name must be at least {{ limit }} characters long.
             not_blank: Please enter your last name.
+        email:
+            already_used: This email was used by another user
+            max: Email must not be longer than {{ limit }} characters.
+            min: Email must be at least {{ limit }} characters long.
+            not_blank: Please enter your email.
+            invalid: This email is invalid.
+        plainPassword:
+            not_blank: Please enter your password.
+            mismatch: Password do not match

@@ -12,7 +12,6 @@
 namespace spec\Sylius\Bundle\UserBundle\EventListener;
 
 use PhpSpec\ObjectBehavior;
-use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Sylius\Component\User\Security\PasswordUpdaterInterface;
@@ -24,9 +23,9 @@ use Sylius\Component\User\Security\PasswordUpdaterInterface;
  */
 class UserRegisterListenerSpec extends ObjectBehavior
 {
-    function let(CanonicalizerInterface $canonicalizer, PasswordUpdaterInterface $passwordUpdater)
+    function let(PasswordUpdaterInterface $passwordUpdater)
     {
-        $this->beConstructedWith($canonicalizer, $passwordUpdater);
+        $this->beConstructedWith($passwordUpdater);
     }
 
     function it_is_initializable()
@@ -34,17 +33,9 @@ class UserRegisterListenerSpec extends ObjectBehavior
         $this->shouldHaveType('Sylius\Bundle\UserBundle\EventListener\UserRegisterListener');
     }
 
-    function it_adds_data_to_user_model($canonicalizer, $passwordUpdater, GenericEvent $event, UserInterface $user)
+    function it_updates_user_password($passwordUpdater, GenericEvent $event, UserInterface $user)
     {
         $event->getSubject()->willReturn($user);
-
-        $user->getUsername()->willReturn('testUser');
-        $user->getEmail()->willReturn('test@user.com');
-        $user->setUsernameCanonical('testuser')->shouldBeCalled();
-        $user->setEmailCanonical('test@user.com')->shouldBeCalled();
-
-        $canonicalizer->canonicalize('testUser')->willReturn('testuser');
-        $canonicalizer->canonicalize('test@user.com')->willReturn('test@user.com');
         
         $passwordUpdater->updatePassword($user)->shouldBeCalled();
 

@@ -40,7 +40,6 @@
             <argument type="service" id="security.context" />
         </service>
         <service id="sylius.listener.register" class="%sylius.listener.register.class%">
-            <argument type="service" id="sylius.user.canonicalizer" />
             <argument type="service" id="sylius.user.password_updater" />
             <tag name="kernel.event_listener" event="sylius.user.pre_register" method="preUserRegistration" />
             <!-- <tag name="kernel.event_listener" event="sylius.user.post_update" method="processUser" /> -->

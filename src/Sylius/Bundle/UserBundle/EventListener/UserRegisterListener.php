@@ -12,7 +12,6 @@
 namespace Sylius\Bundle\UserBundle\EventListener;
 
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
-use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\UserInterface;
 use Sylius\Component\User\Security\PasswordUpdaterInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -35,9 +34,8 @@ class UserRegisterListener
      */
     protected $passwordUpdater;
 
-    public function __construct(CanonicalizerInterface $canonicalizer, PasswordUpdaterInterface $passwordUpdater)
+    public function __construct(PasswordUpdaterInterface $passwordUpdater)
     {
-        $this->canonicalizer = $canonicalizer;
         $this->passwordUpdater = $passwordUpdater;
     }
 
@@ -52,8 +50,6 @@ class UserRegisterListener
             );
         }
 
-        $user->setUsernameCanonical($this->canonicalizer->canonicalize($user->getUsername()));
-        $user->setEmailCanonical($this->canonicalizer->canonicalize($user->getEmail()));
         $this->passwordUpdater->updatePassword($user);
     }
 }

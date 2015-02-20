@@ -11,18 +11,19 @@
 
 namespace spec\Sylius\Bundle\UserBundle\Form\Type;
 
-use Symfony\Component\Form\FormBuilderInterface;
-use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class UserRegistrationTypeSpec extends ObjectBehavior
 {
-    function let()
+    function let(CanonicalizerInterface $canonicalizer)
     {
-        $this->beConstructedWith('Sylius\Component\User\Model\User',array('sylius'));
+        $this->beConstructedWith('Sylius\Component\User\Model\User',array('sylius'), $canonicalizer);
     }
 
     function it_is_initializable()
@@ -37,6 +38,7 @@ class UserRegistrationTypeSpec extends ObjectBehavior
 
     function it_builds_form(FormBuilderInterface $builder)
     {
+        $builder->addEventSubscriber(Argument::type('Sylius\Bundle\UserBundle\Form\EventListener\RegistrationFormListener'))->shouldBeCalled()->willReturn($builder);
         $builder->add('firstName', 'text', Argument::any())->shouldBeCalled()->willReturn($builder);
         $builder->add('lastName', 'text', Argument::any())->shouldBeCalled()->willReturn($builder);
         $builder->add('email', 'text', Argument::any())->shouldBeCalled()->willReturn($builder);
