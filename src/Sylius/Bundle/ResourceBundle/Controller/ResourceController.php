@@ -17,6 +17,7 @@ use Gedmo\Loggable\Entity\LogEntry;
 use Hateoas\Configuration\Route;
 use Hateoas\Representation\Factory\PagerfantaFactory;
 use Sylius\Bundle\ResourceBundle\Form\DefaultFormFactory;
+use Sylius\Component\Grid\Parameters as GridParameters;
 use Sylius\Component\Resource\Event\ResourceEvent;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -173,6 +174,36 @@ class ResourceController extends FOSRestController
     /**
      * @param Request $request
      *
+     * @return Response
+     */
+    public function gridAction(Request $request)
+    {
+        $gridProvider = $this->get('sylius.grid_provider');
+        $gridViewBuilder = $this->get('sylius.grid_view_builder');
+
+        if (null === $grid = $gridProvider->getGrid($this->config->getGrid())) {
+            throw new \InvalidArgumentException(sprintf('Grid "%s" does not exist.'));
+        }
+
+        $parameters = new GridParameters($request->query->all());
+
+        $gridView = $gridViewBuilder->build($grid, $parameters);
+
+        $view = $this
+            ->view()
+            ->setTemplate($this->config->getTemplate('index.html'))
+            ->setData(array(
+                'grid'          => $gridView,
+                'configuration' => $this->config
+            ))
+        ;
+
+        return $this->handleView($view);
+    }
+
+    /**
+     * @param Request $request
+     *
      * @return RedirectResponse|Response
      */
     public function createAction(Request $request)
@@ -208,8 +239,9 @@ class ResourceController extends FOSRestController
             ->view()
             ->setTemplate($this->config->getTemplate('create.html'))
             ->setData(array(
-                $this->config->getResourceName() => $resource,
-                'form'                           => $form->createView(),
+                'resource'      => $resource,
+                'form'          => $form->createView(),
+                'configuration' => $this->config
             ))
         ;
 
@@ -254,8 +286,9 @@ class ResourceController extends FOSRestController
             ->view()
             ->setTemplate($this->config->getTemplate('update.html'))
             ->setData(array(
-                $this->config->getResourceName() => $resource,
-                'form'                           => $form->createView(),
+                'resource'      => $resource,
+                'form'          => $form->createView(),
+                'configuration' => $this->config
             ))
         ;
 
@@ -360,6 +393,33 @@ class ResourceController extends FOSRestController
     public function moveDownAction(Request $request)
     {
         return $this->move($request, -1);
+    }
+
+    /**
+     * @param Request $request
+     * @param int     $version
+     *
+     * @return RedirectResponse
+     */
+    public function massAction(Request $request)
+    {
+        $actionType = $request->request->get('action');
+
+        if (!$actionType) {
+            throw new \InvalidArgumentException('Missing name of the mass action!');
+        }
+
+        $ids = $request->request->get('ids');
+
+        if (null === $ids) {
+            throw new \InvalidArgumentException('No items selected.');
+        }
+
+        $resources = $this->getRepository()->findBy(array('id' => $ids));
+
+        $this->container->get('sylius.mass_action_dispatcher')->dispatch($actionType, $resources);
+
+        return $this->redirectHandler->redirectToIndex();
     }
 
     public function updateStateAction(Request $request, $transition, $graph = null)

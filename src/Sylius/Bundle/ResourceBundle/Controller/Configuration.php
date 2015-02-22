@@ -157,6 +157,11 @@ class Configuration
         return sprintf('%s:%s.%s', $this->templateNamespace ?: ':', $name, $this->templatingEngine);
     }
 
+    public function getSection()
+    {
+        return $this->parameters->get('section');
+    }
+
     public function getTemplate($name)
     {
         return $this->parameters->get('template', $this->getTemplateName($name));
@@ -259,6 +264,7 @@ class Configuration
     public function getLimit()
     {
         $limit = null;
+
         if ($this->isLimited()) {
             $limit = (int) $this->parameters->get('limit', $this->settings['limit']);
         }
@@ -382,6 +388,12 @@ class Configuration
     public function getPermission($default = null)
     {
         return $this->parameters->get('permission', $default);
+
+    }
+
+    public function getGrid()
+    {
+        return $this->parameters->get('grid', $this->bundlePrefix.'_'.$this->resourceName);
     }
 
     public function isHeaderRedirection()
