@@ -61,7 +61,6 @@ class UserRegistrationType extends AbstractResourceType
                 'invalid_message' => 'sylius.user.plainPassword.mismatch',
             ))
         ;
-        ;
     }
 
     /**
