@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class RegistrationFormListener implements EventSubscriberInterface
+class CanonicalizerFormListener implements EventSubscriberInterface
 {
 
     public function __construct(CanonicalizerInterface $canonicalizer

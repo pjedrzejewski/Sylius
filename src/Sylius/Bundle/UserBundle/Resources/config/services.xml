@@ -19,6 +19,7 @@
     <parameters>
         <parameter key="sylius.user.canonicalizer.class">Sylius\Component\User\Canonicalizer\Canonicalizer</parameter>
         <parameter key="sylius.user.password_updater.class">Sylius\Component\User\Security\PasswordUpdater</parameter>
+        <parameter key="sylius.user.user_reloader.class">Sylius\Bundle\UserBundle\Reloader\UserReloader</parameter>
         <parameter key="sylius.user.authentication_utils.class">Sylius\Component\User\Security\Authentication\AuthenticationUtils</parameter>
 
         <parameter key="sylius.provider.name_provider.class">Sylius\Bundle\UserBundle\Provider\UsernameProvider</parameter>
@@ -43,13 +44,16 @@
             </call>
         </service>
         
-        <!-- Utils services -->
+        <!-- Utils -->
         <service id="sylius.user.canonicalizer" class="%sylius.user.canonicalizer.class%" />
         <service id="sylius.user.password_updater" class="%sylius.user.password_updater.class%">
             <argument type="service" id="security.encoder_factory" />
         </service>
         <service id="security.authentication_utils" class="%sylius.user.authentication_utils.class%">
             <argument type="service" id="service_container" />
+        </service>
+        <service id="sylius.user.user_reloader" class="%sylius.user.user_reloader.class%">
+            <argument type="service" id="sylius.manager.user" />
         </service>
 
         <!-- Listeners -->
@@ -59,10 +63,11 @@
         <service id="sylius.listener.register" class="%sylius.listener.register.class%">
             <argument type="service" id="sylius.user.password_updater" />
             <tag name="kernel.event_listener" event="sylius.user.pre_register" method="preUserRegistration" />
+            <tag name="kernel.event_listener" event="sylius.user.pre_create" method="preUserRegistration" />
             <!-- <tag name="kernel.event_listener" event="sylius.user.post_update" method="processUser" /> -->
         </service>
         <service id="sylius.listener.user_update" class="%sylius.listener.user_update.class%">
-            <argument type="service" id="fos_user.user_manager" />
+            <argument type="service" id="sylius.user.user_reloader" />
             <tag name="kernel.event_listener" event="sylius.user.post_create" method="processUser" />
             <tag name="kernel.event_listener" event="sylius.user.post_update" method="processUser" />
         </service>

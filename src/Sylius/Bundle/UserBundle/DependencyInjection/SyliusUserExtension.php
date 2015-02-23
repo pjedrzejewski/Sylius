@@ -43,6 +43,9 @@ class SyliusUserExtension extends AbstractResourceExtension
 
         $container
             ->getDefinition('sylius.form.type.user_registration')
-            ->addArgument(new Reference('sylius.user.canonicalizer'));
+                ->addArgument(new Reference('sylius.user.canonicalizer'));
+        $container
+            ->getDefinition('sylius.form.type.user')
+                ->addArgument(new Reference('sylius.user.canonicalizer'));
     }
 }

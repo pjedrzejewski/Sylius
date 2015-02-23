@@ -22,6 +22,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * sections are normalized, and merged.
  *
  * @author Bartosz Siejka <bartosz.siejka@lakion.com>
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -94,8 +95,6 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('default')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserType')->end()
                                         ->scalarNode('registration')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserRegistrationType')->end()
-                                        // ->scalarNode('login')->defaultValue('Sylius\Bundle\UserBundle\Form\Type\UserLoginType')->end()
-                                        // ->scalarNode('choice')->defaulValue('%sylius.form.type.resource_choice.class%')->end()
                                     ->end()
                                 ->end()
                             ->end()

@@ -16,9 +16,8 @@ use Sylius\Component\User\Model\UserInterface;
 use Sylius\Component\User\Security\PasswordUpdaterInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-
 /**
- * User update listener.
+ * User register listener.
  *
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */

@@ -12,18 +12,42 @@
 namespace Sylius\Bundle\UserBundle\Form\Type;
 
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
+use Sylius\Bundle\UserBundle\Form\EventListener\CanonicalizerFormListener;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ */
 class UserType extends AbstractResourceType
 {
+    /**
+     * DataFetcher registry.
+     *
+     * @var CanonicalizerInterface
+     */
+    protected $canonicalizer;
+
+    /**
+    * Constructor.
+    *
+    * @param CanonicalizerInterface $canonicalizer
+    */
+    public function __construct($dataClass, array $validationGroups, CanonicalizerInterface $canonicalizer)
+    {
+        parent::__construct($dataClass, $validationGroups);
+        $this->canonicalizer = $canonicalizer;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->addEventSubscriber(new CanonicalizerFormListener($this->canonicalizer))
             ->add('firstName', 'text', array(
                 'label' => 'sylius.form.user.first_name',
             ))
@@ -31,10 +55,10 @@ class UserType extends AbstractResourceType
                 'label' => 'sylius.form.user.last_name',
             ))
             ->add('email', 'text', array(
-                'label' => 'sylius.form.user.password',
+                'label' => 'sylius.form.user.email',
             ))
             ->add('plainPassword', 'password', array(
-                'label' => 'sylius.form.user.password',
+                'label' => 'sylius.form.user.password.label',
             ))
             ->add('enabled', 'checkbox', array(
                 'label' => 'sylius.form.user.enabled',

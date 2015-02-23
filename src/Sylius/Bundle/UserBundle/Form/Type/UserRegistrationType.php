@@ -16,8 +16,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Sylius\Bundle\UserBundle\Form\EventListener\RegistrationFormListener;
+use Sylius\Bundle\UserBundle\Form\EventListener\CanonicalizerFormListener;
 
+/**
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ */
 class UserRegistrationType extends AbstractResourceType
 {
     /**
@@ -44,7 +47,7 @@ class UserRegistrationType extends AbstractResourceType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->addEventSubscriber(new RegistrationFormListener($this->canonicalizer))
+            ->addEventSubscriber(new CanonicalizerFormListener($this->canonicalizer))
             ->add('firstName', 'text', array(
                 'label' => 'sylius.form.user.first_name',
             ))

@@ -22,7 +22,7 @@ use Symfony\Component\Form\FormEvent;
  *
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class RegistrationFormListenerSpec extends ObjectBehavior
+class CanonicalizerFormListenerSpec extends ObjectBehavior
 {
     function let(CanonicalizerInterface $canonicalizer)
     {
@@ -31,7 +31,7 @@ class RegistrationFormListenerSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\EventListener\RegistrationFormListener');
+        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\EventListener\CanonicalizerFormListener');
     }
 
     function it_implements_event_subscriber_interface()

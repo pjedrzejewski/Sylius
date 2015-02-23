@@ -11,13 +11,12 @@
 
 namespace Sylius\Bundle\UserBundle\Form\Type;
 
-use Sylius\Bundle\UserBundle\Form\EventListener\RegistrationFormListener;
-use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ */
 class UserLoginType extends AbstractType
 {
 
