@@ -43,4 +43,9 @@ class SecurityController extends Controller
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall.');
     }
+
+    public function logoutAction(Request $request)
+    {
+        throw new \RuntimeException('You must configure the check path to be handled by the firewall.');
+    }
 }

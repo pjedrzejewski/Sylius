@@ -42,7 +42,6 @@ abstract class UserProvider implements UserProviderInterface
     public function loadUserByUsername($usernameOrEmail)
     {
         $usernameOrEmail = $this->canonicalizer->canonicalize($usernameOrEmail);
-
         $user = $this->findUser($usernameOrEmail);
 
         if (!$user) {

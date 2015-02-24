@@ -548,7 +548,7 @@ class CoreContext extends DefaultContext
     private function iAmLoggedInAsRole($role, $email = 'sylius@example.com', array $authorizationRoles = array())
     {
         $this->thereIsUser($email, 'sylius', null, 'yes', null, array(), true, $authorizationRoles);
-        $this->getSession()->visit($this->generatePageUrl('fos_user_security_login'));
+        $this->getSession()->visit($this->generatePageUrl('sylius_user_login'));
 
         $this->fillField('Email', $email);
         $this->fillField('Password', 'sylius');

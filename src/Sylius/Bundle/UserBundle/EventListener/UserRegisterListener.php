@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\UserBundle\EventListener;
 
+use Sylius\Bundle\UserBundle\Security\UserLoginInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Sylius\Component\User\Model\UserInterface;
 use Sylius\Component\User\Security\PasswordUpdaterInterface;
@@ -24,21 +25,22 @@ use Symfony\Component\EventDispatcher\GenericEvent;
 class UserRegisterListener
 {
     /**
-     * @var CanonicalizerInterface
+     * @var UserLoginInterface
      */
-    protected $canonicalizer;
+    protected $userLogin;
 
     /**
      * @var PasswordUpdaterInterface
      */
     protected $passwordUpdater;
 
-    public function __construct(PasswordUpdaterInterface $passwordUpdater)
+    public function __construct(PasswordUpdaterInterface $passwordUpdater, UserLoginInterface $userLogin)
     {
         $this->passwordUpdater = $passwordUpdater;
+        $this->userLogin = $userLogin;
     }
 
-    public function preUserRegistration(GenericEvent $event)
+    public function preRegistration(GenericEvent $event)
     {
         $user = $event->getSubject();
 
@@ -50,5 +52,19 @@ class UserRegisterListener
         }
 
         $this->passwordUpdater->updatePassword($user);
+    }    
+
+    public function postRegistration(GenericEvent $event)
+    {
+        $user = $event->getSubject();
+
+        if (!$user instanceof UserInterface) {
+            throw new UnexpectedTypeException(
+                $user,
+                'Sylius\Component\User\Model\UserInterface'
+            );
+        }
+
+        $this->userLogin->login($user);
     }
 }

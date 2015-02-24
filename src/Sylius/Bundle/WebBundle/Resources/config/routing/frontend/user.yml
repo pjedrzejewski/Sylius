@@ -11,7 +11,7 @@ sylius_user_registration:
 
 sylius_user_login:
     path: /login
-    methods: [GET]
+    methods: [GET, POST]
     defaults:
         _controller: sylius.controller.security:loginAction
         _sylius:
@@ -24,3 +24,9 @@ sylius_user_login_check:
     methods: [POST]
     defaults:
         _controller: sylius.controller.security:checkAction
+
+sylius_user_logout:
+    path: /logout
+    methods: [POST]
+    defaults:
+        _controller: sylius.controller.security:logoutAction

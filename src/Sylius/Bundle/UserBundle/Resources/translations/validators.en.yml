@@ -15,11 +15,11 @@ sylius:
             min: Last name must be at least {{ limit }} characters long.
             not_blank: Please enter your last name.
         email:
-            already_used: This email was used by another user
+            already_used: The email is already used
             max: Email must not be longer than {{ limit }} characters.
             min: Email must be at least {{ limit }} characters long.
             not_blank: Please enter your email.
             invalid: This email is invalid.
         plainPassword:
             not_blank: Please enter your password.
-            mismatch: Password do not match
+            mismatch: The entered passwords don't match
