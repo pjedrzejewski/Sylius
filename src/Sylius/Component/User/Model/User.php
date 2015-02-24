@@ -7,8 +7,8 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
- * This component was inspired by FOS User-Bundle 
+ *
+ * This component was inspired by FOS User-Bundle
  */
 
 namespace Sylius\Component\User\Model;
@@ -130,9 +130,9 @@ class User implements UserInterface, GroupableInterface
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;
-    
+
     public function __construct()
-    {        
+    {
         $this->createdAt     = new \DateTime();
         $this->credentialsExpired = false;
         $this->enabled = false;
@@ -425,7 +425,7 @@ class User implements UserInterface, GroupableInterface
         $this->credentialsExpired = $boolean;
 
         return $this;
-    }    
+    }
 
     /**
      * {@inheritdoc}
@@ -655,7 +655,7 @@ class User implements UserInterface, GroupableInterface
     {
         return $this->lastName;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -670,7 +670,7 @@ class User implements UserInterface, GroupableInterface
     public function getOAuthAccount($provider)
     {
         if ($this->oauthAccounts->isEmpty()) {
-            return null;
+            return;
         }
 
         $filtered = $this->oauthAccounts->filter(function (UserOAuthInterface $oauth) use ($provider) {
@@ -678,7 +678,7 @@ class User implements UserInterface, GroupableInterface
         });
 
         if ($filtered->isEmpty()) {
-            return null;
+            return;
         }
 
         return $filtered->current();
@@ -696,7 +696,7 @@ class User implements UserInterface, GroupableInterface
 
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */

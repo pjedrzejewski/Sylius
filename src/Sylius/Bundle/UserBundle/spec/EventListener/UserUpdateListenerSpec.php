@@ -36,7 +36,7 @@ class UserUpdateListenerSpec extends ObjectBehavior
     function it_updates_user_password($userReloader, GenericEvent $event, UserInterface $user)
     {
         $event->getSubject()->willReturn($user);
-        
+
         $userReloader->reloadUser($user)->shouldBeCalled();
 
         $this->processUser($event);

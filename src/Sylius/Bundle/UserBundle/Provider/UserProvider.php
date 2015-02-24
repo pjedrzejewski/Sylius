@@ -34,7 +34,8 @@ abstract class UserProvider implements UserProviderInterface
      */
     protected $canonicalizer;
 
-    public function __construct(RepositoryInterface $userRepository, CanonicalizerInterface $canonicalizer) {
+    public function __construct(RepositoryInterface $userRepository, CanonicalizerInterface $canonicalizer)
+    {
         $this->userRepository = $userRepository;
         $this->canonicalizer = $canonicalizer;
     }

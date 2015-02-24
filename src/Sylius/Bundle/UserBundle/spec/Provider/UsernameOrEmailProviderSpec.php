@@ -30,7 +30,7 @@ class UsernameOrEmailProviderSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Sylius\Bundle\UserBundle\Provider\UsernameOrEmailProvider');
     }
-    
+
     function it_implements_symfony_user_provider_interface()
     {
         $this->shouldImplement('Symfony\Component\Security\Core\User\UserProviderInterface');
@@ -49,7 +49,7 @@ class UsernameOrEmailProviderSpec extends ObjectBehavior
     function it_loads_user_by_user_name($userRepository, $canonicalizer, User $user)
     {
         $canonicalizer->canonicalize('testUser')->willReturn('testuser');
-        
+
         $userRepository->findOneBy(array('usernameCanonical' => 'testuser'))->willReturn($user);
 
         $this->loadUserByUsername('testUser')->shouldReturn($user);
@@ -60,7 +60,7 @@ class UsernameOrEmailProviderSpec extends ObjectBehavior
         $canonicalizer->canonicalize('test@user.com')->willReturn('test@user.com');
 
         $userRepository->findOneBy(array('emailCanonical' => 'test@user.com'))->willReturn($user);
-        
+
         $this->loadUserByUsername('test@user.com')->shouldReturn($user);
     }
 

@@ -29,7 +29,7 @@ class UserLoginTypeSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Symfony\Component\Form\AbstractType');
     }
-    
+
     function it_has_name()
     {
         $this->getName()->shouldReturn('sylius_user_login');

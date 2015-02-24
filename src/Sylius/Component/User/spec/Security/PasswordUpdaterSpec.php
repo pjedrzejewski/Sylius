@@ -22,7 +22,6 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 */
 class PasswordUpdaterSpec extends ObjectBehavior
 {
-    
     function let(EncoderFactoryInterface $encoderFactory)
     {
         $this->beConstructedWith($encoderFactory);
@@ -51,7 +50,7 @@ class PasswordUpdaterSpec extends ObjectBehavior
 
         $this->updatePassword($user);
     }
-    
+
     function it_does_nothing_if_plain_password_is_empty($encoderFactory, PasswordEncoderInterface $encoder, UserInterface $user)
     {
         $user->getPlainPassword()->willReturn('');

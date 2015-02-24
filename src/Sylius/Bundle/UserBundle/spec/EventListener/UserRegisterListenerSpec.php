@@ -38,16 +38,16 @@ class UserRegisterListenerSpec extends ObjectBehavior
     function it_updates_user_password_before_registration($passwordUpdater, GenericEvent $event, UserInterface $user)
     {
         $event->getSubject()->willReturn($user);
-        
+
         $passwordUpdater->updatePassword($user)->shouldBeCalled();
 
         $this->preRegistration($event);
     }
-    
+
     function it_logs_user_in_after_registration($userLogin, GenericEvent $event, UserInterface $user)
     {
         $event->getSubject()->willReturn($user);
-        
+
         $userLogin->login($user)->shouldBeCalled();
 
         $this->postRegistration($event);

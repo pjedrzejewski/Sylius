@@ -13,7 +13,6 @@ namespace Sylius\Bundle\UserBundle\Reloader;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Component\User\Model\UserInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**
 * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -27,9 +26,9 @@ class UserReloader implements UserReloaderInterface
 
     /**
      * Constructor.
-     * 
+     *
      * @param ObjectManager $objectManager
-     * 
+     *
      */
     public function __construct(ObjectManager $objectManager)
     {

@@ -29,7 +29,7 @@ class UserReloaderSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Sylius\Bundle\UserBundle\Reloader\UserReloader');
     }
-    
+
     function it_implements_user_reloader_interface()
     {
         $this->shouldImplement('Sylius\Bundle\UserBundle\Reloader\UserReloaderInterface');

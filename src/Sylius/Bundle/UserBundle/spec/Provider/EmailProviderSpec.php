@@ -30,7 +30,7 @@ class EmailProviderSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Sylius\Bundle\UserBundle\Provider\EmailProvider');
     }
-    
+
     function it_implements_symfony_user_provider_interface()
     {
         $this->shouldImplement('Symfony\Component\Security\Core\User\UserProviderInterface');

@@ -19,7 +19,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class UserLoginType extends AbstractType
 {
-
     /**
      * {@inheritdoc}
      */

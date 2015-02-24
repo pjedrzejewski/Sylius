@@ -52,7 +52,7 @@ class UserRegisterListener
         }
 
         $this->passwordUpdater->updatePassword($user);
-    }    
+    }
 
     public function postRegistration(GenericEvent $event)
     {

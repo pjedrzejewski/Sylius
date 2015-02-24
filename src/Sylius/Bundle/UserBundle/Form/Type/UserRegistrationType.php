@@ -13,9 +13,7 @@ namespace Sylius\Bundle\UserBundle\Form\Type;
 
 use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Sylius\Bundle\UserBundle\Form\EventListener\CanonicalizerFormListener;
 
 /**

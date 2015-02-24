@@ -23,14 +23,14 @@ class UserRegistrationTypeSpec extends ObjectBehavior
 {
     function let(CanonicalizerInterface $canonicalizer)
     {
-        $this->beConstructedWith('Sylius\Component\User\Model\User',array('sylius'), $canonicalizer);
+        $this->beConstructedWith('Sylius\Component\User\Model\User', array('sylius'), $canonicalizer);
     }
 
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\Type\UserRegistrationType');
     }
-    
+
     function it_has_name()
     {
         $this->getName()->shouldReturn('sylius_user_registration');

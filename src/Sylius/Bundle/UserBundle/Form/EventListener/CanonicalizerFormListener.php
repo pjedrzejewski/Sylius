@@ -22,10 +22,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class CanonicalizerFormListener implements EventSubscriberInterface
 {
-
     public function __construct(CanonicalizerInterface $canonicalizer
-        )
-    {
+        ) {
         $this->canonicalizer = $canonicalizer;
     }
 

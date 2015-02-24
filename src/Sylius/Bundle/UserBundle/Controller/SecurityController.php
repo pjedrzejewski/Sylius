@@ -13,7 +13,6 @@ namespace Sylius\Bundle\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Sylius\Bundle\UserBundle\Form\Type\UserLoginType;
 
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>

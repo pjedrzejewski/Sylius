@@ -32,7 +32,7 @@ class UserLoginSpec extends ObjectBehavior
     {
         $this->shouldHaveType('Sylius\Bundle\UserBundle\Security\UserLogin');
     }
-    
+
     function it_implements_user_login_interface()
     {
         $this->shouldImplement('Sylius\Bundle\UserBundle\Security\UserLoginInterface');

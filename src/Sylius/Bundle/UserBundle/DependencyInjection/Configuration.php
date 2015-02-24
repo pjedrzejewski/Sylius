@@ -46,7 +46,7 @@ class Configuration implements ConfigurationInterface
 
         return $treeBuilder;
     }
-    
+
     /**
      * Adds `validation_groups` section.
      *
