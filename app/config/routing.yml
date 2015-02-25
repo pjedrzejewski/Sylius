@@ -32,9 +32,9 @@ payum_notify:
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
-fos_user_profile:
-    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
-    prefix: /account/profile
+# fos_user_profile:
+#     resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+#     prefix: /account/profile
 
 # fos_user_register:
 #     resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
@@ -55,9 +55,9 @@ hwi_oauth_security:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
     prefix: /connect
 
-# hwi_oauth_redirect:
-#     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
-#     prefix: /login
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix: /login
 
 amazon_login:
     path: /login/check-amazon

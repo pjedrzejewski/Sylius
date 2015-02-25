@@ -32,7 +32,9 @@
         <parameter key="sylius.listener.user_update.class">Sylius\Bundle\UserBundle\EventListener\UserUpdateListener</parameter>
         <parameter key="sylius.listener.user_delete.class">Sylius\Bundle\UserBundle\EventListener\UserDeleteListener</parameter>
         <parameter key="sylius.listener.user_aware.class">Sylius\Bundle\UserBundle\EventListener\UserAwareListener</parameter>
-        <parameter key="sylius.listener.register.class">Sylius\Bundle\UserBundle\EventListener\UserRegisterListener</parameter>
+        <parameter key="sylius.listener.user_register.class">Sylius\Bundle\UserBundle\EventListener\UserRegisterListener</parameter>
+        <parameter key="sylius.listener.user_create.class">Sylius\Bundle\UserBundle\EventListener\UserCreateListener</parameter>
+        <parameter key="sylius.listener.user_change_password.class">Sylius\Bundle\UserBundle\EventListener\UserChangePasswordListener</parameter>
         
         <parameter key="sylius.controller.security.class">Sylius\Bundle\UserBundle\Controller\SecurityController</parameter>
     </parameters>
@@ -64,12 +66,20 @@
         <service id="sylius.listener.user_aware" class="%sylius.listener.user_aware.class%">
             <argument type="service" id="security.context" />
         </service>
-        <service id="sylius.listener.register" class="%sylius.listener.register.class%">
+        <service id="sylius.listener.user_register" class="%sylius.listener.user_register.class%">
             <argument type="service" id="sylius.user.password_updater" />
             <argument type="service" id="sylius.security.user_login" />
             <tag name="kernel.event_listener" event="sylius.user.pre_register" method="preRegistration" />
-            <tag name="kernel.event_listener" event="sylius.user.pre_create" method="preRegistration" />
             <tag name="kernel.event_listener" event="sylius.user.post_register" method="postRegistration" />
+        </service>
+        <service id="sylius.listener.user_create" class="%sylius.listener.user_create.class%">
+            <argument type="service" id="sylius.user.password_updater" />
+            <tag name="kernel.event_listener" event="sylius.user.pre_create" method="preCreate" />
+        </service>
+        <service id="sylius.listener.user_change_password" class="%sylius.listener.user_change_password.class%">
+            <argument type="service" id="sylius.user.password_updater" />
+            <tag name="kernel.event_listener" event="sylius.user.pre_change_password" method="preChangePassword" />
+            <tag name="kernel.event_listener" event="sylius.user.post_change_password" method="postChangePassword" />
         </service>
         <service id="sylius.listener.user_update" class="%sylius.listener.user_update.class%">
             <argument type="service" id="sylius.user.user_reloader" />
