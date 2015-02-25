@@ -18,32 +18,27 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class UserProfileTypeSpec extends ObjectBehavior
+class UserChangePasswordTypeSpec extends ObjectBehavior
 {
-    function let()
+    function it_extends_abstract_type()
     {
-        $this->beConstructedWith('Sylius\Component\User\Model\User', array('sylius'));
+        $this->shouldHaveType('Symfony\Component\Form\AbstractType');
     }
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\Type\UserProfileType');
-    }
-
-    function it_extends_abstract_resource_type()
-    {
-        $this->shouldHaveType('Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType');
+        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType');
     }
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_user_profile');
+        $this->getName()->shouldReturn('sylius_user_change_password');
     }
 
     function it_builds_form(FormBuilderInterface $builder)
     {
-        $builder->add('firstName', 'text', Argument::any())->shouldBeCalled()->willReturn($builder);
-        $builder->add('lastName', 'text', Argument::any())->shouldBeCalled()->willReturn($builder);
+        $builder->add('currentPassword', 'password', Argument::any())->shouldBeCalled()->willReturn($builder);
+        $builder->add('newPassword', 'repeated', Argument::any())->shouldBeCalled()->willReturn($builder);
 
         $this->buildForm($builder, array());
     }

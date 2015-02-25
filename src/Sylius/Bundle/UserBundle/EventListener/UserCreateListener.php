@@ -11,7 +11,6 @@
 
 namespace Sylius\Bundle\UserBundle\EventListener;
 
-use Sylius\Bundle\UserBundle\Security\UserLoginInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Sylius\Component\User\Model\UserInterface;
 use Sylius\Component\User\Security\PasswordUpdaterInterface;

@@ -46,7 +46,7 @@ class UserController extends ResourceController
             ->setTemplate($this->config->getTemplate('updateProfile.html'))
             ->setData(array(
                 $this->config->getResourceName() => $resource,
-                'form'                           => $form->createView()
+                'form'                           => $form->createView(),
             ))
         ;
 
@@ -65,22 +65,22 @@ class UserController extends ResourceController
             $encoder = $encoderFactory->getEncoder($user);
             $validPassword = $encoder->isPasswordValid(
                 $user->getPassword(),
-                $changePassword->getCurrentPassword(),      
+                $changePassword->getCurrentPassword(),
                 $user->getSalt()
             );
 
             if ($validPassword) {
                 $user->setPlainPassword($changePassword->getNewPassword());
-                
+
                 $this->domainManager->update($user);
                 $url = $this->generateUrl('sylius_account_homepage');
-                
-                $this->addFlash('success','sylius.account.password.change_success');
-                
+
+                $this->addFlash('success', 'sylius.account.password.change_success');
+
                 return new RedirectResponse($url);
             }
 
-            $this->addFlash('error','sylius.account.password.invalid');
+            $this->addFlash('error', 'sylius.account.password.invalid');
         }
 
         if ($this->config->isApiRequest()) {
