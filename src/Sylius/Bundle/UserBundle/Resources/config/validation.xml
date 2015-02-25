@@ -82,7 +82,7 @@
                 <option name="groups">sylius</option>
             </constraint>
             <constraint name="Length">
-                <option name="min">2</option>
+                <option name="min">4</option>
                 <option name="minMessage">sylius.user.password.min</option>
                 <option name="max">254</option>
                 <option name="maxMessage">sylius.user.password.max</option>
@@ -94,7 +94,7 @@
                 <option name="groups">sylius</option>
             </constraint>
             <constraint name="Length">
-                <option name="min">2</option>
+                <option name="min">4</option>
                 <option name="minMessage">sylius.user.password.min</option>
                 <option name="max">254</option>
                 <option name="maxMessage">sylius.user.password.max</option>

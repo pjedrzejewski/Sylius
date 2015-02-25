@@ -14,6 +14,7 @@ namespace Sylius\Bundle\UserBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\UserBundle\Form\Model\ChangePassword;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType;
 
 /**
@@ -70,19 +71,16 @@ class UserController extends ResourceController
 
             if ($validPassword) {
                 $user->setPlainPassword($changePassword->getNewPassword());
+                
                 $this->domainManager->update($user);
-                return $this->render(
-                    'SyliusWebBundle:Frontend/Account:changePassword.html.twig',
-                    array(
-                        'form'  => $form->createView(),
-                    )
-                );
+                $url = $this->generateUrl('sylius_account_homepage');
+                
+                $this->addFlash('success','sylius.account.password.change_success');
+                
+                return new RedirectResponse($url);
             }
 
-            $request->getSession()->getFlashBag()->add(
-                'error',
-                'sylius.user.form.password.invalid'
-            );
+            $this->addFlash('error','sylius.account.password.invalid');
         }
 
         if ($this->config->isApiRequest()) {
@@ -95,5 +93,11 @@ class UserController extends ResourceController
                 'form'  => $form->createView(),
             )
         );
+    }
+
+    private function addFlash($type, $message)
+    {
+        $translator = $this->get('translator');
+        $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
     }
 }

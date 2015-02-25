@@ -15,7 +15,7 @@
   <p>{{ 'sylius.security.login.info'|trans|raw }}</p>
 </blockquote>
 
-<form action="{{ path('sylius_user_login_check') }}" method="post" class="form-horizontal" >
+<form action="{{ path('sylius_user_security_check') }}" method="post" class="form-horizontal" >
     <fieldset>
         {{ form_errors(form) }}
 
