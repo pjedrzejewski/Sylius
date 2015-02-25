@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class SecurityController extends Controller
 {
+    /**
+     * Login form action.
+     */
     public function loginAction(Request $request)
     {
         $authenticationUtils = $this->get('security.authentication_utils');
@@ -38,11 +41,17 @@ class SecurityController extends Controller
         );
     }
 
+    /**
+     * Login check action. This action should not be called ever.
+     */
     public function checkAction(Request $request)
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall.');
     }
 
+    /**
+     * Logout action. This action should not be called ever.
+     */
     public function logoutAction(Request $request)
     {
         throw new \RuntimeException('You must configure the check path to be handled by the firewall.');

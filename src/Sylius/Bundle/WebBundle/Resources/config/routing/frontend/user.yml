@@ -27,6 +27,6 @@ sylius_user_security_check:
 
 sylius_user_security_logout:
     path: /logout
-    methods: [POST]
+    methods: [GET, POST]
     defaults:
         _controller: sylius.controller.security:logoutAction

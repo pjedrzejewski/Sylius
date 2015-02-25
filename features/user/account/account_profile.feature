@@ -52,5 +52,5 @@ Feature: User account profile edition
           And I fill in "First name" with "John"
           And I fill in "Last name" with "Doe"
           And I press "Save changes"
-         Then I should be on my account homepage page
+         Then I should be on my account homepage
           And I should see "User has been successfully updated."

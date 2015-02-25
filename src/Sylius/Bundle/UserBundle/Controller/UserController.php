@@ -95,7 +95,7 @@ class UserController extends ResourceController
         );
     }
 
-    private function addFlash($type, $message)
+    protected function addFlash($type, $message)
     {
         $translator = $this->get('translator');
         $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
