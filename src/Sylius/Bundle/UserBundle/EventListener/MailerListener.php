@@ -36,7 +36,6 @@ class MailerListener
 
     public function sendPasswordResetEmail(GenericEvent $event)
     {
-        $token = 'TopSecretTokenYouWillNeverKnow';
         $user = $event->getSubject();
 
         if (!$user instanceof UserInterface) {
@@ -49,7 +48,6 @@ class MailerListener
         $this->emailSender->send(Emails::PASSWORD_RESET, 
             array($user->getEmail()), 
                 array(
-                    'token' => $token,
                     'user' => $user
                 )
             );

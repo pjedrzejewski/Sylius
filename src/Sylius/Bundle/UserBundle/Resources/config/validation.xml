@@ -78,9 +78,6 @@
 
     <class name="Sylius\Bundle\UserBundle\Form\Model\ChangePassword">
         <property name="currentPassword">
-            <constraint name="NotBlank">
-                <option name="groups">sylius</option>
-            </constraint>
             <constraint name="Length">
                 <option name="min">4</option>
                 <option name="minMessage">sylius.user.password.min</option>

@@ -11,15 +11,17 @@
 
 namespace Sylius\Bundle\UserBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\UserBundle\Form\Model\ChangePassword;
 use Sylius\Bundle\UserBundle\Form\Model\PasswordReset;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType;
+use Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType;
 use Sylius\Bundle\UserBundle\Form\Type\UserRequestPasswordResetType;
 use Sylius\Bundle\UserBundle\UserEvents;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -111,12 +113,17 @@ class UserController extends ResourceController
                 $this->addFlash('success', 'sylius.account.password.reset.success');
 
                 $dispatcher = $this->get('event_dispatcher');
+                $tokenGenerator = $this->get('sylius.user.token_generator');
+
+                $user->setConfirmationToken($tokenGenerator->generateUniqueToken());
+
+                $this->domainManager->update($user);
 
                 $event = new GenericEvent($user);
                 $dispatcher->dispatch(UserEvents::REQUEST_PASSWORD_RESET, $event);
 
                 return $this->render(
-                    'SyliusWebBundle:Frontend/Account:resetPassword.html.twig',
+                    'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
                     array(
                         'form'  => $form->createView(),
                     )
@@ -128,7 +135,7 @@ class UserController extends ResourceController
         }
     
         return $this->render(
-            'SyliusWebBundle:Frontend/Account:resetPassword.html.twig',
+            'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
             array(
                 'form'  => $form->createView(),
             )
@@ -137,7 +144,37 @@ class UserController extends ResourceController
 
     public function resetPasswordAction(Request $request)
     {
-        # code...
+        $user = $this->getRepository()->findOneBy(array('confirmationToken' => $request->get('token')));
+
+        if (null === $user) {
+            throw new NotFoundHttpException('This website does not exist');
+        }
+
+        $changePassword = new ChangePassword();
+        $form = $this->createForm(new UserResetPasswordType(), $changePassword);
+        
+        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
+
+            $user->setPlainPassword($changePassword->getNewPassword());
+
+            $this->domainManager->update($user);
+            $url = $this->generateUrl('sylius_user_security_login');
+
+            $this->addFlash('success', 'sylius.account.password.change_success');
+            return new RedirectResponse($url);
+        }
+
+        if ($this->config->isApiRequest()) {
+            return $this->handleView($this->view($form, 400));
+        }
+
+        return $this->render(
+            'SyliusWebBundle:Frontend/Account:resetPassword.html.twig',
+            array(
+                'form' => $form->createView(),
+                'user' => $user,
+            )
+        );
     }
 
     protected function addFlash($type, $message)

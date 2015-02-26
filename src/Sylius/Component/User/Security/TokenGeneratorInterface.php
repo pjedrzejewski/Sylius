@@ -9,17 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Bundle\UserBundle\Security;
-
-use Sylius\Component\User\Model\UserInterface;
+namespace Sylius\Component\User\Security;
 
 /**
 * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
 */
-interface UserLoginInterface
+interface TokenGeneratorInterface
 {
     /**
-     * Log in user.
+     * Generates unique token for user request password reset
      */
-    public function login(UserInterface $user);
+    public function generateUniqueToken();
 }

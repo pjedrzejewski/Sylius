@@ -18,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class UserRequestPasswordResetTypeSpec extends ObjectBehavior
+class UserResetPasswordTypeSpec extends ObjectBehavior
 {
     function it_extends_abstract_type()
     {
@@ -32,12 +32,12 @@ class UserRequestPasswordResetTypeSpec extends ObjectBehavior
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_user_request_reset_password');
+        $this->getName()->shouldReturn('sylius_user_reset_password');
     }
 
     function it_builds_form(FormBuilderInterface $builder)
     {
-        $builder->add('email', 'email', Argument::any())->shouldBeCalled()->willReturn($builder);
+        $builder->add('newPassword', 'repeated', Argument::any())->shouldBeCalled()->willReturn($builder);
 
         $this->buildForm($builder, array());
     }

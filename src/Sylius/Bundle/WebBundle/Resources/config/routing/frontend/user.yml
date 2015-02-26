@@ -20,7 +20,7 @@ sylius_user_request_password_reset:
 
 sylius_user_password_reset:
     path: /resetting/{token}
-    methods: [GET]
+    methods: [GET, POST]
     defaults:
         _controller: sylius.controller.user:resetPasswordAction
 
