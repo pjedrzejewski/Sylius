@@ -8,6 +8,21 @@ sylius_user_registration:
             event: register
             template: SyliusWebBundle:Frontend/User:register.html.twig
             redirect: sylius_homepage
+            permission: false
+
+sylius_user_request_password_reset:
+    path: /resetting/request
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.user:requestPasswordResetAction
+        _sylius:
+            form: sylius_user_request_password_reset
+
+sylius_user_password_reset:
+    path: /resetting/{token}
+    methods: [GET]
+    defaults:
+        _controller: sylius.controller.user:resetPasswordAction
 
 sylius_user_security_login:
     path: /login

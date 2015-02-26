@@ -12,7 +12,6 @@
 namespace Sylius\Component\Core\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Sylius\Component\Rbac\Model\RoleInterface;
 use Sylius\Component\User\Model\User as BaseUser;
 use Sylius\Component\User\Model\UserOAuthInterface;
 

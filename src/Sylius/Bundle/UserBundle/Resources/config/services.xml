@@ -28,6 +28,8 @@
         <parameter key="sylius.provider.email_provider.class">Sylius\Bundle\UserBundle\Provider\EmailProvider</parameter>
 
         <parameter key="sylius.form.type.user_login.class">Sylius\Bundle\UserBundle\Form\Type\UserLoginType</parameter>
+        <parameter key="sylius.form.type.user_reset_password.class">Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType</parameter>
+        <parameter key="sylius.form.type.user_change_password.class">Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType</parameter>
 
         <parameter key="sylius.listener.user_update.class">Sylius\Bundle\UserBundle\EventListener\UserUpdateListener</parameter>
         <parameter key="sylius.listener.user_delete.class">Sylius\Bundle\UserBundle\EventListener\UserDeleteListener</parameter>
@@ -35,6 +37,7 @@
         <parameter key="sylius.listener.user_register.class">Sylius\Bundle\UserBundle\EventListener\UserRegisterListener</parameter>
         <parameter key="sylius.listener.user_create.class">Sylius\Bundle\UserBundle\EventListener\UserCreateListener</parameter>
         <parameter key="sylius.listener.user_change_password.class">Sylius\Bundle\UserBundle\EventListener\UserChangePasswordListener</parameter>
+        <parameter key="sylius.listener.user_mailer_listener.class">Sylius\Bundle\UserBundle\EventListener\MailerListener</parameter>
         
         <parameter key="sylius.controller.security.class">Sylius\Bundle\UserBundle\Controller\SecurityController</parameter>
     </parameters>
@@ -86,6 +89,10 @@
             <tag name="kernel.event_listener" event="sylius.user.post_create" method="processUser" />
             <tag name="kernel.event_listener" event="sylius.user.post_update" method="processUser" />
         </service>
+        <service id="sylius.listener.user_mailer_listener" class="%sylius.listener.user_mailer_listener.class%">
+            <argument type="service" id="sylius.email_sender" />
+            <tag name="kernel.event_listener" event="sylius.user.password_reset.request" method="sendPasswordResetEmail" />
+        </service>
         <service id="sylius.listener.user_delete" class="%sylius.listener.user_delete.class%">
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
@@ -111,6 +118,12 @@
         <!-- Forms -->
         <service id="sylius.form.type.user_login" class="%sylius.form.type.user_login.class%">
             <tag name="form.type" alias="sylius_user_security_login" />
+        </service>
+        <service id="sylius.form.type.user_reset_password" class="%sylius.form.type.user_reset_password.class%">
+            <tag name="form.type" alias="sylius_user_request_password_reset" />
+        </service>
+        <service id="sylius.form.type.user_change_password" class="%sylius.form.type.user_change_password.class%">
+            <tag name="form.type" alias="sylius_user_change_password" />
         </service>
     </services>
 

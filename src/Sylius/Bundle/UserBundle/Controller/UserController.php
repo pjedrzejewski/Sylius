@@ -14,8 +14,12 @@ namespace Sylius\Bundle\UserBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\UserBundle\Form\Model\ChangePassword;
+use Sylius\Bundle\UserBundle\Form\Model\PasswordReset;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType;
+use Sylius\Bundle\UserBundle\Form\Type\UserRequestPasswordResetType;
+use Sylius\Bundle\UserBundle\UserEvents;
+use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -93,6 +97,47 @@ class UserController extends ResourceController
                 'form'  => $form->createView(),
             )
         );
+    }
+
+    public function requestPasswordResetAction(Request $request)
+    {
+        $passwordReset = new PasswordReset();
+        $form = $this->createForm(new UserRequestPasswordResetType(), $passwordReset);
+
+        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
+            $user = $this->getRepository()->findOneBy(array('email' => $passwordReset->getEmail()));
+
+            if (null !== $user) {
+                $this->addFlash('success', 'sylius.account.password.reset.success');
+
+                $dispatcher = $this->get('event_dispatcher');
+
+                $event = new GenericEvent($user);
+                $dispatcher->dispatch(UserEvents::REQUEST_PASSWORD_RESET, $event);
+
+                return $this->render(
+                    'SyliusWebBundle:Frontend/Account:resetPassword.html.twig',
+                    array(
+                        'form'  => $form->createView(),
+                    )
+                );
+            }
+
+            $this->addFlash('error', 'sylius.account.email.not_exist');
+            $this->addFlash('error', 'sylius.account.password.reset.failed');
+        }
+    
+        return $this->render(
+            'SyliusWebBundle:Frontend/Account:resetPassword.html.twig',
+            array(
+                'form'  => $form->createView(),
+            )
+        );
+    }
+
+    public function resetPasswordAction(Request $request)
+    {
+        # code...
     }
 
     protected function addFlash($type, $message)
