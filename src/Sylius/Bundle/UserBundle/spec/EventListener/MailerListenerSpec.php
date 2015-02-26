@@ -11,6 +11,7 @@
 
 namespace spec\Sylius\Bundle\UserBundle\EventListener;
 
+use Prophecy\Argument;
 use PhpSpec\ObjectBehavior;
 use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -39,7 +40,7 @@ class MailerListenerSpec extends ObjectBehavior
 
         $user->getEmail()->willReturn('test@example.com');
 
-        $sender->reloadUser($user)->shouldBeCalled();
+        $sender->send('password_reset', array('test@example.com'), Argument::any())->shouldBeCalled();
 
         $this->sendPasswordResetEmail($event);
     }

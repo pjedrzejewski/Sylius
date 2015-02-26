@@ -27,12 +27,12 @@ class UserRequestPasswordResetTypeSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType');
+        $this->shouldHaveType('Sylius\Bundle\UserBundle\Form\Type\UserRequestPasswordResetType');
     }
 
     function it_has_name()
     {
-        $this->getName()->shouldReturn('sylius_user_request_reset_password');
+        $this->getName()->shouldReturn('sylius_user_request_password_reset');
     }
 
     function it_builds_form(FormBuilderInterface $builder)

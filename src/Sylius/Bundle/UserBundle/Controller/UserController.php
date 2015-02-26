@@ -156,6 +156,10 @@ class UserController extends ResourceController
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
 
             $user->setPlainPassword($changePassword->getNewPassword());
+            
+            $dispatcher = $this->get('event_dispatcher');
+            $event = new GenericEvent($user);
+            $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
 
             $this->domainManager->update($user);
             $url = $this->generateUrl('sylius_user_security_login');

@@ -12,8 +12,11 @@
 namespace Sylius\Bundle\UserBundle\EventListener;
 
 use Sylius\Bundle\UserBundle\Reloader\UserReloaderInterface;
-use Sylius\Component\User\Model\UserInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
+use Sylius\Component\User\Model\UserInterface;
+use Sylius\Component\User\Security\PasswordUpdaterInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
@@ -23,18 +26,33 @@ use Symfony\Component\EventDispatcher\GenericEvent;
  */
 class UserUpdateListener
 {
+    /**
+     * @var UserReloaderInterface
+     */
     protected $userReloader;
+    
+    /**
+     * @var PasswordUpdaterInterface
+     */
+    protected $passwordUpdater;
 
-    public function __construct(UserReloaderInterface $userReloader)
+    /**
+     * @var CanonicalizerInterface
+     */
+    protected $canonicalizer;
+
+    public function __construct(UserReloaderInterface $userReloader, PasswordUpdaterInterface $passwordUpdater, CanonicalizerInterface $canonicalizer)
     {
         $this->userReloader = $userReloader;
+        $this->passwordUpdater = $passwordUpdater;
+        $this->canonicalizer = $canonicalizer;
     }
 
     public function processUser(GenericEvent $event)
     {
         $user = $event->getSubject();
 
-        if (!$user instanceof UserInterface) {
+        if (!$this->supports($user)) {
             throw new UnexpectedTypeException(
                 $user,
                 'Sylius\Component\User\Model\UserInterface'
@@ -42,5 +60,26 @@ class UserUpdateListener
         }
 
         $this->userReloader->reloadUser($user);
+    }
+
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        $item = $args->getEntity();
+
+        if (!$this->supports($item)) {
+            return;
+        }
+
+        if (null !== $item->getPlainPassword()) {
+            $this->passwordUpdater->updatePassword($item);
+        }
+
+        $item->setUsernameCanonical($this->canonicalizer->canonicalize($item->getUsername()));
+        $item->setEmailCanonical($this->canonicalizer->canonicalize($item->getEmail()));
+    }
+
+    private function supports($item)
+    {
+        return $item instanceof UserInterface;
     }
 }

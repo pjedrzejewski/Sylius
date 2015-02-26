@@ -11,54 +11,48 @@
 
 namespace Sylius\Bundle\UserBundle\EventListener;
 
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\UserInterface;
-use Sylius\Component\User\Security\PasswordUpdaterInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
- * User register listener.
+ * User update listener.
  *
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class UserCreateListener
+class CanonicalizerListener
 {
-    /**
-     * @var PasswordUpdaterInterface
-     */
-    protected $passwordUpdater;
-
     /**
      * @var CanonicalizerInterface
      */
     protected $canonicalizer;
 
-    public function __construct(PasswordUpdaterInterface $passwordUpdater, CanonicalizerInterface $canonicalizer)
+    function __construct(CanonicalizerInterface $canonicalizer)
     {
-        $this->passwordUpdater = $passwordUpdater;
         $this->canonicalizer = $canonicalizer;
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function canonicalize(LifecycleEventArgs $event)
     {
-        $item = $args->getEntity();
+        $item = $event->getEntity();
 
-        if (!$this->supports($item)) {
+        if (!$item instanceof UserInterface) {
             return;
-        }
-
-        if (null !== $item->getPlainPassword()) {
-            $this->passwordUpdater->updatePassword($item);
         }
 
         $item->setUsernameCanonical($this->canonicalizer->canonicalize($item->getUsername()));
         $item->setEmailCanonical($this->canonicalizer->canonicalize($item->getEmail()));
     }
 
-    private function supports($item)
+    public function prePersist(LifecycleEventArgs $event)
     {
-        return $item instanceof UserInterface;
+        $this->canonicalize($event);
+    }
+
+    public function preUpdate(LifecycleEventArgs $event)
+    {
+        $this->canonicalize($event);
     }
 }

@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ORM\Query\FilterCollection;
 
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
@@ -36,13 +37,14 @@ class TokenGeneratorSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\User\Security\TokenGeneratorInterface');
     }
 
-    function it_generates_random_token($repository, $manager)
+    function it_generates_random_token($repository, $manager, FilterCollection $filter)
     {
-        $manager->getFilters()->disable('softdeleteable')->shouldBeCalled();
+        $manager->getFilters()->willReturn($filter);
 
-        $repository->findOneBy(array('code' => Argument::any()))->shouldBeCalled();
+        $filter->disable('softdeleteable')->shouldBeCalled();
+        $filter->enable('softdeleteable')->shouldBeCalled();
 
-        $manager->getFilters()->enable('softdeleteable')->shouldBeCalled();
+        $repository->findOneBy(Argument::any())->shouldBeCalled();
 
         $this->generateUniqueToken();
     }
