@@ -77,7 +77,7 @@ class UserController extends ResourceController
 
             if ($validPassword) {
                 $user->setPlainPassword($changePassword->getNewPassword());
-                
+
                 $dispatcher = $this->get('event_dispatcher');
                 $event = new GenericEvent($user);
                 $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
@@ -158,6 +158,11 @@ class UserController extends ResourceController
         $lifetime = new \DateInterval($this->container->getParameter('sylius.user.resetting.token_ttl'));
         if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime)) ) {
             $url = $this->generateUrl('sylius_user_request_password_reset');
+
+            $user->setConfirmationToken(null);
+            $user->setPasswordRequestedAt(null);
+            
+            $this->domainManager->update($user);
 
             $this->addFlash('error', 'sylius.account.password.token_expired');
             
