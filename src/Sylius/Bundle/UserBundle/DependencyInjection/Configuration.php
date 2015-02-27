@@ -38,6 +38,17 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('driver')->cannotBeOverwritten()->isRequired()->cannotBeEmpty()->end()
+                ->arrayNode('resetting')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('token')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('ttl')->defaultValue('P1D')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

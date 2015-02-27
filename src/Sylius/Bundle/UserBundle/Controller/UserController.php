@@ -77,6 +77,10 @@ class UserController extends ResourceController
 
             if ($validPassword) {
                 $user->setPlainPassword($changePassword->getNewPassword());
+                
+                $dispatcher = $this->get('event_dispatcher');
+                $event = new GenericEvent($user);
+                $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
 
                 $this->domainManager->update($user);
                 $url = $this->generateUrl('sylius_account_homepage');
@@ -116,6 +120,7 @@ class UserController extends ResourceController
                 $tokenGenerator = $this->get('sylius.user.token_generator');
 
                 $user->setConfirmationToken($tokenGenerator->generateUniqueToken());
+                $user->setPasswordRequestedAt(new \DateTime());
 
                 $this->domainManager->update($user);
 
@@ -150,21 +155,34 @@ class UserController extends ResourceController
             throw new NotFoundHttpException('This website does not exist');
         }
 
+        $lifetime = new \DateInterval($this->container->getParameter('sylius.user.resetting.token_ttl'));
+        if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime)) ) {
+            $url = $this->generateUrl('sylius_user_request_password_reset');
+
+            $this->addFlash('error', 'sylius.account.password.token_expired');
+            
+            return new RedirectResponse($url);
+        }
+
         $changePassword = new ChangePassword();
         $form = $this->createForm(new UserResetPasswordType(), $changePassword);
         
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
 
             $user->setPlainPassword($changePassword->getNewPassword());
+            $user->setConfirmationToken(null);
+            $user->setPasswordRequestedAt(null);
             
             $dispatcher = $this->get('event_dispatcher');
             $event = new GenericEvent($user);
             $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
 
             $this->domainManager->update($user);
+
             $url = $this->generateUrl('sylius_user_security_login');
 
             $this->addFlash('success', 'sylius.account.password.change_success');
+            
             return new RedirectResponse($url);
         }
 

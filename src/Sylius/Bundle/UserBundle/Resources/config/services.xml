@@ -32,9 +32,7 @@
         <parameter key="sylius.form.type.user_request_password_reset.class">Sylius\Bundle\UserBundle\Form\Type\UserRequestPasswordResetType</parameter>
         <parameter key="sylius.form.type.user_reset_password.class">Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType</parameter>
         <parameter key="sylius.form.type.user_change_password.class">Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType</parameter>
-<!-- 
-        <parameter key="sylius.listener.user_update.class">Sylius\Bundle\UserBundle\EventListener\UserUpdateListener</parameter>
-        <parameter key="sylius.listener.user_create.class">Sylius\Bundle\UserBundle\EventListener\UserCreateListener</parameter> -->
+
         <parameter key="sylius.listener.user_delete.class">Sylius\Bundle\UserBundle\EventListener\UserDeleteListener</parameter>
         <parameter key="sylius.listener.user_aware.class">Sylius\Bundle\UserBundle\EventListener\UserAwareListener</parameter>
         <parameter key="sylius.listener.canonicalizer.class">Sylius\Bundle\UserBundle\EventListener\CanonicalizerListener</parameter>
@@ -91,6 +89,7 @@
         <service id="sylius.listener.password_updater" class="%sylius.listener.password_updater.class%">
             <argument type="service" id="sylius.user.password_updater" />
             <tag name="kernel.event_listener" event="sylius.user.password_reset.success" method="genericEventUpdater" />
+            <tag name="kernel.event_listener" event="sylius.user.password_change.success" method="genericEventUpdater" />
             <tag name="doctrine.event_listener" event="prePersist" />
             <tag name="doctrine.event_listener" event="preUpdate" />
         </service>

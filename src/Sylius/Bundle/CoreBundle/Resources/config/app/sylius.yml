@@ -695,6 +695,9 @@ sylius_rbac:
         it: [security_auditor, developer]
 
 sylius_user:
+    resetting:
+        token:
+            ttl: PT1S
     classes:
         user:
             model: Sylius\Component\Core\Model\User
