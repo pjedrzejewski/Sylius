@@ -12,8 +12,6 @@
 namespace Sylius\Bundle\UserBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
-use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Sylius\Component\User\Model\UserInterface;
 

@@ -14,7 +14,7 @@ namespace Sylius\Bundle\UserBundle\Mailer;
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class Emails 
+class Emails
 {
     const PASSWORD_RESET  = 'password_reset';
 }

@@ -11,7 +11,6 @@
 
 namespace Sylius\Bundle\UserBundle\Form\Model;
 
-
 /**
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */

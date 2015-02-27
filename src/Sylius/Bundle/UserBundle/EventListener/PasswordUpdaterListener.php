@@ -12,7 +12,6 @@
 namespace Sylius\Bundle\UserBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Events;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
 use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
@@ -24,7 +23,7 @@ use Sylius\Component\User\Security\PasswordUpdaterInterface;
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
 class PasswordUpdaterListener
-{    
+{
     /**
      * @var PasswordUpdaterInterface
      */
@@ -52,7 +51,7 @@ class PasswordUpdaterListener
                 'Sylius\Component\User\Model\UserInterface'
             );
         }
-        
+
         $this->updatePassword($user);
     }
 

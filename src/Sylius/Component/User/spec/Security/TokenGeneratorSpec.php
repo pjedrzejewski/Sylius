@@ -22,22 +22,22 @@ use Doctrine\ORM\Query\FilterCollection;
  */
 class TokenGeneratorSpec extends ObjectBehavior
 {
-    function let(RepositoryInterface $repository, EntityManagerInterface $manager)
+    public function let(RepositoryInterface $repository, EntityManagerInterface $manager)
     {
         $this->beConstructedWith($repository, $manager);
     }
 
-    function it_is_initializable()
+    public function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Component\User\Security\TokenGenerator');
     }
 
-    function it_implements_user_login_interface()
+    public function it_implements_user_login_interface()
     {
         $this->shouldImplement('Sylius\Component\User\Security\TokenGeneratorInterface');
     }
 
-    function it_generates_random_token($repository, $manager, FilterCollection $filter)
+    public function it_generates_random_token($repository, $manager, FilterCollection $filter)
     {
         $manager->getFilters()->willReturn($filter);
 

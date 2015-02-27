@@ -138,7 +138,7 @@ class UserController extends ResourceController
             $this->addFlash('error', 'sylius.account.email.not_exist');
             $this->addFlash('error', 'sylius.account.password.reset.failed');
         }
-    
+
         return $this->render(
             'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
             array(
@@ -156,28 +156,27 @@ class UserController extends ResourceController
         }
 
         $lifetime = new \DateInterval($this->container->getParameter('sylius.user.resetting.token_ttl'));
-        if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime)) ) {
+        if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime))) {
             $url = $this->generateUrl('sylius_user_request_password_reset');
 
             $user->setConfirmationToken(null);
             $user->setPasswordRequestedAt(null);
-            
+
             $this->domainManager->update($user);
 
             $this->addFlash('error', 'sylius.account.password.token_expired');
-            
+
             return new RedirectResponse($url);
         }
 
         $changePassword = new ChangePassword();
         $form = $this->createForm(new UserResetPasswordType(), $changePassword);
-        
-        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
 
+        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $user->setPlainPassword($changePassword->getNewPassword());
             $user->setConfirmationToken(null);
             $user->setPasswordRequestedAt(null);
-            
+
             $dispatcher = $this->get('event_dispatcher');
             $event = new GenericEvent($user);
             $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
@@ -187,7 +186,7 @@ class UserController extends ResourceController
             $url = $this->generateUrl('sylius_user_security_login');
 
             $this->addFlash('success', 'sylius.account.password.change_success');
-            
+
             return new RedirectResponse($url);
         }
 

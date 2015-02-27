@@ -45,12 +45,11 @@ class MailerListener
             );
         }
 
-        $this->emailSender->send(Emails::PASSWORD_RESET, 
-            array($user->getEmail()), 
+        $this->emailSender->send(Emails::PASSWORD_RESET,
+            array($user->getEmail()),
                 array(
-                    'user' => $user
+                    'user' => $user,
                 )
             );
     }
-
 }
