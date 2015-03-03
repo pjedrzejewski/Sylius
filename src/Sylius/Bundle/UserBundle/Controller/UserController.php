@@ -63,7 +63,7 @@ class UserController extends ResourceController
     {
         $user = $this->getUser();
         $changePassword = new ChangePassword();
-        $form = $this->createForm(new UserChangePasswordType(), $changePassword);
+        $form = $this->createResourceForm(new UserChangePasswordType(), $changePassword);
 
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $encoderFactory = $this->get('security.encoder_factory');
@@ -83,6 +83,11 @@ class UserController extends ResourceController
                 $dispatcher->dispatch(UserEvents::PASSWORD_RESET_SUCCESS, $event);
 
                 $this->domainManager->update($user);
+
+                if ($this->config->isApiRequest()) {
+                    return $this->handleView($this->view($user, 204));
+                }
+
                 $url = $this->generateUrl('sylius_account_homepage');
 
                 $this->addFlash('success', 'sylius.account.password.change_success');
@@ -108,7 +113,7 @@ class UserController extends ResourceController
     public function requestPasswordResetAction(Request $request)
     {
         $passwordReset = new PasswordReset();
-        $form = $this->createForm(new UserRequestPasswordResetType(), $passwordReset);
+        $form = $this->createResourceForm(new UserRequestPasswordResetType(), $passwordReset);
 
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $user = $this->getRepository()->findOneBy(array('email' => $passwordReset->getEmail()));
@@ -127,6 +132,10 @@ class UserController extends ResourceController
                 $event = new GenericEvent($user);
                 $dispatcher->dispatch(UserEvents::REQUEST_PASSWORD_RESET, $event);
 
+                if ($this->config->isApiRequest()) {
+                    return $this->handleView($this->view($user, 204));
+                }
+
                 return $this->render(
                     'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
                     array(
@@ -137,6 +146,10 @@ class UserController extends ResourceController
 
             $this->addFlash('error', 'sylius.account.email.not_exist');
             $this->addFlash('error', 'sylius.account.password.reset.failed');
+        }
+
+        if ($this->config->isApiRequest()) {
+            return $this->handleView($this->view($form, 400));
         }
 
         return $this->render(
@@ -156,6 +169,7 @@ class UserController extends ResourceController
         }
 
         $lifetime = new \DateInterval($this->container->getParameter('sylius.user.resetting.token_ttl'));
+
         if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime))) {
             $url = $this->generateUrl('sylius_user_request_password_reset');
 
@@ -166,11 +180,15 @@ class UserController extends ResourceController
 
             $this->addFlash('error', 'sylius.account.password.token_expired');
 
+            if ($this->config->isApiRequest()) {
+                return $this->handleView($this->view($user, 400));
+            }
+
             return new RedirectResponse($url);
         }
 
         $changePassword = new ChangePassword();
-        $form = $this->createForm(new UserResetPasswordType(), $changePassword);
+        $form = $this->createResourceForm(new UserResetPasswordType(), $changePassword);
 
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $user->setPlainPassword($changePassword->getNewPassword());
@@ -186,6 +204,10 @@ class UserController extends ResourceController
             $url = $this->generateUrl('sylius_user_security_login');
 
             $this->addFlash('success', 'sylius.account.password.change_success');
+
+            if ($this->config->isApiRequest()) {
+                return $this->handleView($this->view($user, 204));
+            }
 
             return new RedirectResponse($url);
         }
@@ -207,5 +229,14 @@ class UserController extends ResourceController
     {
         $translator = $this->get('translator');
         $this->get('session')->getFlashBag()->add($type, $translator->trans($message, array(), 'flashes'));
+    }
+
+    protected function createResourceForm($type, $resource)
+    {
+        if ($this->config->isApiRequest()) {
+            return $this->container->get('form.factory')->createNamed('', $type, $resource, array('csrf_protection' => false));
+        }
+
+        return $this->createForm($type, $resource);
     }
 }
