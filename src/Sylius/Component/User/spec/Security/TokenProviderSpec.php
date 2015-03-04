@@ -38,7 +38,7 @@ class TokenProviderSpec extends ObjectBehavior
         $this->shouldImplement('Sylius\Component\User\Security\TokenProviderInterface');
     }
 
-    public function it_generates_random_token($repository, $manager, FilterCollection $filter, generator)
+    public function it_generates_random_token($repository, $manager, FilterCollection $filter, $generator)
     {
         $manager->getFilters()->willReturn($filter);
 
