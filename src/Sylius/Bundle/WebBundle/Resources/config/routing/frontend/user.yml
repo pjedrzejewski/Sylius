@@ -10,20 +10,6 @@ sylius_user_registration:
             redirect: sylius_homepage
             permission: false
 
-sylius_user_request_password_reset:
-    path: /resetting/request
-    methods: [GET, POST]
-    defaults:
-        _controller: sylius.controller.user:requestPasswordResetAction
-        _sylius:
-            form: sylius_user_request_password_reset
-
-sylius_user_password_reset:
-    path: /resetting/{token}
-    methods: [GET, POST]
-    defaults:
-        _controller: sylius.controller.user:resetPasswordAction
-
 sylius_user_security_login:
     path: /login
     methods: [GET, POST]
@@ -45,3 +31,7 @@ sylius_user_security_logout:
     methods: [GET, POST]
     defaults:
         _controller: sylius.controller.security:logoutAction
+
+sylius_password_resetting:
+    resource: @SyliusUserBundle/Resources/config/routing/password_reset.yml
+    prefix: /resetting

@@ -12,12 +12,13 @@
 namespace Sylius\Component\User\Security;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sylius\Component\User\Security\Generator\GeneratorInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
-* @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
-*/
-class TokenGenerator implements TokenGeneratorInterface
+ * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ */
+class TokenProvider implements TokenProviderInterface
 {
     /**
      * @var RepositoryInterface
@@ -30,12 +31,26 @@ class TokenGenerator implements TokenGeneratorInterface
     private $manager;
 
     /**
-     * @param Container $container
+     * @var GeneratorInterface
      */
-    public function __construct(RepositoryInterface $repository, EntityManagerInterface $manager)
+    private $generator;
+
+    /**
+     * @var integer
+     */
+    private $tokenLength;
+
+    /**
+     * @param RepositoryInterface $repository
+     * @param EntityManagerInterface $manager
+     * @param GeneratorInterface $generator
+     */
+    public function __construct(RepositoryInterface $repository, EntityManagerInterface $manager, GeneratorInterface $generator, $tokenLength)
     {
         $this->repository = $repository;
         $this->manager = $manager;
+        $this->generator = $generator;
+        $this->tokenLength = $tokenLength;
     }
 
     /**
@@ -43,11 +58,8 @@ class TokenGenerator implements TokenGeneratorInterface
      */
     public function generateUniqueToken()
     {
-        $token = null;
-
         do {
-            $hash = sha1(microtime(true));
-            $token = strtoupper(substr($hash, mt_rand(0, 33), 6));
+            $token = $this->generator->generate($this->tokenLength);
         } while ($this->isUsedCode($token));
 
         return $token;

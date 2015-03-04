@@ -15,9 +15,10 @@ use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\UserBundle\Form\Model\ChangePassword;
 use Sylius\Bundle\UserBundle\Form\Model\PasswordReset;
 use Sylius\Bundle\UserBundle\Form\Type\UserChangePasswordType;
-use Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType;
 use Sylius\Bundle\UserBundle\Form\Type\UserRequestPasswordResetType;
+use Sylius\Bundle\UserBundle\Form\Type\UserResetPasswordType;
 use Sylius\Bundle\UserBundle\UserEvents;
+use Sylius\Component\User\Security\TokenProviderInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -110,55 +111,18 @@ class UserController extends ResourceController
         );
     }
 
-    public function requestPasswordResetAction(Request $request)
+    public function requestPasswordResetTokenAction(Request $request)
     {
-        $passwordReset = new PasswordReset();
-        $form = $this->createResourceForm(new UserRequestPasswordResetType(), $passwordReset);
-
-        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
-            $user = $this->getRepository()->findOneBy(array('email' => $passwordReset->getEmail()));
-
-            if (null !== $user) {
-                $this->addFlash('success', 'sylius.account.password.reset.success');
-
-                $dispatcher = $this->get('event_dispatcher');
-                $tokenGenerator = $this->get('sylius.user.token_generator');
-
-                $user->setConfirmationToken($tokenGenerator->generateUniqueToken());
-                $user->setPasswordRequestedAt(new \DateTime());
-
-                $this->domainManager->update($user);
-
-                $event = new GenericEvent($user);
-                $dispatcher->dispatch(UserEvents::REQUEST_PASSWORD_RESET, $event);
-
-                if ($this->config->isApiRequest()) {
-                    return $this->handleView($this->view($user, 204));
-                }
-
-                return $this->render(
-                    'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
-                    array(
-                        'form'  => $form->createView(),
-                    )
-                );
-            }
-
-            $this->addFlash('error', 'sylius.account.email.not_exist');
-            $this->addFlash('error', 'sylius.account.password.reset.failed');
-        }
-
-        if ($this->config->isApiRequest()) {
-            return $this->handleView($this->view($form, 400));
-        }
-
-        return $this->render(
-            'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
-            array(
-                'form'  => $form->createView(),
-            )
-        );
+        $generator = $this->get('sylius.user.token_provider');
+        return $this->prepereResetPasswordRequest($request, $generator);
     }
+
+    public function requestPasswordResetPinAction(Request $request)
+    {
+        $generator = $this->get('sylius.user.pin_provider');
+        return $this->prepereResetPasswordRequest($request, $generator);
+    }
+
 
     public function resetPasswordAction(Request $request)
     {
@@ -171,7 +135,6 @@ class UserController extends ResourceController
         $lifetime = new \DateInterval($this->container->getParameter('sylius.user.resetting.token_ttl'));
 
         if (new \DateTime > ($user->getPasswordRequestedAt()->add($lifetime))) {
-            $url = $this->generateUrl('sylius_user_request_password_reset');
 
             $user->setConfirmationToken(null);
             $user->setPasswordRequestedAt(null);
@@ -183,6 +146,13 @@ class UserController extends ResourceController
             if ($this->config->isApiRequest()) {
                 return $this->handleView($this->view($user, 400));
             }
+
+            if (is_numeric($request->get('token'))) {
+                $url = $this->generateUrl('sylius_user_request_password_reset_pin');
+                return new RedirectResponse($url);
+            }
+
+            $url = $this->generateUrl('sylius_user_request_password_reset_token');
 
             return new RedirectResponse($url);
         }
@@ -221,6 +191,55 @@ class UserController extends ResourceController
             array(
                 'form' => $form->createView(),
                 'user' => $user,
+            )
+        );
+    }
+
+    protected function prepereResetPasswordRequest(Request $request, TokenProviderInterface $generator)
+    {
+        $passwordReset = new PasswordReset();
+        $form = $this->createResourceForm(new UserRequestPasswordResetType(), $passwordReset);
+
+        if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
+            $user = $this->getRepository()->findOneBy(array('email' => $passwordReset->getEmail()));
+
+            if (null !== $user) {
+                $this->addFlash('success', 'sylius.account.password.reset.success');
+
+                $dispatcher = $this->get('event_dispatcher');
+
+                $user->setConfirmationToken($generator->generateUniqueToken());
+                $user->setPasswordRequestedAt(new \DateTime());
+
+                $this->domainManager->update($user);
+
+                $event = new GenericEvent($user);
+                $dispatcher->dispatch(UserEvents::REQUEST_PASSWORD_RESET, $event);
+
+                if ($this->config->isApiRequest()) {
+                    return $this->handleView($this->view($user, 204));
+                }
+
+                return $this->render(
+                    'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
+                    array(
+                        'form'  => $form->createView(),
+                    )
+                );
+            }
+
+            $this->addFlash('error', 'sylius.account.email.not_exist');
+            $this->addFlash('error', 'sylius.account.password.reset.failed');
+        }
+
+        if ($this->config->isApiRequest()) {
+            return $this->handleView($this->view($form, 400));
+        }
+
+        return $this->render(
+            'SyliusWebBundle:Frontend/Account:requestPasswordReset.html.twig',
+            array(
+                'form'  => $form->createView(),
             )
         );
     }

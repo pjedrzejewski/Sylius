@@ -9,15 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Sylius\Component\User\Security;
+namespace Sylius\Component\User\Security\Generator;
 
 /**
 * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
 */
-interface TokenGeneratorInterface
+interface GeneratorInterface
 {
     /**
-     * Generates unique token for user request password reset
+     * Generates some random string
+     * 
+     * @param $length determines length of generated token 
      */
-    public function generateUniqueToken();
+    public function generate($length);
 }
