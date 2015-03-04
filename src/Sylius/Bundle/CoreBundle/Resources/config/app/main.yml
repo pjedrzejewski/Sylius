@@ -67,18 +67,18 @@ stof_doctrine_extensions:
             loggable: true
             sortable: true
 
-# fos_user:
-#     db_driver: orm
-#     firewall_name: main
-#     user_class: %sylius.model.user.class%
-#     group:
-#         group_class: %sylius.model.group.class%
-#     profile:
-#         form:
-#             type: sylius_user_profile
-#     registration:
-#         form:
-#             type: sylius_user_registration
+fos_user:
+    db_driver: orm
+    firewall_name: main
+    user_class: %sylius.model.user.class%
+    group:
+        group_class: %sylius.model.group.class%
+    profile:
+        form:
+            type: sylius_user_profile
+    registration:
+        form:
+            type: sylius_user_registration
 
 fos_rest:
     view:

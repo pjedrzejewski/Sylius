@@ -31,6 +31,6 @@ class PinGeneratorSpec extends ObjectBehavior
 
     public function it_generates_random_token()
     {
-        $this->generate(4)->shouldBeString();
+        $this->generate(4)->shouldBeInteger();
     }
 }
