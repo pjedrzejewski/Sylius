@@ -56,6 +56,11 @@ class Customer implements CustomerInterface
     protected $updatedAt;
 
     /**
+     * @var \DateTime
+     */
+    protected $deletedAt;
+
+    /**
      * Initialize Customer
      */
     public function __construct()
@@ -187,6 +192,32 @@ class Customer implements CustomerInterface
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDeletedAt(\DateTime $deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isDeleted()
+    {
+        return (null !== $this->deletedAt) && ((new \DateTime()) >= $this->deletedAt);
     }
 
     public function __toString()

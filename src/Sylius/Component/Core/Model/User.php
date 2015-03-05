@@ -14,7 +14,6 @@ namespace Sylius\Component\Core\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sylius\Component\User\Model\User as BaseUser;
 use Sylius\Component\Rbac\Model\RoleInterface;
-use Sylius\Component\User\Model\UserOAuthInterface;
 
 /**
  * User model.
@@ -36,7 +35,6 @@ class User extends BaseUser implements UserInterface
         parent::__construct();
         $this->orders        = new ArrayCollection();
         $this->addresses     = new ArrayCollection();
-        $this->oauthAccounts = new ArrayCollection();
         $this->authorizationRoles = new ArrayCollection();
     }
 
@@ -148,95 +146,6 @@ class User extends BaseUser implements UserInterface
     public function getAddresses()
     {
         return $this->addresses;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isDeleted()
-    {
-        return null !== $this->deletedAt && new \DateTime() >= $this->deletedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDeletedAt(\DateTime $deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setEmail($email)
-    {
-        parent::setEmail($email);
-        parent::setUsername($email);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setEmailCanonical($emailCanonical)
-    {
-        parent::setEmailCanonical($emailCanonical);
-        parent::setUsernameCanonical($emailCanonical);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOAuthAccounts()
-    {
-        return $this->oauthAccounts;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getOAuthAccount($provider)
-    {
-        if ($this->oauthAccounts->isEmpty()) {
-            return null;
-        }
-
-        $filtered = $this->oauthAccounts->filter(function (UserOAuthInterface $oauth) use ($provider) {
-            return $provider === $oauth->getProvider();
-        });
-
-        if ($filtered->isEmpty()) {
-            return null;
-        }
-
-        return $filtered->current();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addOAuthAccount(UserOAuthInterface $oauth)
-    {
-        if (!$this->oauthAccounts->contains($oauth)) {
-            $this->oauthAccounts->add($oauth);
-            $oauth->setUser($this);
-        }
-
-        return $this;
     }
 
     /**

@@ -21,11 +21,19 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
+ * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
  */
 interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerInterface
 {
     const ROLE_DEFAULT = 'ROLE_USER';
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+
+    /**
+     * Returns the user unique id.
+     *
+     * @return int
+     */
+    public function getId();
 
     /**
      * Sets the username.
@@ -85,6 +93,8 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerIn
     public function isSuperAdmin();
 
     /**
+     * Sets the enabled flag of the user.
+     *
      * @param boolean $boolean
      *
      * @return self
@@ -203,14 +213,14 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerIn
     public function removeRole($role);
 
     /**
-     * Get connected OAuth accounts.
+     * Gets connected OAuth accounts.
      *
      * @return Collection|UserOAuthInterface[]
      */
     public function getOAuthAccounts();
 
     /**
-     * Get connected OAuth account.
+     * Gets connected OAuth account.
      *
      * @param string $provider
      *
@@ -219,7 +229,7 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerIn
     public function getOAuthAccount($provider);
 
     /**
-     * Connect OAuth account.
+     * Connects OAuth account.
      *
      * @param UserOAuthInterface $oauth
      *

@@ -99,11 +99,6 @@ class User implements UserInterface, GroupableInterface
     protected $expiresAt;
 
     /**
-     * @var boolean
-     */
-    protected $credentialsExpired = false;
-
-    /**
      * @var \DateTime
      */
     protected $credentialsExpireAt;
@@ -148,9 +143,7 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Returns the user unique id.
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -307,21 +300,12 @@ class User implements UserInterface, GroupableInterface
         return $this->confirmationToken;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setConfirmationToken($confirmationToken)
     {
         $this->confirmationToken = $confirmationToken;
-
-        return $this;
-    }
-
-    /**
-     * @param boolean $boolean
-     *
-     * @return User
-     */
-    public function setCredentialsExpired($boolean)
-    {
-        $this->credentialsExpired = $boolean;
 
         return $this;
     }
@@ -331,10 +315,6 @@ class User implements UserInterface, GroupableInterface
      */
     public function isCredentialsNonExpired()
     {
-        if (true === $this->credentialsExpired) {
-            return false;
-        }
-
         return (null !== $this->credentialsExpireAt) && ((new \DateTime()) >= $this->credentialsExpireAt);
     }
 
@@ -405,16 +385,7 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Never use this to check if this user has access to anything!
-     *
-     * Use the SecurityContext, or an implementation of AccessDecisionManager
-     * instead, e.g.
-     *
-     *         $securityContext->isGranted('ROLE_USER');
-     *
-     * @param string $role
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function hasRole($role)
     {
@@ -452,9 +423,7 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Returns the user roles
-     *
-     * @return array The roles
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -470,6 +439,9 @@ class User implements UserInterface, GroupableInterface
         return array_unique($roles);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setRoles(array $roles)
     {
         $this->roles = array();
@@ -482,9 +454,7 @@ class User implements UserInterface, GroupableInterface
     }
 
     /**
-     * Gets the groups granted to the user.
-     *
-     * @return Collection
+     * {@inheritdoc}
      */
     public function getGroups()
     {
@@ -783,7 +753,6 @@ class User implements UserInterface, GroupableInterface
             $this->usernameCanonical,
             $this->username,
             $this->locked,
-            $this->credentialsExpired,
             $this->enabled,
             $this->id,
         ));
@@ -807,7 +776,6 @@ class User implements UserInterface, GroupableInterface
             $this->usernameCanonical,
             $this->username,
             $this->locked,
-            $this->credentialsExpired,
             $this->enabled,
             $this->id
             ) = $data;
