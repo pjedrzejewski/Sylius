@@ -65,7 +65,7 @@ abstract class UserProvider implements UserProviderInterface
         return $this->userRepository->find($user->getId());
     }
 
-    protected abstract function findUser($usernameOrEmail);
+    protected abstract function findUser($uniqueIdentifier);
 
     public function supportsClass($class)
     {
