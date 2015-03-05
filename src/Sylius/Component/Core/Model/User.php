@@ -20,6 +20,7 @@ use Sylius\Component\User\Model\UserOAuthInterface;
  * User model.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
  */
 class User extends BaseUser implements UserInterface
 {
@@ -32,12 +33,11 @@ class User extends BaseUser implements UserInterface
 
     public function __construct()
     {
+        parent::__construct();
         $this->orders        = new ArrayCollection();
         $this->addresses     = new ArrayCollection();
         $this->oauthAccounts = new ArrayCollection();
         $this->authorizationRoles = new ArrayCollection();
-
-        parent::__construct();
     }
 
     /**

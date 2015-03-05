@@ -14,7 +14,6 @@
 namespace Sylius\Component\User\Model;
 
 use Doctrine\Common\Collections\Collection;
-use Sylius\Component\Resource\Model\TimestampableInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
@@ -23,70 +22,11 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-interface UserInterface extends AdvancedUserInterface, \Serializable, TimestampableInterface
+interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerInterface
 {
     const ROLE_DEFAULT = 'ROLE_USER';
     const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
 
-    /**
-     * Get first name.
-     *
-     * @return string
-     */
-    public function getFirstName();
-
-    /**
-     * Set first name
-     *
-     * @param string $firstName
-     */
-    public function setFirstName($firstName);
-
-    /**
-     * Get last name.
-     *
-     * @return string
-     */
-    public function getLastName();
-
-    /**
-     * Set last name.
-     *
-     * @param string $lastName
-     */
-    public function setLastName($lastName);
-
-    /**
-     * Get connected OAuth accounts.
-     *
-     * @return Collection|UserOAuthInterface[]
-     */
-    public function getOAuthAccounts();
-
-    /**
-     * Get connected OAuth account.
-     *
-     * @param string $provider
-     *
-     * @return null|UserOAuthInterface
-     */
-    public function getOAuthAccount($provider);
-
-    /**
-     * Connect OAuth account.
-     *
-     * @param UserOAuthInterface $oauth
-     *
-     * @return self
-     */
-    public function addOAuthAccount(UserOAuthInterface $oauth);
-
-    /**
-     * Check whether user is deleted.
-     *
-     * @return bool
-     */
-    public function isDeleted();
     /**
      * Sets the username.
      *
@@ -111,38 +51,6 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, Timestampa
      * @return self
      */
     public function setUsernameCanonical($usernameCanonical);
-
-    /**
-     * Gets email.
-     *
-     * @return string
-     */
-    public function getEmail();
-
-    /**
-     * Sets the email.
-     *
-     * @param string $email
-     *
-     * @return self
-     */
-    public function setEmail($email);
-
-    /**
-     * Gets the canonical email in search and sort queries.
-     *
-     * @return string
-     */
-    public function getEmailCanonical();
-
-    /**
-     * Sets the canonical email.
-     *
-     * @param string $emailCanonical
-     *
-     * @return self
-     */
-    public function setEmailCanonical($emailCanonical);
 
     /**
      * Gets the plain password.
@@ -236,6 +144,13 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, Timestampa
     public function isPasswordRequestNonExpired($ttl);
 
     /**
+     * Gets the last login time.
+     *
+     * @return \DateTime
+     */
+    public function getLastLogin();
+
+    /**
      * Sets the last login time
      *
      * @param \DateTime $time
@@ -286,4 +201,29 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, Timestampa
      * @return self
      */
     public function removeRole($role);
+
+    /**
+     * Get connected OAuth accounts.
+     *
+     * @return Collection|UserOAuthInterface[]
+     */
+    public function getOAuthAccounts();
+
+    /**
+     * Get connected OAuth account.
+     *
+     * @param string $provider
+     *
+     * @return null|UserOAuthInterface
+     */
+    public function getOAuthAccount($provider);
+
+    /**
+     * Connect OAuth account.
+     *
+     * @param UserOAuthInterface $oauth
+     *
+     * @return self
+     */
+    public function addOAuthAccount(UserOAuthInterface $oauth);
 }
