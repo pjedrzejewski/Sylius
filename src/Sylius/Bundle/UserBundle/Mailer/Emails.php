@@ -16,5 +16,6 @@ namespace Sylius\Bundle\UserBundle\Mailer;
  */
 class Emails
 {
-    const PASSWORD_RESET  = 'password_reset';
+    const RESET_PASSWORD_TOKEN  = 'reset_password_token';
+    const RESET_PASSWORD_PIN  = 'reset_password_pin';
 }
