@@ -153,6 +153,22 @@ class User implements UserInterface, GroupableInterface
     /**
      * {@inheritdoc}
      */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getUsername()
     {
         return $this->username;
@@ -315,7 +331,7 @@ class User implements UserInterface, GroupableInterface
      */
     public function isCredentialsNonExpired()
     {
-        return (null !== $this->credentialsExpireAt) && ((new \DateTime()) >= $this->credentialsExpireAt);
+        return (null === $this->credentialsExpireAt) || ((new \DateTime()) < $this->credentialsExpireAt);
     }
 
     /**
@@ -341,7 +357,7 @@ class User implements UserInterface, GroupableInterface
      */
     public function isAccountNonExpired()
     {
-        return (null !== $this->expiresAt) && ((new \DateTime()) >= $this->expiresAt);
+        return (null === $this->expiresAt) || ((new \DateTime()) < $this->expiresAt);
     }
 
     /**

@@ -36,6 +36,16 @@ interface UserInterface extends AdvancedUserInterface, \Serializable, CustomerIn
     public function getId();
 
     /**
+     * @return CustomerInterface
+     */
+    public function getCustomer();
+
+    /**
+     * @param CustomerInterface $customer
+     */
+    public function setCustomer($customer);
+
+    /**
      * Sets the username.
      *
      * @param string $username

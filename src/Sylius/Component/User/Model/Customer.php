@@ -26,6 +26,11 @@ class Customer implements CustomerInterface
     protected $id;
 
     /**
+     * @var UserInterface
+     */
+    protected $user;
+
+    /**
      * @var string
      */
     protected $email;
@@ -76,6 +81,22 @@ class Customer implements CustomerInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return UserInterface
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param UserInterface $user
+     */
+    public function setUser(UserInterface $user)
+    {
+        $this->user = $user;
     }
 
     /**
