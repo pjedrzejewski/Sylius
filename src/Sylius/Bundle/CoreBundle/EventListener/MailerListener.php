@@ -57,13 +57,13 @@ class MailerListener
     }
 
     /**
-     * @param FilterUserResponseEvent $event
+     * @param GenericEvent $event
      *
      * @throws UnexpectedTypeException
      */
-    public function sendUserConfirmationEmail(FilterUserResponseEvent $event)
+    public function sendUserConfirmationEmail(GenericEvent $event)
     {
-        $user = $event->getUser();
+        $user = $event->getSubject();
 
         if (!$user instanceof UserInterface) {
             throw new UnexpectedTypeException(

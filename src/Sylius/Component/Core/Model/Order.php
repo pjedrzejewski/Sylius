@@ -14,7 +14,7 @@ namespace Sylius\Component\Core\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Cart\Model\Cart;
-use Sylius\Component\User\Model\UserInterface as BaseUserInterface;
+use Sylius\Component\User\Model\CustomerInterface;
 use Sylius\Component\Payment\Model\PaymentInterface as BasePaymentInterface;
 use Sylius\Component\Promotion\Model\CouponInterface as BaseCouponInterface;
 use Sylius\Component\Promotion\Model\PromotionInterface;
@@ -24,15 +24,16 @@ use Sylius\Component\Resource\Exception\UnexpectedTypeException;
  * Order entity.
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
+ * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
  */
 class Order extends Cart implements OrderInterface
 {
     /**
-     * User.
+     * Customer.
      *
-     * @var BaseUserInterface
+     * @var CustomerInterface
      */
-    protected $user;
+    protected $customer;
 
     /**
      * Order shipping address.
@@ -121,22 +122,31 @@ class Order extends Cart implements OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function getUser()
+    public function getCustomer()
     {
-        return $this->user;
+        return $this->customer;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setUser(BaseUserInterface $user)
+    public function setCustomer(CustomerInterface $customer = null)
     {
-        $this->user = $user;
-        if (null !== $this->user) {
-            $this->email = $this->user->getEmail();
-        }
+        $this->customer = $customer;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUser()
+    {
+        if (null === $this->customer) {
+            return null;
+        }
+
+        return $this->customer->getUser();
     }
 
     /**
