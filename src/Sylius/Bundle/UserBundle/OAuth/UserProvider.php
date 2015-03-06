@@ -17,7 +17,9 @@ use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Sylius\Component\Core\Model\UserInterface as SyliusUserInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Sylius\Component\User\Model\UserOAuthInterface;
+use Sylius\Bundle\UserBundle\Provider\UsernameOrEmailProvider as BaseUserProvider;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Sylius\Component\User\Canonicalizer\CanonicalizerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -27,7 +29,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  * @author Joseph Bielawski <stloyd@gmail.com>
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  */
-class UserProvider implements AccountConnectorInterface, OAuthAwareUserProviderInterface
+class UserProvider extends BaseUserProvider implements AccountConnectorInterface, OAuthAwareUserProviderInterface
 {
     /**
      * @var RepositoryInterface
@@ -51,8 +53,9 @@ class UserProvider implements AccountConnectorInterface, OAuthAwareUserProviderI
      * @param RepositoryInterface  $oauthRepository
      * @param ObjectManager $userRepository
      */
-    public function __construct(RepositoryInterface $userRepository, RepositoryInterface $oauthRepository, ObjectManager $userManager)
+    public function __construct(RepositoryInterface $userRepository, RepositoryInterface $oauthRepository, ObjectManager $userManager, CanonicalizerInterface $canonicalizer)
     {
+        parent::__construct($userRepository, $canonicalizer);
         $this->userRepository   = $userRepository;
         $this->oauthRepository = $oauthRepository;
         $this->userManager = $userManager;
