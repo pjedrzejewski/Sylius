@@ -25,6 +25,10 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  */
 interface CustomerInterface extends TimestampableInterface, SoftDeletableInterface
 {
+    const UNKNOWN_GENDER = 0;
+    const MALE_GENDER = 1;
+    const FEMALE_GENDER = 2;
+
     /**
      * Gets email.
      *
@@ -91,4 +95,40 @@ interface CustomerInterface extends TimestampableInterface, SoftDeletableInterfa
      * @return self
      */
     public function setLastName($lastName);
+
+    /**
+     * Gets birthday.
+     *
+     * @return \DateTime
+     */
+    public function getBirthday();
+
+    /**
+     * Sets birthday
+     *
+     * @param \DateTime $birthday
+     * @return self
+     */
+    public function setBirthday(\DateTime $birthday);
+
+    /**
+     * @return int
+     */
+    public function getGender();
+
+    /**
+     * @param int $gender
+     * @return self
+     */
+    public function setGender($gender);
+
+    /**
+     * @return bool
+     */
+    public function isMale();
+
+    /**
+     * @return bool
+     */
+    public function isFemale();
 }

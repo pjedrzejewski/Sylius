@@ -53,6 +53,16 @@ class Customer implements CustomerInterface
     /**
      * @var \DateTime
      */
+    protected $birthday;
+
+    /**
+     * @var int
+     */
+    protected $gender = UserInterface::UNKNOWN_GENDER;
+
+    /**
+     * @var \DateTime
+     */
     protected $createdAt;
 
     /**
@@ -177,6 +187,58 @@ class Customer implements CustomerInterface
         $this->lastName = $lastName;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setBirthday(\DateTime $birthday)
+    {
+        $this->birthday = $birthday;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isMale()
+    {
+        return UserInterface::MALE_GENDER === $this->gender;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isFemale()
+    {
+        return UserInterface::FEMALE_GENDER === $this->gender;
     }
 
     /**
