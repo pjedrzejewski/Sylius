@@ -24,9 +24,3 @@ Sylius\Component\User\Model\User:
             getEmailCanonical:
                 serialized_name: emailCanonical
                 type: string
-            getFirstName:
-                serialized_name: firstName
-                type: string
-            getLastName:
-                serialized_name: lastName
-                type: string

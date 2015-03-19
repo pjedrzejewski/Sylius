@@ -161,7 +161,7 @@ class User implements UserInterface, GroupableInterface
     /**
      * {@inheritdoc}
      */
-    public function setCustomer($customer)
+    public function setCustomer(CustomerInterface $customer)
     {
         $this->customer = $customer;
     }
@@ -491,7 +491,6 @@ class User implements UserInterface, GroupableInterface
     public function setEmail($email)
     {
         $this->customer->setEmail($email);
-        $this->username = $email;
 
         return $this;
     }
@@ -634,50 +633,6 @@ class User implements UserInterface, GroupableInterface
         if ($this->getGroups()->contains($group)) {
             $this->getGroups()->removeElement($group);
         }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFullName()
-    {
-        return $this->customer->getFullName();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFirstName()
-    {
-        return $this->customer->getFirstName();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFirstName($firstName)
-    {
-        $this->customer->setFirstName($firstName);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getLastName()
-    {
-        return $this->customer->getLastName();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setLastName($lastName)
-    {
-        $this->customer->setLastName($lastName);
 
         return $this;
     }

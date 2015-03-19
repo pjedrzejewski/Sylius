@@ -58,7 +58,7 @@ class Customer implements CustomerInterface
     /**
      * @var int
      */
-    protected $gender = UserInterface::UNKNOWN_GENDER;
+    protected $gender = CustomerInterface::UNKNOWN_GENDER;
 
     /**
      * @var \DateTime
@@ -94,7 +94,7 @@ class Customer implements CustomerInterface
     }
 
     /**
-     * @return UserInterface
+     * {@inheritdoc}
      */
     public function getUser()
     {
@@ -102,11 +102,13 @@ class Customer implements CustomerInterface
     }
 
     /**
-     * @param UserInterface $user
+     * {@inheritdoc}
      */
     public function setUser(UserInterface $user)
     {
         $this->user = $user;
+
+        return $this;
     }
 
     /**
@@ -230,7 +232,7 @@ class Customer implements CustomerInterface
      */
     public function isMale()
     {
-        return UserInterface::MALE_GENDER === $this->gender;
+        return CustomerInterface::MALE_GENDER === $this->gender;
     }
 
     /**
@@ -238,7 +240,7 @@ class Customer implements CustomerInterface
      */
     public function isFemale()
     {
-        return UserInterface::FEMALE_GENDER === $this->gender;
+        return CustomerInterface::FEMALE_GENDER === $this->gender;
     }
 
     /**
