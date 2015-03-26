@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\Collection;
  * @author Łukasz Chruściel <lukasz.chrusciel@lakion.com>
  * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
  */
-class User implements UserInterface, GroupableInterface
+class User implements UserInterface, GroupableInterface, CustomerAwareInterface
 {
     /**
      * @var int
