@@ -220,13 +220,6 @@ class OrderSpec extends ObjectBehavior
         $this->shouldNotBeBackorder();
     }
 
-    function it_should_allow_defining_email_from_customer(CustomerInterface $customer)
-    {
-        $customer->getEmail()->willReturn('example@example.com');
-        $this->setCustomer($customer);
-        $this->getEmail()->shouldReturn('example@example.com');
-    }
-
     /**
      * Helper method
      *

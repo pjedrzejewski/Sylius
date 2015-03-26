@@ -418,10 +418,4 @@ class OrderSpec extends ObjectBehavior
 
         $this->hasAdjustment($adjustment)->shouldReturn(false);
     }
-
-    function it_should_allow_defining_email()
-    {
-        $this->setEmail('example@example.com');
-        $this->getEmail()->shouldReturn('example@example.com');
-    }
 }
