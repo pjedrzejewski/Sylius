@@ -15,9 +15,11 @@ use Doctrine\Common\Persistence\ObjectManager;
 use PhpSpec\ObjectBehavior;
 use Sylius\Bundle\SettingsBundle\Manager\SettingsManagerInterface;
 use Sylius\Bundle\SettingsBundle\Model\Settings;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\UserInterface;
 use Sylius\Component\Currency\Context\CurrencyContextInterface;
 use Sylius\Component\Storage\StorageInterface;
+use Sylius\Component\User\Context\CustomerContextInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -25,15 +27,15 @@ class CurrencyContextSpec extends ObjectBehavior
 {
     function let(
         StorageInterface $storage,
-        SecurityContextInterface $securityContext,
+        CustomerContextInterface $customerContext,
         SettingsManagerInterface $settingsManager,
-        ObjectManager $userManager,
+        ObjectManager $customerManager,
         Settings $settings
     ) {
         $settingsManager->loadSettings('general')->willReturn($settings);
         $settings->get('currency')->willReturn('EUR');
 
-        $this->beConstructedWith($storage, $securityContext, $settingsManager, $userManager);
+        $this->beConstructedWith($storage, $customerContext, $settingsManager, $customerManager);
     }
 
     function it_is_initializable()
@@ -51,58 +53,44 @@ class CurrencyContextSpec extends ObjectBehavior
         $this->getDefaultCurrency()->shouldReturn('EUR');
     }
 
-    function it_gets_currency_from_session_if_there_is_no_user(
-        TokenInterface $token,
-        $securityContext,
+    function it_gets_currency_from_session_if_there_is_no_customer(
+        $customerContext,
         $storage
     ) {
-        $securityContext->getToken()->willReturn($token);
-        $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')->willReturn(true);
-        $token->getUser()->willReturn(null);
+        $customerContext->getCustomer()->willReturn(null);
 
         $storage->getData(CurrencyContextInterface::STORAGE_KEY, 'EUR')->willReturn('RSD');
 
         $this->getCurrency()->shouldReturn('RSD');
     }
 
-    function it_gets_currency_from_user_if_authenticated(
-        UserInterface $user,
-        TokenInterface $token,
-        $securityContext
+    function it_gets_currency_from_customer(
+        CustomerInterface $customer,
+        $customerContext
     ) {
-        $securityContext->getToken()->willReturn($token);
-        $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')->willReturn(true);
-        $token->getUser()->willReturn($user);
-
-        $user->getCurrency()->willReturn('PLN');
+        $customerContext->getCustomer()->willReturn($customer);
+        $customer->getCurrency()->willReturn('PLN');
 
         $this->getCurrency()->shouldReturn('PLN');
     }
 
-    function it_sets_currency_to_session_if_there_is_no_user(
-        TokenInterface $token,
-        $securityContext,
+    function it_sets_currency_to_session_if_there_is_no_customer(
+        $customerContext,
         $storage
     ) {
-        $securityContext->getToken()->willReturn($token);
-        $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')->willReturn(true);
-        $token->getUser()->willReturn(null);
+        $customerContext->getCustomer()->willReturn(null);
 
         $storage->setData(CurrencyContextInterface::STORAGE_KEY, 'PLN')->shouldBeCalled();
 
         $this->setCurrency('PLN');
     }
 
-    function it_sets_currency_to_user_if_authenticated(
-        UserInterface $user,
-        TokenInterface $token,
-        $securityContext
+    function it_sets_currency_to_customer(
+        CustomerInterface $customer,
+        $customerContext
     ) {
-        $securityContext->getToken()->willReturn($token);
-        $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')->willReturn(true);
-        $token->getUser()->willReturn($user);
-
-        $user->setCurrency('PLN')->shouldBeCalled();
+        $customerContext->getCustomer()->willReturn($customer);
+        $customer->setCurrency('PLN')->shouldBeCalled();
 
         $this->setCurrency('PLN');
     }

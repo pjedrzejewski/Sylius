@@ -15,7 +15,6 @@ use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Cart\Model\CartInterface;
 use Sylius\Component\Core\Model\IdentityInterface;
 use Sylius\Component\User\Model\CustomerAwareInterface;
-use Sylius\Component\User\Model\UserAwareInterface;
 use Sylius\Component\Payment\Model\PaymentsSubjectInterface;
 use Sylius\Component\Promotion\Model\CouponInterface as BaseCouponInterface;
 use Sylius\Component\Promotion\Model\PromotionCountableSubjectInterface;
