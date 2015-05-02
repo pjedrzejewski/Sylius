@@ -11,13 +11,12 @@
 
 namespace Sylius\Bundle\CoreBundle\EventListener;
 
-use FOS\UserBundle\Event\FilterUserResponseEvent;
-use FOS\UserBundle\Model\UserInterface;
 use Sylius\Bundle\CoreBundle\Mailer\Emails;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Mailer\Sender\SenderInterface;
 use Sylius\Component\Order\Model\CommentInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
+use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
@@ -53,7 +52,7 @@ class MailerListener
             );
         }
 
-        $this->emailSender->send(Emails::ORDER_CONFIRMATION, array($order->getEmail()), array('order' => $order));
+        $this->emailSender->send(Emails::ORDER_CONFIRMATION, array($order->getCustomer()->getEmail()), array('order' => $order));
     }
 
     /**
@@ -100,7 +99,7 @@ class MailerListener
             $email = $order->getCustomer()->getEmail();
 
             $this->emailSender->send(Emails::ORDER_COMMENT, array($email), array(
-                'order'   => $order,
+                'order' => $order,
                 'comment' => $comment,
             ));
         }

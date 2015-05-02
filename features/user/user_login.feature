@@ -7,7 +7,7 @@ Feature: Sign in to the store
     Background:
         Given there are following users:
             | email       | password | enabled |
-            | bar@foo.com | foo      | yes     |
+            | bar@foo.com | foo1     | yes     |
         And there is default currency configured
 
     Scenario: Log in with username and password
@@ -15,7 +15,7 @@ Feature: Sign in to the store
           And I follow "Login"
          When I fill in the following:
             | Email    | bar@foo.com |
-            | Password | foo         |
+            | Password | foo1        |
           And I press "Login"
          Then I should be on the store homepage
           And I should see "Logout"
@@ -25,7 +25,7 @@ Feature: Sign in to the store
           And I follow "Login"
          When I fill in the following:
             | Email    | bar@foo.com |
-            | Password | bar         |
+            | Password | bar1        |
           And I press "Login"
          Then I should be on login page
           And I should see "Invalid credentials"
@@ -42,7 +42,7 @@ Feature: Sign in to the store
           And I follow "Login"
          When I fill in the following:
             | Email    | john |
-            | Password | bar  |
+            | Password | bar1 |
           And I press "Login"
          Then I should be on login page
           And I should see "Invalid credentials"
