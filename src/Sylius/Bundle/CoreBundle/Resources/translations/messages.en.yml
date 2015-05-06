@@ -8,8 +8,8 @@ sylius:
                 price: Unit price
                 quantity: Quantity
                 variant: Variant
-            user_group:
-                User group
+            customer_group:
+                Customer group
         block:
             body: Body
             id: ID
@@ -23,9 +23,6 @@ sylius:
             shipping_method: Shipping Method
         coupon:
             per_user_usage_limit: Per-User Usage Limity
-        group:
-            name: Name
-            roles: Roles
         image:
             file: Image
         locale:
@@ -99,3 +96,5 @@ sylius:
             product_attribute_value:
                 attribute: Attribute
                 value: Value
+        guest:
+            email: Email

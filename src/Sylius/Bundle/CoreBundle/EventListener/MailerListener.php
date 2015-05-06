@@ -11,13 +11,13 @@
 
 namespace Sylius\Bundle\CoreBundle\EventListener;
 
-use FOS\UserBundle\Event\FilterUserResponseEvent;
-use FOS\UserBundle\Model\UserInterface;
 use Sylius\Bundle\CoreBundle\Mailer\Emails;
+use Sylius\Component\Core\Model\CustomerInterface;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Mailer\Sender\SenderInterface;
 use Sylius\Component\Order\Model\CommentInterface;
 use Sylius\Component\Resource\Exception\UnexpectedTypeException;
+use Sylius\Component\User\Model\UserInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
 /**
@@ -53,30 +53,33 @@ class MailerListener
             );
         }
 
-        $this->emailSender->send(Emails::ORDER_CONFIRMATION, array($order->getEmail()), array('order' => $order));
+        $this->emailSender->send(Emails::ORDER_CONFIRMATION, array($order->getCustomer()->getEmail()), array('order' => $order));
     }
 
     /**
-     * @param FilterUserResponseEvent $event
+     * @param GenericEvent $event
      *
      * @throws UnexpectedTypeException
      */
-    public function sendUserConfirmationEmail(FilterUserResponseEvent $event)
+    public function sendUserConfirmationEmail(GenericEvent $event)
     {
-        $user = $event->getUser();
+        $customer = $event->getSubject();
 
-        if (!$user instanceof UserInterface) {
+        if (!$customer instanceof CustomerInterface) {
             throw new UnexpectedTypeException(
-                $user,
-                'Sylius\Component\Core\Model\UserInterface'
+                $customer,
+                'Sylius\Component\Core\Model\CustomerInterface'
             );
+        }
+
+        if (null === $user = $customer->getUser()) {
+            return;
         }
 
         if (!$user->isEnabled()) {
             return;
         }
-
-        $this->emailSender->send(Emails::USER_CONFIRMATION, array($user->getEmail()), array('user' => $user));
+        $this->emailSender->send(Emails::USER_CONFIRMATION, array($customer->getEmail()), array('user' => $user));
     }
 
     /**
@@ -97,10 +100,10 @@ class MailerListener
 
         if ($comment->getNotifyCustomer()) {
             $order = $comment->getOrder();
-            $email = null === $order->getUser() ? $order->getEmail() : $order->getUser()->getEmail();
+            $email = $order->getCustomer()->getEmail();
 
             $this->emailSender->send(Emails::ORDER_COMMENT, array($email), array(
-                'order'   => $order,
+                'order' => $order,
                 'comment' => $comment,
             ));
         }

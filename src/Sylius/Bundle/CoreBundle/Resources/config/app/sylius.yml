@@ -232,6 +232,7 @@ sylius_mailer:
         sylius.email.order_confirmation.name: SyliusWebBundle:Email:orderConfirmation.html.twig
         sylius.email.order_comment.name: SyliusWebBundle:Email:orderComment.html.twig
         sylius.email.user_confirmation.name: SyliusWebBundle:Email:userConfirmation.html.twig
+        sylius.email.password_reset.name: SyliusWebBundle:Email:passwordReset.html.twig
     sender:
         name: Example.com
         address: no-reply@example.com
@@ -245,6 +246,9 @@ sylius_mailer:
         user_confirmation:
             subject: sylius.emails.user_confirmation.subject
             template: SyliusWebBundle:Email:userConfirmation.html.twig
+        password_reset:
+            subject: sylius.emails.user.password_reset.subject
+            template: SyliusWebBundle:Email:passwordReset.html.twig
 
 sylius_rbac:
     classes:
@@ -675,3 +679,18 @@ sylius_rbac:
         administrator: [catalog_manager, sales_manager, marketing_manager, accounts_manager, shipping_manager, content_editor, tax_manager, it, support]
         it: [security_auditor, developer]
 
+sylius_user:
+    resetting:
+        token:
+            ttl: PT1S
+            length: 16
+        pin:
+            length: 4
+    classes:
+        user:
+            model: Sylius\Component\Core\Model\User
+            controller: Sylius\Bundle\CoreBundle\Controller\UserController
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\UserType
+        customer:
+            model: Sylius\Component\Core\Model\Customer
