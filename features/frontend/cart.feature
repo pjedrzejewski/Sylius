@@ -26,6 +26,11 @@ Feature: Cart
           And product "Git T-Shirt" is available in all variations
           And product "Black T-Shirt" is available in all variations
           And there is default currency configured
+          And there is default channel configured
+          And channel "DEFAULT-WEB" has following configuration:
+              | taxonomy |
+              | Category |
+          And all products assigned to "DEFAULT-WEB" channel
 
     Scenario: Seeing empty cart
         Given I am on the store homepage
@@ -61,7 +66,7 @@ Feature: Cart
           And I click "PHP Top"
          When I press "Add to cart"
          Then I should be on the cart summary page
-          And I should see item with unit price "€5.99" in the list
+          And I should see item with price "€5.99" in the list
 
     Scenario: Correct cart total is displayed after adding the item
         Given I am on the store homepage

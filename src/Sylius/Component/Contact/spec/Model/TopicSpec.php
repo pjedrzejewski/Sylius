@@ -15,9 +15,16 @@ use PhpSpec\ObjectBehavior;
 
 /**
  * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
+ * @author Gustavo Perdomo <gperdomor@gmail.com>
  */
 class TopicSpec extends ObjectBehavior
 {
+    public function let()
+    {
+        $this->setCurrentLocale('en_US');
+        $this->setFallbackLocale('en_US');
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('Sylius\Component\Contact\Model\Topic');
@@ -42,5 +49,16 @@ class TopicSpec extends ObjectBehavior
     {
         $this->setTitle('Title');
         $this->getTitle()->shouldReturn('Title');
+    }
+
+    function it_returns_title_when_converted_to_string()
+    {
+        $this->setTitle('Title');
+        $this->__toString()->shouldReturn('Title');
+    }
+
+    function it_has_fluent_interface()
+    {
+        $this->setTitle('Title')->shouldReturn($this);
     }
 }

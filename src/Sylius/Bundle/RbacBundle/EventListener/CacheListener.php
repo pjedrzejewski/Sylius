@@ -19,7 +19,7 @@ use Sylius\Component\Rbac\Model\RoleInterface;
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-class CacheListener 
+class CacheListener
 {
     /**
      * @var ClearableCache
@@ -46,6 +46,14 @@ class CacheListener
      * @param LifecycleEventArgs $args
      */
     public function postRemove(LifecycleEventArgs $args)
+    {
+        $this->clearCache($args);
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postUpdate(LifecycleEventArgs $args)
     {
         $this->clearCache($args);
     }

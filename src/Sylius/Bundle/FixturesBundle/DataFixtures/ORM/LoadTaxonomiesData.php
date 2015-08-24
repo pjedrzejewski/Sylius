@@ -16,7 +16,6 @@ use Sylius\Bundle\FixturesBundle\DataFixtures\DataFixture;
 use Sylius\Component\Taxonomy\Model\TaxonInterface;
 use Sylius\Component\Taxonomy\Model\TaxonomyInterface;
 
-
 /**
  * Default taxonomies to play with Sylius.
  *
@@ -56,7 +55,7 @@ class LoadTaxonomiesData extends DataFixture
      */
     public function getOrder()
     {
-        return 5;
+        return 10;
     }
 
     /**

@@ -33,7 +33,7 @@ class BuildAttributeValueFormListener implements EventSubscriberInterface
      *
      * @var FormFactoryInterface
      */
-    private $factory;
+    protected $factory;
 
     /**
      * Attributes subject name.
@@ -46,7 +46,7 @@ class BuildAttributeValueFormListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param FormFactoryInterface $factory
-     * @param string $subjectName
+     * @param string               $subjectName
      */
     public function __construct(FormFactoryInterface $factory, $subjectName)
     {
@@ -75,7 +75,7 @@ class BuildAttributeValueFormListener implements EventSubscriberInterface
         if (null === $attributeValue) {
             $form->add($this->factory->createNamed('value', 'text', null, array(
                 'label' => sprintf('sylius.form.attribute.%s_attribute_value.value', $this->subjectName),
-                'auto_initialize' => false
+                'auto_initialize' => false,
             )));
 
             return;
@@ -89,19 +89,17 @@ class BuildAttributeValueFormListener implements EventSubscriberInterface
 
         $this->verifyValue($attributeValue);
 
-        // If we're editing the attribute value, let's just render the value field, not full selection.
         $form
-            ->remove('attribute')
             ->add($this->factory->createNamed('value', $attributeValue->getType(), null, $options))
         ;
     }
 
     /**
-     * Verify value before set to form
+     * Verify value before set to form.
      *
      * @param AttributeValueInterface $attributeValue
      */
-    private function verifyValue(AttributeValueInterface $attributeValue)
+    protected function verifyValue(AttributeValueInterface $attributeValue)
     {
         switch ($attributeValue->getType()) {
 

@@ -11,14 +11,19 @@
 
 namespace Sylius\Bundle\FixturesBundle\DataFixtures;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
 use Sylius\Bundle\ProductBundle\Generator\VariantGenerator;
+use Sylius\Component\Addressing\Model\CountryInterface;
 use Sylius\Component\Addressing\Model\ZoneInterface;
+use Sylius\Component\Core\Model\AddressInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\Intl\Intl;
 
 /**
  * Base data fixture.
@@ -108,6 +113,17 @@ abstract class DataFixture extends AbstractFixture implements ContainerAwareInte
     }
 
     /**
+     * Dispatch an event.
+     *
+     * @param string $name
+     * @param object $object
+     */
+    protected function dispatchEvent($name, $object)
+    {
+        return $this->get('event_dispatcher')->dispatch($name, new GenericEvent($object));
+    }
+
+    /**
      * Get service by id.
      *
      * @param string $id
@@ -117,5 +133,31 @@ abstract class DataFixture extends AbstractFixture implements ContainerAwareInte
     protected function get($id)
     {
         return $this->container->get($id);
+    }
+
+    /**
+     * @return AddressInterface
+     */
+    protected function createAddress()
+    {
+        /* @var $address AddressInterface */
+        $address = $this->getAddressRepository()->createNew();
+        $address->setFirstname($this->faker->firstName);
+        $address->setLastname($this->faker->lastName);
+        $address->setCity($this->faker->city);
+        $address->setStreet($this->faker->streetAddress);
+        $address->setPostcode($this->faker->postcode);
+
+        /** @var CountryInterface $country */
+        $countries = Intl::getRegionBundle()->getCountryNames($this->defaultLocale);
+        $isoName = array_rand($countries);
+        $country = $this->getReference("Sylius.Country." . $isoName);
+
+        $province = $country->hasProvinces() ? $this->faker->randomElement($country->getProvinces()->toArray()) : null;
+
+        $address->setCountry($country);
+        $address->setProvince($province);
+
+        return $address;
     }
 }

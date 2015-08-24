@@ -302,7 +302,15 @@ class Configuration
         $defaultSorting = array_merge($this->parameters->get('sorting', array()), $sorting);
 
         if ($this->isSortable()) {
-            return $this->getRequestParameter('sorting', $defaultSorting);
+            $sorting = $this->getRequestParameter('sorting');
+            foreach ($defaultSorting as $key => $value) {
+                //do not override request parameters by $defaultSorting values
+                if (!isset($sorting[$key])){
+                    $sorting[$key] = $value;
+                }
+            }
+
+            return $sorting;
         }
 
         return $defaultSorting;
@@ -374,5 +382,20 @@ class Configuration
     public function getPermission($default = null)
     {
         return $this->parameters->get('permission', $default);
+    }
+
+    public function isHeaderRedirection()
+    {
+        $redirect = $this->parameters->get('redirect');
+
+        if (!is_array($redirect) || !isset($redirect['header'])) {
+            return false;
+        }
+
+        if ('xhr' === $redirect['header']) {
+            return $this->getRequest()->isXmlHttpRequest();
+        }
+
+        return (bool) $redirect['header'];
     }
 }

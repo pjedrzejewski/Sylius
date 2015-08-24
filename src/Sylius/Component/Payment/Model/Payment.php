@@ -18,7 +18,7 @@ use Sylius\Component\Resource\Exception\UnexpectedTypeException;
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-class Payment implements PaymentInterface
+class Payment implements PaymentInterface, PaymentSubjectInterface
 {
     /**
      * Payments method identifier.
@@ -102,7 +102,7 @@ class Payment implements PaymentInterface
      */
     public function getMethod()
     {
-      return $this->method;
+        return $this->method;
     }
 
     /**

@@ -11,19 +11,18 @@
 
 namespace Sylius\Bundle\ContactBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Contact extension.
  *
  * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
+ * @author Gustavo Perdomo <gperdomor@gmail.com>
  */
 class SyliusContactExtension extends AbstractResourceExtension
 {
-    protected $configFiles = array(
-        'services',
-    );
+    protected $configFiles = array();
 
     /**
      * {@inheritdoc}
@@ -34,7 +33,7 @@ class SyliusContactExtension extends AbstractResourceExtension
             $config,
             new Configuration(),
             $container,
-            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS
+            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS | self::CONFIGURE_FORMS | self::CONFIGURE_TRANSLATIONS
         );
     }
 }

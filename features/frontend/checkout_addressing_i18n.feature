@@ -16,7 +16,7 @@ Feature: Checkout addressing in preferred language
           And the following zones are defined:
             | name         | type    | members                 |
             | UK + Germany | country | United Kingdom, Germany |
-            | USA          | country | USA                     |
+            | USA          | country | United States           |
           And there are following countries:
             | name           |
             | USA            |
@@ -28,13 +28,12 @@ Feature: Checkout addressing in preferred language
             | UK + Germany | DHL Express   | Flat rate  | Amount: 5000  |
             | USA          | FedEx         | Flat rate  | Amount: 6500  |
           And there is default currency configured
+          And there is default channel configured
+          And all products assigned to "DEFAULT-WEB" channel
         And there are following locales configured:
             | code  | enabled |
             | en_US | yes     |
             | de_DE | yes     |
-        And the following country translations exist
-            | country | name | locale |
-            | Germany    | Deutschland     | de   |
 
     Scenario: Seeing country in preferred language
         Given I am not logged in

@@ -77,8 +77,6 @@ EOT
                     $commands['doctrine:schema:drop'] = array('--force' => true);
                     $commands[] = 'doctrine:schema:create';
                 }
-            } else {
-                $commands[] = 'doctrine:schema:create';
             }
         }
 
@@ -97,14 +95,19 @@ EOT
      *
      * @throws \Exception
      */
-    private function isDatabasePresent()
+    protected function isDatabasePresent()
     {
         $databaseName = $this->getDatabaseName();
 
         try {
             $schemaManager = $this->getSchemaManager();
         } catch (\Exception $exception) {
-            if (false !== strpos($exception->getMessage(), sprintf("Unknown database '%s'", $databaseName))) {
+            $message = $exception->getMessage();
+
+            $mysqlDatabaseError = false !== strpos($message, sprintf("Unknown database '%s'", $databaseName));
+            $postgresDatabaseError = false !== strpos($message, sprintf('database "%s" does not exist', $databaseName));
+
+            if ($mysqlDatabaseError || $postgresDatabaseError) {
                 return false;
             }
 
@@ -117,7 +120,7 @@ EOT
     /**
      * @return bool
      */
-    private function isSchemaPresent()
+    protected function isSchemaPresent()
     {
         $schemaManager = $this->getSchemaManager();
 
@@ -127,7 +130,7 @@ EOT
     /**
      * @return string
      */
-    private function getDatabaseName()
+    protected function getDatabaseName()
     {
         $databaseName = $this->getContainer()->getParameter('sylius.database.name');
 
@@ -141,7 +144,7 @@ EOT
     /**
      * @return AbstractSchemaManager
      */
-    private function getSchemaManager()
+    protected function getSchemaManager()
     {
         return $this->get('doctrine')->getManager()->getConnection()->getSchemaManager();
     }

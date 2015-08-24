@@ -11,12 +11,10 @@
 
 namespace Sylius\Bundle\PayumBundle\Payum\Be2bill\Action;
 
-use Payum\Core\Exception\LogicException;
 use Payum\Core\Request\GetHttpRequest;
 use Payum\Core\Security\TokenInterface;
 use Sylius\Bundle\PayumBundle\Payum\Action\AbstractCapturePaymentAction;
 use Sylius\Component\Payment\Model\PaymentInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Alexandre Bacco <alexandre.bacco@gmail.com>
@@ -38,10 +36,10 @@ class CapturePaymentUsingCreditCardAction extends AbstractCapturePaymentAction
 
         $details = array();
         $details['AMOUNT'] = $order->getTotal();
-        $details['CLIENTEMAIL'] = $order->getEmail();
+        $details['CLIENTEMAIL'] = $order->getCustomer()->getEmail();
         $details['CLIENTUSERAGENT'] = $httpRequest->userAgent ?: 'Unknown';
         $details['CLIENTIP'] = $httpRequest->clientIp;
-        $details['CLIENTIDENT'] = $order->getUser() ? $order->getUser()->getId() : $order->getEmail();
+        $details['CLIENTIDENT'] = $order->getCustomer()->getId();
         $details['DESCRIPTION'] = sprintf('Order containing %d items for a total of %01.2f', $order->getItems()->count(), $order->getTotal() / 100);
         $details['ORDERID'] = $payment->getId();
 

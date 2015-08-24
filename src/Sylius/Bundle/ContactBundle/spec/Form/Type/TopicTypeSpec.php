@@ -18,6 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
+ * @author Gustavo Perdomo <gperdomor@gmail.com>
  */
 class TopicTypeSpec extends ObjectBehavior
 {
@@ -39,9 +40,9 @@ class TopicTypeSpec extends ObjectBehavior
     function it_should_build_form_with_proper_fields(FormBuilder $builder)
     {
         $builder
-            ->add('title', 'text', Argument::any())
-            ->willReturn($builder)
-        ;
+            ->add('translations', 'a2lix_translationsForms', Argument::any())
+            ->shouldBeCalled()
+            ->willReturn($builder);
 
         $this->buildForm($builder, array());
     }

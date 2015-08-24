@@ -26,9 +26,14 @@ Feature: Checkout taxation
             | zone | name        |
             | UK   | DHL Express |
           And the following payment methods exist:
-            | name  | gateway | enabled |
-            | Dummy | dummy   | yes     |
+            | name  | gateway | enabled | calculator | calculator_configuration |
+            | Dummy | dummy   | yes     | fixed      | amount: 0                |
           And there is default currency configured
+          And there is default channel configured
+          And all products assigned to "DEFAULT-WEB" channel
+          And channel "DEFAULT-WEB" has following configuration:
+            | taxonomy | payment | shipping    |
+            | Category | Dummy   | DHL Express |
           And I am logged in user
           And I added product "PHP Top" to cart
           And I go to the checkout start page

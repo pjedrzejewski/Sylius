@@ -11,6 +11,8 @@
 
 namespace Sylius\Component\Payment\Model;
 
+use Sylius\Component\Payment\Calculator\DefaultFeeCalculators;
+
 /**
  * Payments method model.
  *
@@ -59,6 +61,18 @@ class PaymentMethod implements PaymentMethodInterface
      * @var string
      */
     protected $environment;
+
+    /**
+     * FeeCalculator name
+     *
+     * @var string
+     */
+    protected $feeCalculator = DefaultFeeCalculators::FIXED;
+
+    /**
+     * @var array
+     */
+    protected $feeCalculatorConfiguration = array();
 
     /**
      * Creation date.
@@ -112,8 +126,6 @@ class PaymentMethod implements PaymentMethodInterface
     public function setEnabled($enabled)
     {
         $this->enabled = (Boolean) $enabled;
-
-        return $this;
     }
 
     /**
@@ -130,8 +142,6 @@ class PaymentMethod implements PaymentMethodInterface
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -148,8 +158,6 @@ class PaymentMethod implements PaymentMethodInterface
     public function setDescription($description)
     {
         $this->description = $description;
-
-        return $this;
     }
 
     /**
@@ -166,8 +174,6 @@ class PaymentMethod implements PaymentMethodInterface
     public function setGateway($gateway)
     {
         $this->gateway = $gateway;
-
-        return $this;
     }
 
     /**
@@ -184,8 +190,38 @@ class PaymentMethod implements PaymentMethodInterface
     public function setEnvironment($environment)
     {
         $this->environment = $environment;
+    }
 
-        return $this;
+    /**
+     * {@inheritdoc}
+     */
+    public function getFeeCalculator()
+    {
+        return $this->feeCalculator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFeeCalculator($feeCalculator)
+    {
+        $this->feeCalculator = $feeCalculator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFeeCalculatorConfiguration()
+    {
+        return $this->feeCalculatorConfiguration;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFeeCalculatorConfiguration(array $feeCalculatorConfiguration)
+    {
+        $this->feeCalculatorConfiguration = $feeCalculatorConfiguration;
     }
 
     /**
@@ -202,8 +238,6 @@ class PaymentMethod implements PaymentMethodInterface
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**
@@ -220,7 +254,5 @@ class PaymentMethod implements PaymentMethodInterface
     public function setUpdatedAt(\DateTime $updatedAt)
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
     }
 }

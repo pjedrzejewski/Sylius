@@ -4,7 +4,7 @@ sylius_core:
             field: slug
             prefix: /p
             defaults:
-                controller: sylius.controller.product:showAction
+                controller: sylius.controller.product:detailsAction
                 repository: sylius.repository.product
                 sylius:
                     template: SyliusWebBundle:Frontend/Product:show.html.twig
@@ -24,7 +24,10 @@ sylius_money:
     currency: %sylius.currency%
     locale: %sylius.locale%
 
-sylius_locale: ~
+sylius_locale:
+    classes:
+        locale:
+            controller: Sylius\Bundle\CoreBundle\Controller\LocaleController
 
 sylius_currency: ~
 
@@ -34,6 +37,13 @@ sylius_api:
     classes:
         api_user:
             model: %sylius.model.user.class%
+
+sylius_channel:
+    classes:
+        channel:
+            model: Sylius\Component\Core\Model\Channel
+            form:
+              default: Sylius\Bundle\CoreBundle\Form\Type\ChannelType
 
 sylius_cart:
     resolver: sylius.cart_item_resolver.default
@@ -50,15 +60,19 @@ sylius_content:
     classes:
         static_content:
             repository: Sylius\Bundle\ContentBundle\Doctrine\ODM\PHPCR\StaticContentRepository
+            form:
+                choice: Sylius\Bundle\ContentBundle\Form\Type\StaticContentChoiceType
 
 sylius_taxonomy:
     classes:
         taxonomy:
             model: Sylius\Component\Core\Model\Taxonomy
-            form: Sylius\Bundle\CoreBundle\Form\Type\TaxonomyType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\TaxonomyType
         taxon:
             model: Sylius\Component\Core\Model\Taxon
-            form: Sylius\Bundle\CoreBundle\Form\Type\TaxonType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\TaxonType
 
 sylius_product:
     classes:
@@ -93,13 +107,15 @@ sylius_variation:
             variant:
                 model: Sylius\Component\Core\Model\ProductVariant
                 repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\ProductVariantRepository
-                form: Sylius\Bundle\CoreBundle\Form\Type\ProductVariantType
+                form:
+                    default: Sylius\Bundle\CoreBundle\Form\Type\ProductVariantType
 
 sylius_taxation:
     classes:
         tax_rate:
             model: Sylius\Component\Core\Model\TaxRate
-            form: Sylius\Bundle\CoreBundle\Form\Type\TaxRateType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\TaxRateType
 
 sylius_shipping:
     classes:
@@ -110,10 +126,15 @@ sylius_shipping:
             model: Sylius\Component\Core\Model\InventoryUnit
         shipping_method:
             model: Sylius\Component\Core\Model\ShippingMethod
-            form: Sylius\Bundle\CoreBundle\Form\Type\ShippingMethodType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\ShippingMethodType
 
 sylius_promotion:
     classes:
+        promotion:
+            model: Sylius\Component\Core\Model\Promotion
+            repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\PromotionRepository
+            form: Sylius\Bundle\CoreBundle\Form\Type\PromotionType
         promotion_subject:
             model: %sylius.model.order.class%
         promotion_coupon:
@@ -134,6 +155,11 @@ sylius_payment:
         payment:
             model: Sylius\Component\Core\Model\Payment
             controller: Sylius\Bundle\CoreBundle\Controller\PaymentController
+            repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\PaymentRepository
+        payment_method:
+            repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\PaymentMethodRepository
+            form:
+                choice: Sylius\Bundle\CoreBundle\Form\Type\Payment\PaymentMethodChoiceType
     gateways:
         dummy: Test
         offline: Offline
@@ -160,10 +186,12 @@ sylius_order:
             model: Sylius\Component\Core\Model\Order
             controller: Sylius\Bundle\CoreBundle\Controller\OrderController
             repository: Sylius\Bundle\CoreBundle\Doctrine\ORM\OrderRepository
-            form: Sylius\Bundle\CoreBundle\Form\Type\OrderType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\OrderType
         order_item:
             model: Sylius\Component\Core\Model\OrderItem
-            form: Sylius\Bundle\CoreBundle\Form\Type\OrderItemType
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\OrderItemType
 
 sylius_sequence:
     generators:
@@ -231,7 +259,9 @@ sylius_mailer:
     templates:
         sylius.email.order_confirmation.name: SyliusWebBundle:Email:orderConfirmation.html.twig
         sylius.email.order_comment.name: SyliusWebBundle:Email:orderComment.html.twig
+        sylius.email.shipment_confirmation.name: SyliusWebBundle:Email:shipmentConfirmation.html.twig
         sylius.email.user_confirmation.name: SyliusWebBundle:Email:userConfirmation.html.twig
+        sylius.email.password_reset.name: SyliusWebBundle:Email:passwordReset.html.twig
     sender:
         name: Example.com
         address: no-reply@example.com
@@ -242,9 +272,21 @@ sylius_mailer:
         order_comment:
             subject: sylius.emails.order_comment.subject
             template: SyliusWebBundle:Email:orderComment.html.twig
+        shipment_confirmation:
+            subject: sylius.emails.shipment_confirmation.subject
+            template: SyliusWebBundle:Email:shipmentConfirmation.html.twig
         user_confirmation:
             subject: sylius.emails.user_confirmation.subject
             template: SyliusWebBundle:Email:userConfirmation.html.twig
+        password_reset:
+            subject: sylius.emails.user.password_reset.subject
+            template: SyliusWebBundle:Email:passwordReset.html.twig
+        reset_password_token:
+            subject: sylius.emails.user.password_reset.subject
+            template: SyliusWebBundle:Email:passwordReset.html.twig
+        reset_password_pin:
+            subject: sylius.emails.user.password_reset.subject
+            template: SyliusWebBundle:Email:passwordReset.html.twig
 
 sylius_rbac:
     classes:
@@ -255,12 +297,12 @@ sylius_rbac:
             form:
                 choice: Sylius\Bundle\RbacBundle\Form\Type\PermissionEntityType
     permissions:
-        sylius.manage.user: Manage users
-        sylius.user.show: Show user
-        sylius.user.index: List users
-        sylius.user.create: Create user
-        sylius.user.update: Edit user
-        sylius.user.delete: Delete user
+        sylius.manage.customer: Manage customers
+        sylius.customer.show: Show customer
+        sylius.customer.index: List customers
+        sylius.customer.create: Create customer
+        sylius.customer.update: Edit customer
+        sylius.customer.delete: Delete customer
 
         sylius.manage.group: Manage groups
         sylius.group.show: Show group
@@ -268,6 +310,13 @@ sylius_rbac:
         sylius.group.create: Create group
         sylius.group.update: Edit group
         sylius.group.delete: Delete group
+
+        sylius.manage.channel: Manage channels
+        sylius.channel.show: Show channel
+        sylius.channel.index: List channels
+        sylius.channel.create: Create channel
+        sylius.channel.update: Edit channel
+        sylius.channel.delete: Delete channel
 
         sylius.manage.role: Manage roles
         sylius.role.show: Show role
@@ -547,6 +596,35 @@ sylius_rbac:
         sylius.settings.security: Manage security settings
         sylius.settings.taxation: Manage taxation settings
 
+        sylius.manage.import_profile: Manage imports
+        sylius.import_profile.show: Show import
+        sylius.import_profile.index: List imports
+        sylius.import_profile.create: Create import
+        sylius.import_profile.update: Edit import
+        sylius.import_profile.delete: Delete import
+
+        sylius.manage.import_job: Manage import jobs
+        sylius.import_job.show: Show import job
+        sylius.import_job.index: List import jobs
+        sylius.import_job.create: Create import job
+        sylius.import_job.update: Edit import job
+        sylius.import_job.delete: Delete import job
+
+        sylius.manage.export_profile: Manage export profiles
+        sylius.export_profile.show: Show export profile
+        sylius.export_profile.index: List export profiles
+        sylius.export_profile.create: Create export profile
+        sylius.export_profile.update: Edit export profile
+        sylius.export_profile.delete: Delete export profile
+
+        sylius.manage.export_job: Manage export jobs
+        sylius.export_job.show: Show export job
+        sylius.export_job.index: List export jobs
+        sylius.export_job.create: Create export job
+        sylius.export_job.update: Edit export job
+        sylius.export_job.delete: Delete export job
+
+        sylius.import_export: Manage import/export
         sylius.catalog: Manage products catalog
         sylius.sales: Manage sales
         sylius.shipping: Manage shipping
@@ -557,7 +635,8 @@ sylius_rbac:
         sylius.taxes: Manage taxes
         sylius.support: Manage customer support
     permissions_hierarchy:
-        sylius.manage.user: [sylius.user.show, sylius.user.index, sylius.user.create, sylius.user.update, sylius.user.delete]
+        sylius.manage.channel: [sylius.channel.show, sylius.channel.index, sylius.channel.create, sylius.channel.update, sylius.channel.delete]
+        sylius.manage.customer: [sylius.customer.show, sylius.customer.index, sylius.customer.create, sylius.customer.update, sylius.customer.delete]
         sylius.manage.group: [sylius.group.show, sylius.group.index, sylius.group.create, sylius.group.update, sylius.group.delete]
         sylius.manage.role: [sylius.role.show, sylius.role.index, sylius.role.create, sylius.role.update, sylius.role.delete]
         sylius.manage.permission: [sylius.permission.show, sylius.permission.index, sylius.permission.create, sylius.permission.update, sylius.permission.delete]
@@ -597,16 +676,21 @@ sylius_rbac:
         sylius.manage.contact_request: [sylius.contact_request.show, sylius.contact_request.index, sylius.contact_request.create, sylius.contact_request.update, sylius.contact_request.delete]
         sylius.manage.contact_topic: [sylius.contact_topic.show, sylius.contact_topic.index, sylius.contact_topic.create, sylius.contact_topic.update, sylius.contact_topic.delete]
         sylius.manage.settings: [sylius.settings.general, sylius.settings.security, sylius.settings.taxation]
+        sylius.manage.import_profile: [sylius.import_profile.show, sylius.import_profile.index, sylius.import_profile.create, sylius.import_profile.update, sylius.import_profile.delete]
+        sylius.manage.import_job: [sylius.import_job.show, sylius.import_job.index, sylius.import_job.create, sylius.import_job.update, sylius.import_job.delete]
+        sylius.manage.export_profile: [sylius.export_profile.show, sylius.export_profile.index, sylius.export_profile.create, sylius.export_profile.update, sylius.export_profile.delete]
+        sylius.manage.export_job: [sylius.export_job.show, sylius.export_job.index, sylius.export_job.create, sylius.export_job.update, sylius.export_job.delete]
 
         sylius.catalog: [sylius.manage.product, sylius.manage.product_attribute, sylius.manage.product_option, sylius.manage.product_archetype, sylius.manage.product_variant, sylius.manage.taxonomy, sylius.manage.taxon]
         sylius.sales: [sylius.manage.order, sylius.manage.payment, sylius.manage.report]
         sylius.marketing: [sylius.manage.promotion, sylius.manage.promotion_coupon, sylius.manage.email]
         sylius.shipping: [sylius.manage.shipment, sylius.manage.shipping_method, sylius.manage.shipping_category]
         sylius.content: [sylius.manage.static_content, sylius.manage.route, sylius.manage.simple_block, sylius.manage.menu, sylius.manage.slideshow, sylius.manage.string_block, sylius.manage.slideshow_block, sylius.manage.imagine_block]
-        sylius.security: [sylius.manage.permission, sylius.manage.role, sylius.manage.user, sylius.manage.group, sylius.accounts]
-        sylius.accounts: [sylius.manage.user, sylius.manage.group]
+        sylius.security: [sylius.manage.permission, sylius.manage.role, sylius.manage.customer, sylius.manage.group, sylius.accounts]
+        sylius.accounts: [sylius.manage.customer, sylius.manage.group]
         sylius.taxes: [sylius.manage.tax_rate, sylius.manage.tax_category]
         sylius.support: [sylius.manage.contact_request, sylius.manage.contact_topic]
+        sylius.import_export: [sylius.manage.import_profile, sylius.manage.export_profile, sylius.manage.import_job, sylius.manage.export_job]
     security_roles:
         ROLE_ADMINISTRATION_ACCESS: Can access administration
         ROLE_API_ACCESS: Can access REST API
@@ -615,7 +699,7 @@ sylius_rbac:
         administrator:
             name: Administrator
             description: Administrator user
-            permissions: [sylius.manage.settings, sylius.manage.locale, sylius.manage.currency, sylius.manage.country, sylius.manage.province, sylius.manage.zone, sylius.manage.payment_method]
+            permissions: [sylius.manage.settings, sylius.manage.locale, sylius.manage.currency, sylius.manage.country, sylius.manage.province, sylius.manage.zone, sylius.manage.payment_method, sylius.manage.channel, sylius.manage.import_profile, sylius.manage.export_profile, sylius.manage.import_job, sylius.manage.export_job]
             security_roles: [ROLE_ADMINISTRATION_ACCESS]
         catalog_manager:
             name: Catalog Manager
@@ -664,14 +748,23 @@ sylius_rbac:
         developer:
             name: Developer
             description: Developers Access
-            permissions: [sylius.user.index, sylius.user.show, sylius.manage.api_client]
+            permissions: [sylius.customer.index, sylius.customer.show, sylius.manage.api_client]
             security_roles: [ROLE_ADMINISTRATION_ACCESS]
         support:
             name: Support
             description: Support Team
-            permissions: [sylius.support, sylius.user.show, sylius.user.index]
+            permissions: [sylius.support, sylius.customer.show, sylius.customer.index]
             security_roles: [ROLE_ADMINISTRATION_ACCESS]
     roles_hierarchy:
         administrator: [catalog_manager, sales_manager, marketing_manager, accounts_manager, shipping_manager, content_editor, tax_manager, it, support]
         it: [security_auditor, developer]
 
+sylius_user:
+    classes:
+        user:
+            model: Sylius\Component\Core\Model\User
+            form:
+                default: Sylius\Bundle\CoreBundle\Form\Type\UserType
+        customer:
+            model: Sylius\Component\Core\Model\Customer
+            controller: Sylius\Bundle\CoreBundle\Controller\CustomerController

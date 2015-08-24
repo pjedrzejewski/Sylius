@@ -11,21 +11,19 @@
 
 namespace Sylius\Bundle\LocaleBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Locale extension.
- *
  * @author Paweł Jędrzejewski <pjedrzejewski@sylius.pl>
  */
 class SyliusLocaleExtension extends AbstractResourceExtension
 {
     protected $configFiles = array(
-        'services',
-        'templating',
-        'twig',
+        'services.xml',
+        'templating.xml',
+        'twig.xml',
     );
 
     /**
@@ -33,14 +31,19 @@ class SyliusLocaleExtension extends AbstractResourceExtension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-        list($config) = $this->configure(
+        $config = $this->configure(
             $config,
             new Configuration(),
             $container,
-            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS
+            self::CONFIGURE_LOADER | self::CONFIGURE_DATABASE | self::CONFIGURE_PARAMETERS | self::CONFIGURE_VALIDATORS | self::CONFIGURE_FORMS
         );
 
         $definition = $container->findDefinition('sylius.context.locale');
         $definition->replaceArgument(0, new Reference($config['storage']));
+
+        $container
+            ->getDefinition('sylius.form.type.locale_choice')
+            ->setArguments(array(new Reference('sylius.repository.locale')))
+        ;
     }
 }

@@ -12,6 +12,8 @@
 namespace Sylius\Bundle\ResourceBundle\Behat;
 
 use Behat\Behat\Context\Context;
+use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,21 +23,23 @@ use Faker\Generator;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Intl\Intl;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class DefaultContext extends RawMinkContext implements Context, KernelAwareContext
 {
     /**
-     * Faker.
-     *
+     * @var string
+     */
+    protected $applicationName = 'sylius';
+
+    /**
      * @var Generator
      */
     protected $faker;
 
     /**
-     * Actions.
-     *
      * @var array
      */
     protected $actions = array(
@@ -50,9 +54,15 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
      */
     protected $kernel;
 
-    public function __construct()
+    public function __construct($applicationName = null)
     {
+        \Locale::setDefault('en');
+
         $this->faker = FakerFactory::create();
+
+        if (null !== $applicationName) {
+            $this->applicationName = $applicationName;
+        }
     }
 
     /**
@@ -64,8 +74,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Find one resource by name.
-     *
      * @param string $type
      * @param string $name
      *
@@ -77,8 +85,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Find one resource by criteria.
-     *
      * @param string $type
      * @param array  $criteria
      *
@@ -103,20 +109,16 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Get repository by resource name.
-     *
-     * @param string $resource
+     * @param string $resourceName
      *
      * @return RepositoryInterface
      */
-    protected function getRepository($resource)
+    protected function getRepository($resourceName)
     {
-        return $this->getService('sylius.repository.'.$resource);
+        return $this->getService($this->applicationName.'.repository.'.$resourceName);
     }
 
     /**
-     * Get entity manager.
-     *
      * @return ObjectManager
      */
     protected function getEntityManager()
@@ -125,8 +127,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Returns Container instance.
-     *
      * @return ContainerInterface
      */
     protected function getContainer()
@@ -135,8 +135,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Get service by id.
-     *
      * @param string $id
      *
      * @return object
@@ -164,7 +162,9 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
 
             switch ($key) {
                 case 'country':
-                    $configuration[$key] = $this->getRepository('country')->findOneBy(array('name' => trim($value)))->getId();
+                    $isoName = $this->getCountryCodeByEnglishCountryName(trim($value));
+
+                    $configuration[$key] = $this->getRepository('country')->findOneBy(array('isoName' => $isoName))->getId();
                     break;
 
                 case 'taxons':
@@ -191,7 +191,7 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     /**
      * Generate page url.
      * This method uses simple convention where page argument is prefixed
-     * with "sylius_" and used as route name passed to router generate method.
+     * with the application name and used as route name passed to router generate method.
      *
      * @param object|string $page
      * @param array         $parameters
@@ -208,11 +208,11 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
         $routes = $this->getContainer()->get('router')->getRouteCollection();
 
         if (null === $routes->get($route)) {
-            $route = 'sylius_'.$route;
+            $route = $this->applicationName.'_'.$route;
         }
 
         if (null === $routes->get($route)) {
-            $route = str_replace('sylius_', 'sylius_backend_', $route);
+            $route = str_replace($this->applicationName.'_', $this->applicationName.'_backend_', $route);
         }
 
         $route = str_replace(array_keys($this->actions), array_values($this->actions), $route);
@@ -224,7 +224,7 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     /**
      * Get current user instance.
      *
-     * @return null|UserInterface
+     * @return UserInterface|null
      *
      * @throws \Exception
      */
@@ -240,8 +240,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Get security context.
-     *
      * @return SecurityContextInterface
      */
     protected function getSecurityContext()
@@ -250,8 +248,6 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     }
 
     /**
-     * Generate url.
-     *
      * @param string  $route
      * @param array   $parameters
      * @param Boolean $absolute
@@ -265,6 +261,10 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
 
     /**
      * Presses button with specified id|name|title|alt|value.
+     *
+     * @param string $button
+     *
+     * @throws ElementNotFoundException
      */
     protected function pressButton($button)
     {
@@ -273,6 +273,10 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
 
     /**
      * Clicks link with specified id|title|alt|text.
+     *
+     * @param string $link
+     *
+     * @throws ElementNotFoundException
      */
     protected function clickLink($link)
     {
@@ -281,18 +285,34 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
 
     /**
      * Fills in form field with specified id|name|label|value.
+     *
+     * @param string $field
+     * @param string $value
+     *
+     * @throws ElementNotFoundException
      */
     protected function fillField($field, $value)
     {
-        $this->getSession()->getPage()->fillField($this->fixStepArgument($field), $this->fixStepArgument($value));
+        $this->getSession()->getPage()->fillField(
+            $this->fixStepArgument($field),
+            $this->fixStepArgument($value)
+        );
     }
 
     /**
      * Selects option in select field with specified id|name|label|value.
+     *
+     * @param string $select
+     * @param string $option
+     *
+     * @throws ElementNotFoundException
      */
-    public function selectOption($select, $option)
+    protected function selectOption($select, $option)
     {
-        $this->getSession()->getPage()->selectFieldOption($this->fixStepArgument($select), $this->fixStepArgument($option));
+        $this->getSession()->getPage()->selectFieldOption(
+            $this->fixStepArgument($select),
+            $this->fixStepArgument($option)
+        );
     }
 
     /**
@@ -305,5 +325,167 @@ abstract class DefaultContext extends RawMinkContext implements Context, KernelA
     protected function fixStepArgument($argument)
     {
         return str_replace('\\"', '"', $argument);
+    }
+
+    /**
+     * @param NodeElement $table
+     * @param string $columnName
+     *
+     * @return integer
+     *
+     * @throws \Exception If column was not found
+     */
+    protected function getColumnIndex(NodeElement $table, $columnName)
+    {
+        $rows = $table->findAll('css', 'tr');
+
+        if (!isset($rows[0])) {
+            throw new \Exception("There are no rows!");
+        }
+
+        /** @var NodeElement $firstRow */
+        $firstRow = $rows[0];
+        $columns = $firstRow->findAll('css', 'th,td');
+        foreach ($columns as $index => $column) {
+            /** @var NodeElement $column */
+            if (0 === stripos($column->getText(), $columnName)) {
+                return $index;
+            }
+        }
+
+        throw new \Exception(sprintf('Column with name "%s" not found!', $columnName));
+    }
+
+    /**
+     * @param NodeElement $table
+     * @param array $fields
+     *
+     * @return NodeElement|null
+     *
+     * @throws \Exception If column was not found
+     */
+    protected function getRowWithFields(NodeElement $table, array $fields)
+    {
+        $foundRows = $this->getRowsWithFields($table, $fields, true);
+
+        if (empty($foundRows)) {
+            return null;
+        }
+
+        return current($foundRows);
+    }
+
+    /**
+     * @param NodeElement $table
+     * @param array $fields
+     * @param boolean $onlyFirstOccurence
+     *
+     * @return NodeElement[]
+     *
+     * @throws \Exception If columns or rows were not found
+     */
+    protected function getRowsWithFields(NodeElement $table, array $fields, $onlyFirstOccurence = false)
+    {
+        $rows = $table->findAll('css', 'tr');
+
+        if (!isset($rows[0])) {
+            throw new \Exception("There are no rows!");
+        }
+
+        $fields = $this->replaceColumnNamesWithColumnIds($table, $fields);
+
+        $foundRows = array();
+
+        /** @var NodeElement[] $rows */
+        $rows = $table->findAll('css', 'tr');
+        foreach ($rows as $row) {
+            $found = true;
+
+            /** @var NodeElement[] $columns */
+            $columns = $row->findAll('css', 'th,td');
+            foreach ($fields as $index => $searchedValue) {
+                if (!isset($columns[$index])) {
+                    throw new \InvalidArgumentException(sprintf('There is no column with index %d', $index));
+                }
+
+                if (0 !== stripos(trim($columns[$index]->getText()), trim($searchedValue))) {
+                    $found = false;
+
+                    break;
+                }
+            }
+
+            if ($found) {
+                $foundRows[] = $row;
+
+                if ($onlyFirstOccurence) {
+                    break;
+                }
+            }
+        }
+
+        return $foundRows;
+    }
+
+    /**
+     * @param NodeElement $table
+     * @param string[] $fields
+     *
+     * @return string[]
+     *
+     * @throws \Exception
+     */
+    protected function replaceColumnNamesWithColumnIds(NodeElement $table, array $fields)
+    {
+        $replacedFields = array();
+        foreach ($fields as $columnName => $expectedValue) {
+            $columnIndex = $this->getColumnIndex($table, $columnName);
+
+            $replacedFields[$columnIndex] = $expectedValue;
+        }
+
+        return $replacedFields;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException If name is not found in country code registry.
+     */
+    protected function getCountryCodeByEnglishCountryName($name)
+    {
+        $names = Intl::getRegionBundle()->getCountryNames('en');
+        $isoName = array_search(trim($name), $names);
+
+        if (null === $isoName) {
+            throw new \InvalidArgumentException(sprintf(
+                'Country "%s" not found! Available names: %s.', $name, join(', ', $names)
+            ));
+        }
+
+        return $isoName;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException If name is not found in locale code registry.
+     */
+    protected function getLocaleCodeByEnglishLocaleName($name)
+    {
+        $names = Intl::getLocaleBundle()->getLocaleNames('en');
+        $code = array_search(trim($name), $names);
+
+        if (null === $code) {
+            throw new \InvalidArgumentException(sprintf(
+                'Locale "%s" not found! Available names: %s.', $name, join(', ', $names)
+            ));
+        }
+
+        return $code;
     }
 }

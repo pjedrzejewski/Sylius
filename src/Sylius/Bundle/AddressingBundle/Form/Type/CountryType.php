@@ -15,10 +15,9 @@ use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Country form type.
- *
  * @author Paweł Jędrzejewski <pjedrzejewski@sylius.pl>
  * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
+ * @author Gustavo Perdomo <gperdomor@gmail.com>
  */
 class CountryType extends AbstractResourceType
 {
@@ -28,19 +27,15 @@ class CountryType extends AbstractResourceType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('translations', 'a2lix_translationsForms', array(
-                'form_type' => 'sylius_country_translation',
-                'label'    => 'sylius.form.country.name'
-            ))
-            ->add('isoName', 'text', array(
-                'label' => 'sylius.form.country.iso_name'
+            ->add('isoName', 'country', array(
+                'label' => 'sylius.form.country.iso_name',
             ))
             ->add('provinces', 'collection', array(
                 'type' => 'sylius_province',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'button_add_label' => 'sylius.country.add_province'
+                'button_add_label' => 'sylius.country.add_province',
             ))
         ;
     }

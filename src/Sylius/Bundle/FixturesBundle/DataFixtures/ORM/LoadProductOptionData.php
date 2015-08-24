@@ -68,7 +68,7 @@ class LoadProductOptionData extends DataFixture
      */
     public function getOrder()
     {
-        return 3;
+        return 20;
     }
 
     /**
@@ -100,7 +100,7 @@ class LoadProductOptionData extends DataFixture
             $option->addValue($value);
         }
 
-        $this->setReference('Sylius.Option.' . $name, $option);
+        $this->setReference('Sylius.Option.'.$name, $option);
 
         return $option;
     }

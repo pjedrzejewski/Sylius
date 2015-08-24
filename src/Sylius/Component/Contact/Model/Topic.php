@@ -11,15 +11,18 @@
 
 namespace Sylius\Component\Contact\Model;
 
+use Sylius\Component\Translation\Model\AbstractTranslatable;
+
 /**
- * Default contact topic representation
+ * Default contact topic representation.
  *
  * @author Michał Marcinkowski <michal.marcinkowski@lakion.com>
+ * @author Gustavo Perdomo <gperdomor@gmail.com>
  */
-class Topic implements TopicInterface
+class Topic extends AbstractTranslatable implements TopicInterface
 {
     /**
-     * @var integer
+     * @var int
      */
     protected $id;
 
@@ -29,7 +32,7 @@ class Topic implements TopicInterface
     protected $title;
 
     /**
-     * @return integer
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -39,9 +42,11 @@ class Topic implements TopicInterface
     /**
      * {@inheritdoc}
      */
-    public function setTitle($title)
+    public function setTitle($name)
     {
-        $this->title = $title;
+        $this->translate()->setTitle($name);
+
+        return $this;
     }
 
     /**
@@ -49,11 +54,11 @@ class Topic implements TopicInterface
      */
     public function getTitle()
     {
-        return $this->title;
+        return $this->translate()->getTitle();
     }
 
     public function __toString()
     {
-        return $this->title;
+        return $this->getTitle();
     }
 }

@@ -6,11 +6,12 @@ Feature: Tax rates
 
     Background:
         Given there is default currency configured
+          And there is default channel configured
           And I am logged in as administrator
           And the following zones are defined:
             | name         | type    | members                 |
             | UK + Germany | country | United Kingdom, Germany |
-            | USA          | country | USA                     |
+            | USA          | country | United States           |
           And there are following tax categories:
             | name        |
             | Clothing    |

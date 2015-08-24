@@ -15,15 +15,15 @@ Feature: Checkout addressing
             | PHP Top       | 5.99  | PHP T-Shirts |
           And there are following users:
             | email             | password | enabled |
-            | john@example.com  | foo      | yes     |
-            | rick@example.com  | bar      | yes     |
+            | john@example.com  | foo1     | yes     |
+            | rick@example.com  | bar1     | yes     |
           And the following zones are defined:
             | name         | type    | members                 |
             | UK + Germany | country | United Kingdom, Germany |
-            | USA          | country | USA                     |
+            | USA          | country | United States           |
           And there are following countries:
             | name           |
-            | USA            |
+            | United States  |
             | United Kingdom |
             | Poland         |
             | Germany        |
@@ -32,6 +32,8 @@ Feature: Checkout addressing
             | UK + Germany | DHL Express   | Flat rate  | Amount: 5000  |
             | USA          | FedEx         | Flat rate  | Amount: 6500  |
           And there is default currency configured
+          And there is default channel configured
+          And all products assigned to "DEFAULT-WEB" channel
 
     Scenario: Filling the shipping address
         Given I am logged in user
@@ -57,7 +59,7 @@ Feature: Checkout addressing
          When I go to the checkout start page
           And I fill in the shipping address to Germany
           But I check "Use different address for billing?"
-          And I fill in the billing address to USA
+          And I fill in the billing address to United States
           And I press "Continue"
          Then I should be on the checkout shipping step
 
@@ -69,7 +71,7 @@ Feature: Checkout addressing
           And I press "Proceed with your order"
           And I fill in the shipping address to Germany
           But I check "Use different address for billing?"
-          And I fill in the billing address to USA
+          And I fill in the billing address to United States
           And I press "Continue"
          Then I should be on the checkout shipping step
 

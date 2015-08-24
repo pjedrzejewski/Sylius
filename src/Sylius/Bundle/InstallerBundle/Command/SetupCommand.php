@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\InstallerBundle\Command;
 
+use Sylius\Component\Core\Model\ChannelInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Intl\Exception\MethodNotImplementedException;
@@ -46,6 +47,7 @@ EOT
         $this->setupLocales($input, $output);
         $this->setupCurrencies($input, $output);
         $this->setupCountries($input, $output);
+        $this->setupChannels($input, $output);
         $this->setupAdministratorUser($input, $output);
     }
 
@@ -61,11 +63,14 @@ EOT
 
         $userManager = $this->get('sylius.manager.user');
         $userRepository = $this->get('sylius.repository.user');
+        $customerRepository = $this->get('sylius.repository.customer');
 
         $rbacInitializer = $this->get('sylius.rbac.initializer');
         $rbacInitializer->initialize();
 
         $user = $userRepository->createNew();
+        $customer = $customerRepository->createNew();
+        $user->setCustomer($customer);
 
         if ($input->getOption('no-interaction')) {
             $exists = null !== $userRepository->findOneByEmail('sylius@example.com');
@@ -74,13 +79,13 @@ EOT
                 return 0;
             }
 
-            $user->setFirstname('Sylius');
-            $user->setLastname('Admin');
+            $customer->setFirstname('Sylius');
+            $customer->setLastname('Admin');
             $user->setEmail('sylius@example.com');
             $user->setPlainPassword('sylius');
         } else {
-            $user->setFirstname($this->ask($output, 'Your firstname:', array(new NotBlank())));
-            $user->setLastname($this->ask($output, 'Lastname:', array(new NotBlank())));
+            $customer->setFirstname($this->ask($output, 'Your firstname:', array(new NotBlank())));
+            $customer->setLastname($this->ask($output, 'Lastname:', array(new NotBlank())));
 
             do {
                 $email = $this->ask($output, 'E-Mail:', array(new NotBlank(), new Email()));
@@ -92,7 +97,7 @@ EOT
             } while ($exists);
 
             $user->setEmail($email);
-            $user->setPlainPassword($this->ask($output, 'Choose password:', array(new NotBlank())));
+            $user->setPlainPassword($this->askHidden($output, 'Choose password:', array(new NotBlank())));
         }
 
         $user->setEnabled(true);
@@ -244,12 +249,48 @@ EOT
             }
 
             $country = $countryRepository->createNew();
-            $country->setName($name);
             $country->setIsoName($code);
 
             $countryManager->persist($country);
         }
 
         $countryManager->flush();
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
+    protected function setupChannels(InputInterface $input, OutputInterface $output)
+    {
+        $channelRepository = $this->get('sylius.repository.channel');
+        $channelManager = $this->get('sylius.manager.channel');
+
+        if ($input->getOption('no-interaction')) {
+            $channels = array('DEFAULT');
+        } else {
+            $output->writeln('Please enter a list of channels, separated by commas or just hit ENTER to use "DEFAULT". For example "WEB-UK, WEB-DE, MOBILE".');
+            $codes = $this->ask($output, '<question>On which channels are you going to sell your goods?</question> ', array(), 'DEFAULT');
+            $channels = explode(',', $codes);
+        }
+
+        foreach ($channels as $code) {
+            $output->writeln(sprintf('Adding <info>%s</info>.', $code));
+
+            if (null !== $channelRepository->findOneByCode($code)) {
+                continue;
+            }
+
+            /** @var ChannelInterface $channel */
+            $channel = $channelRepository->createNew();
+            $channel->setUrl(null);
+            $channel->setCode($code);
+            $channel->setName($code);
+            $channel->setColor(null);
+
+            $channelManager->persist($channel);
+        }
+
+        $channelManager->flush();
     }
 }

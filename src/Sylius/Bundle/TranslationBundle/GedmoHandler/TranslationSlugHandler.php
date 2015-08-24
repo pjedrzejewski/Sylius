@@ -117,7 +117,7 @@ class TranslationSlugHandler implements SlugHandlerInterface
 
             $translation = call_user_func_array(array($parent,$options['translate']), array($locale));
 
-            $this->parentSlug = $translation->$options['parentFieldMethod']();
+            $this->parentSlug = $translation->{$options['parentFieldMethod']}();
 
             // if needed, remove suffix from parentSlug, so we can use it to prepend it to our slug
             if(isset($options['suffix'])) {
@@ -190,7 +190,7 @@ class TranslationSlugHandler implements SlugHandlerInterface
      */
     public function transliterate($text, $separator, $object)
     {
-        if ('' !== $this->parentSlug) {
+        if (!empty($this->parentSlug)) {
             $text = $this->parentSlug.$this->usedPathSeparator.$text.$this->suffix;
         } else {
             // if no parentSlug, apply our prefix

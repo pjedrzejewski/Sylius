@@ -13,6 +13,7 @@ namespace Sylius\Component\Taxonomy\Model;
 
 use Doctrine\Common\Collections\Collection;
 use Sylius\Component\Translation\Model\AbstractTranslatable;
+use Sylius\Component\Translation\Model\TranslationInterface;
 
 /**
  * Model for taxonomies.
@@ -66,13 +67,33 @@ class Taxonomy extends AbstractTranslatable implements TaxonomyInterface
     public function setName($name)
     {
         $this->translate()->setName($name);
-
-        $this->root->setCurrentLocale($this->getCurrentLocale());
-        $this->root->setFallbackLocale($this->getFallbackLocale());
-
         $this->root->setName($name);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCurrentLocale($currentLocale)
+    {
+        if (null !== $this->root) {
+            $this->root->setCurrentLocale($currentLocale);
+        }
+
+        return parent::setCurrentLocale($currentLocale);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFallbackLocale($fallbackLocale)
+    {
+        if (null !== $this->root) {
+            $this->root->setFallbackLocale($fallbackLocale);
+        }
+
+        return parent::setFallbackLocale($fallbackLocale);
     }
 
     /**
@@ -89,6 +110,8 @@ class Taxonomy extends AbstractTranslatable implements TaxonomyInterface
     public function setRoot(TaxonInterface $root)
     {
         $root->setTaxonomy($this);
+        $root->setCurrentLocale($this->getCurrentLocale());
+        $root->setFallbackLocale($this->getFallbackLocale());
 
         $this->root = $root;
 
@@ -144,8 +167,18 @@ class Taxonomy extends AbstractTranslatable implements TaxonomyInterface
     /**
      * {@inheritdoc}
      */
-    protected function getTranslationClass()
+    public static function getTranslationClass()
     {
         return get_class().'Translation';
+    }
+
+    public function addTranslation(TranslationInterface $translation)
+    {
+        parent::addTranslation($translation);
+
+        if ($translation instanceof TaxonomyTranslation) {
+            $this->root->setName($translation->getName());
+        }
+        return $this;
     }
 }

@@ -11,6 +11,10 @@ sylius:
             name: Order comment
             subject: New comment posted on order #{{ order.number }}
 
+        shipment_confirmation:
+            name: Shipment confirmation
+            subject: Your order has been shipped!
+
         user_confirmation:
             name: User confirmation
             subject: Welcome to our store!
@@ -88,7 +92,7 @@ sylius:
             add_product: New product
             orders: Latest orders
             products: Your products
-            users: Users
+            customers: Customers
         statistics:
             header: This month's statistics
             orders_this_month: Total orders
@@ -174,7 +178,10 @@ sylius:
         content: Content
         country:
             index: Countries
-        customers: Customers
+        section:
+            customer: Customer
+        customer:
+            index: Customers
         dashboard: Dashboard
         edit: Edit
         contact_request:
@@ -185,10 +192,18 @@ sylius:
         content: Content
         currency:
             index: Currencies
+        export_profile:
+            index: Export Profile
+        export_job:
+            index: Jobs
         general_settings: General Settings
         generate: Generate
         group:
             index: Groups
+        import_profile:
+            index: Import Profile
+        import_job:
+            index: Jobs
         inventory:
             index: Inventory
         locale:
@@ -244,9 +259,9 @@ sylius:
             index: Taxonomies
         email:
             index: Emails
+        channel:
+            index: Channels
         update: Edit
-        user:
-            index: Users
         permission:
             index: Permissions
         role:
@@ -292,6 +307,8 @@ sylius:
                 no_promotion: No promotion applied
                 no_shipping_charges: No shipping charges applied
                 no_taxes: No taxes applied
+                payment_charges: Payment charges
+                payment_total: Payment total
                 promotion_discount: Promotion discounts
                 promotion_total: Promotion total
                 shipping_address: Shipping address
@@ -336,6 +353,7 @@ sylius:
         no_results: There are no countries configured.
         show_header: Country details
         update_header: Editing country
+        enabled: Enabled
     email:
         create: Add new Email
         create_header: Adding new Email
@@ -387,6 +405,39 @@ sylius:
         exchange_rate: Exchange rate
         update_header: Editing currency
         updated_at: Last update
+    export_profile:
+        code: Code
+        create: Create profile
+        create_header: New export profile
+        description: Description
+        export: Export
+        general_info: General info
+        id: ID
+        index_header: Export Profiles
+        jobs: Jobs
+        manage: Manage
+        name: Name
+        no_results: There are no profiles to display.
+        reader: Reader
+        reader_configuration: Reader configuration
+        show: Show export profile
+        update_header: Editing profile
+        updated_at: Last update
+        writer: Writer
+        writer_configuration: Writer configuration
+    export_job:
+        created_at: Created at
+        end_time: End time
+        export_profile: Export profile
+        general_info: General info
+        header: Job
+        id: ID
+        index_header: Jobs
+        manage: Manage
+        no_results: There are no jobs to display.
+        start_time: Start time
+        status: status
+        updated_at: Updated at
     filter: Filter
     form:
         cart:
@@ -422,7 +473,7 @@ sylius:
     go_to_dashboard: Go to dashboard
     group:
         create: Create group
-        create_header: Adding new user groups
+        create_header: Adding new customer groups
         id: ID
         index_header: Groups
         name: Name
@@ -443,6 +494,41 @@ sylius:
         splash:
             headline: Welcome to Sylius
             subheadline: Modern ecommerce for Symfony2
+    import_job:
+        created_at: Created at
+        end_time: End time
+        general_info: General info
+        header: Job
+        id: ID
+        import_profile: Import profile
+        index_header: Jobs
+        manage: Manage
+        metadata: Job metadata
+        no_results: There are no jobs to display.
+        start_time: Start time
+        status: status
+        updated_at: Updated at
+    import_profile:
+        code: Code
+        create: Create profile
+        create_header: New import profile
+        description: Description
+        enabled: Enabled
+        general_info: General info
+        id: ID
+        import: Import
+        index_header: Import Profiles
+        jobs: Jobs
+        manage: Manage
+        name: Name
+        no_results: There are no profiles to display.
+        reader: Reader
+        reader_configuration: Reader configuration
+        show: Show import profile
+        update_header: Editing profile
+        updated_at: Last update
+        writer: Writer
+        writer_configuration: Writer configuration
     inventory_unit:
         created_at: Created
         inventory_state: Inventory state
@@ -452,6 +538,8 @@ sylius:
         sku: SKU
         updated_at: Last update
     locale:
+        id: ID
+        name: Name
         code: Code
         create: Create locale
         create_header: Adding new locale
@@ -517,6 +605,7 @@ sylius:
         inventory_tracking: Inventory tracking
         items_total: Items total
         items: Items
+        channel: Channel
         manage: Manage orders
         no_items: This order does not contain any items
         no_results: You have no new orders
@@ -557,7 +646,7 @@ sylius:
         taxes: Taxes
         total: Total
         update_header: Editing order
-        user: User
+        customer: customer
         currency: Currency
         state: State
         immutable_warning: Already shipped orders are immutable.
@@ -623,6 +712,21 @@ sylius:
         update: Edit
         update_header: Editing shipment
         updated_at: Last update
+    channel:
+        create: Add channel
+        created_at: Created at
+        code: Code
+        enabled: Enabled
+        id: ID
+        index_header: Channels
+        manage: Manage channels
+        create_header: Add channel
+        name: Name
+        url: Url
+        no_results: There are no channels configured.
+        update: Edit
+        update_header: Editing channel
+        updated_at: Last update
     order_item:
         product: Item
         quantity: Qty
@@ -644,6 +748,7 @@ sylius:
         update_header: Editing page
     password: Password
     payment:
+        order: Order
         amount: Amount
         create: Create payment
         create_header: New payment
@@ -721,6 +826,8 @@ sylius:
             options: Options
             product: Product
             attributes: Attributes
+            channels: Channels
+            pricing: Pricing
         tax_category: Tax category
         unavailable: Unavailable
         update_header: Editing product
@@ -732,6 +839,7 @@ sylius:
             qty_min: Qty min
             qty_max: Qty max
             price: Price
+        delete_revert: Undelete
     product_not_available_in_zone: Not available in your country
     promotion:
         actions: Actions
@@ -824,6 +932,13 @@ sylius:
         no_report: There is no report to display.
     save_changes: Save changes
     search: Search
+    security:
+        login:
+            header: Login <small>Sylius store</small>
+            info: Please login using <b>"sylius@example.com"</b> email and <b>"sylius"</b> as password. <small>Mr. Sylius Demo Guide</small>
+            no_account: No account yet?
+            forgot_password: Forgot password?
+            button: Login
     settings:
         general_header: General settings
         security_header: Security settings
@@ -831,6 +946,7 @@ sylius:
     shipment_category:
         manage: Manage shipping categories
     shipping_address: Shipping address
+    billing_address: Bill to
     shipping_category:
         create: Create shipping category
         create_header: New shipping category
@@ -917,21 +1033,40 @@ sylius:
         update_header: Editing taxonomy
     total_quantity: Total Qty
     unknown: Unknown
-    user:
+    customer:
         billing_address: Billing address
+        create: create customer
+        create_header: New customer
+        email: E-Mail
+        filter:
+            all: Show all customers
+            registered: Show registered customers
+            unconfirmed: Show unconfirmed accounts
+        general_info: Customer "%fullName%" general info
+        first_name: First name
+        id: ID
+        index_header: Customers <small>List of all customers in store</small>
+        last_name: Last name
+        manage: manage customers
+        no_results: There are no customers to display.
+        order:
+            no_results: There are no orders for this customer to display.
+        orders: Customer orders
+        recent_header: Recent customers
+        creation_date: Creation date
+        shipping_address: Shipping address
+        show_header: Customer details
+        update_header: Editing customer
+        groups: Groups
+        no_groups: There are no groups for this customer to display.
+    user:
         create: create user
         create_header: New user
-        email: E-Mail
         enabled: Confirmed?
-        filter:
-            all: Show all users
-            unconfirmed: Unconfirmed accounts
-        first_name: First name
         general_info: User "%username%" general info
         id: ID
         index_header: Users <small>List of all users registered in store</small>
         last_login: Last login
-        last_name: Last name
         impersonate: Log in as this user
         manage: manage users
         no_results: There are no users to display.
@@ -940,17 +1075,14 @@ sylius:
             identifier: Identifier
             access_token: Access Token
             none: No OAuth accounts connected.
-        order:
-            no_results: There are no orders for this user to display.
-        orders: User orders
         recent_header: Recent users
         registration_date: Registration date
-        shipping_address: Shipping address
+        register:
+            button: Register
+            header: Registration <small>Create an account in store</small>
         show_header: User details
         update_header: Editing user
         username: Username
-        groups: Groups
-        no_groups: There are no groups for this user to display.
     variant:
         add_image: Add image
         availability: Availability
@@ -1003,3 +1135,8 @@ sylius:
         update_header: Editing contact request
         updated_at: Last update
         show_header: Contact request details
+    gender:
+        male: Male
+        female: Female
+    enable: Enable
+    disable: Disable
