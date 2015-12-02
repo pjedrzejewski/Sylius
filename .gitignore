@@ -8,6 +8,7 @@ app/SymfonyRequirements.php
 app/config/parameters.yml
 app/config/*.local.yml
 behat.yml
+phpunit.xml
 
 web/bundles
 web/css
