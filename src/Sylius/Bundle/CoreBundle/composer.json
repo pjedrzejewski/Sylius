@@ -58,13 +58,13 @@
         "symfony/framework-bundle": "^2.7.5",
         "symfony-cmf/routing-bundle": "~1.2",
         "swiftmailer/swiftmailer": "~5.0",
-        "winzou/state-machine-bundle": "~0.2",
-        "lakion/api-test-case": "dev-master"
+        "winzou/state-machine-bundle": "~0.2"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1",
         "fzaninotto/faker": "~1.2",
-        "symfony/form": "^2.7"
+        "symfony/form": "^2.7",
+        "lakion/api-test-case": "dev-master"
     },
     "suggest": {
         "sylius/web-bundle":      "Provides default web interface",
