@@ -34,10 +34,18 @@ class ShippingCategoryApiTest extends JsonApiTestCase
     {
         $this->loadFixturesFromFile('api_administrator.yml');
 
+        $data = <<<EOT
+        {
+            "code": "reg",
+            "name": "Regular",
+            "description": "Regular weight items"
+        }
+EOT;
+
         $this->client->request('POST', '/api/shipping-categories/', [], [], [
             'HTTP_Authorization' => 'Bearer SampleTokenNjZkNjY2MDEwMTAzMDkxMGE0OTlhYzU3NzYyMTE0ZGQ3ODcyMDAwM2EwMDZjNDI5NDlhMDdlMQ',
             'CONTENT_TYPE' => 'application/json',
-        ], '{"name": "Regular", "description": "Regular weight items", "code": "reg"}');
+        ], $data);
 
         $response = $this->client->getResponse();
         $this->assertResponse($response, 'shipping_category/new_shipping_category', 201);
