@@ -11,9 +11,10 @@
 
 namespace Sylius\Bundle\CoreBundle\Controller;
 
-use Gedmo\Loggable\Entity\LogEntry;
+use FOS\RestBundle\View\View;
 use Pagerfanta\Pagerfanta;
 use Sylius\Bundle\ProductBundle\Controller\ProductController as BaseProductController;
+use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\SearchBundle\Query\TaxonQuery;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
@@ -41,13 +42,15 @@ class ProductController extends BaseProductController
      */
     public function indexByTaxonAction(Request $request, $permalink)
     {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
         $criteria = $request->get('sylius_filter_form');
         unset($criteria['_token'], $criteria['filter']);
 
         if ($request->attributes->has('_sylius_entity')) {
             $taxon = $request->attributes->get('_sylius_entity');
         } else {
-            $taxon = $this->get('sylius.repository.taxon')
+            $taxon = $this->container->get('sylius.repository.taxon')
                 ->findOneByPermalink($permalink);
 
             if (!isset($taxon)) {
@@ -66,7 +69,7 @@ class ProductController extends BaseProductController
          *      indexes:
          *          my_own_index:
          */
-        $finder = $this->get('sylius_search.finder')
+        $finder = $this->container->get('sylius_search.finder')
             ->setFacetGroup('categories_set')
             ->find(new TaxonQuery($taxon, $request->query->get('filters', array())));
 
@@ -75,6 +78,7 @@ class ProductController extends BaseProductController
         $paginator = $finder->getPaginator();
 
         return $this->renderResults(
+            $configuration,
             $taxon,
             $paginator,
             'indexByTaxon.html',
@@ -82,8 +86,8 @@ class ProductController extends BaseProductController
             $finder->getFacets(),
             $config['filters']['facets'],
             $finder->getFilters(),
-            $this->get('sylius_search.request_handler')->getQuery(),
-            $this->get('sylius_search.request_handler')->getSearchParam(),
+            $this->container->get('sylius_search.request_handler')->getQuery(),
+            $this->container->get('sylius_search.request_handler')->getSearchParam(),
             $this->container->getParameter('sylius_search.request.method')
         );
     }
@@ -100,18 +104,16 @@ class ProductController extends BaseProductController
      */
     public function indexByTaxonIdAction(Request $request, $id)
     {
-        $taxon = $this->get('sylius.repository.taxon')->find($id);
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+        $taxon = $this->container->get('sylius.repository.taxon')->find($id);
 
         if (!isset($taxon)) {
             throw new NotFoundHttpException('Requested taxon does not exist.');
         }
 
-        $paginator = $this
-            ->getRepository()
-            ->createByTaxonPaginator($taxon)
-        ;
+        $paginator = $this->repository->createByTaxonPaginator($taxon);
 
-        return $this->renderResults($taxon, $paginator, 'productIndex.html', $request->get('page', 1));
+        return $this->renderResults($configuration, $taxon, $paginator, 'productIndex.html', $request->get('page', 1));
     }
 
 
@@ -126,25 +128,26 @@ class ProductController extends BaseProductController
      */
     public function detailsAction(Request $request)
     {
-        $channel = $this->get('sylius.context.channel')->getChannel();
-        $product = $this->findOr404($request);
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
+        $channel = $this->container->get('sylius.context.channel')->getChannel();
+        $product = $this->findOr404($configuration);
 
         if (!$product->getChannels()->contains($channel)) {
             throw new NotFoundHttpException(sprintf(
                 'Requested %s does not exist for channel: %s.',
-                $this->config->getResourceName(),
+                $this->metadata->getName(),
                 $channel->getName()
             ));
         }
 
-        $view = $this
-            ->view()
-            ->setTemplate($this->config->getTemplate('show.html'))
-            ->setTemplateVar($this->config->getResourceName())
+        $view = View::create()
+            ->setTemplate($configuration->getTemplate('show.html'))
+            ->setTemplateVar($this->metadata->getName())
             ->setData($product)
         ;
 
-        return $this->handleView($view);
+        return $this->viewHandler->handle($view);
     }
 
     /**
@@ -158,8 +161,10 @@ class ProductController extends BaseProductController
      */
     public function historyAction(Request $request)
     {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
         /** @var $product ProductInterface */
-        $product = $this->findOr404($request);
+        $product = $this->findOr404($configuration);
 
         $repository = $this->get('doctrine')->getManager()->getRepository(LogEntry::class);
 
@@ -180,9 +185,8 @@ class ProductController extends BaseProductController
             }
         }
 
-        $view = $this
-            ->view()
-            ->setTemplate($this->config->getTemplate('history.html'))
+        $view = View::create()
+            ->setTemplate($configuration->getTemplate('history.html'))
             ->setData(array(
                 'product' => $product,
                 'logs'    => array(
@@ -194,7 +198,7 @@ class ProductController extends BaseProductController
             ))
         ;
 
-        return $this->handleView($view);
+        return $this->viewHandler->handle($view);
     }
 
     /**
@@ -206,8 +210,8 @@ class ProductController extends BaseProductController
      */
     public function filterFormAction(Request $request)
     {
-        return $this->render('SyliusWebBundle:Backend/Product:filterForm.html.twig', array(
-            'form' => $this->get('form.factory')->createNamed('criteria', 'sylius_product_filter', $request->query->get('criteria'))->createView()
+        return $this->container->get('templating')->renderResponse('SyliusWebBundle:Backend/Product:filterForm.html.twig', array(
+            'form' => $this->container->get('form.factory')->createNamed('criteria', 'sylius_product_filter', $request->query->get('criteria'))->createView()
         ));
     }
 
@@ -220,8 +224,8 @@ class ProductController extends BaseProductController
 
         /** @var $products ProductInterface[] */
         $results  = array();
-        $products = $this->get('sylius.repository.product')->createFilterPaginator($request->query->get('criteria'));
-        $helper   = $this->get('sylius.templating.helper.currency');
+        $products = $this->container->get('sylius.repository.product')->createFilterPaginator($request->query->get('criteria'));
+        $helper   = $this->container->get('sylius.templating.helper.currency');
         foreach ($products as $product) {
             $results[] = array(
                 'id'        => $product->getMasterVariant()->getId(),
@@ -242,16 +246,19 @@ class ProductController extends BaseProductController
      *
      * @return null|ProductInterface
      */
-    public function findOr404(Request $request, array $criteria = array())
+    public function findOr404(RequestConfiguration $configuration)
     {
+        $request = $configuration->getRequest();
+
         if ($request->attributes->has('_sylius_entity')) {
             return $request->attributes->get('_sylius_entity');
         }
 
-        return parent::findOr404($request, $criteria);
+        return parent::findOr404($configuration);
     }
 
     private function renderResults(
+        RequestConfiguration $configuration,
         TaxonInterface $taxon,
         Pagerfanta $results,
         $template, $page,
@@ -266,9 +273,8 @@ class ProductController extends BaseProductController
         $results->setCurrentPage($page, true, true);
         $results->setMaxPerPage($this->config->getPaginationMaxPerPage());
 
-        $view = $this
-            ->view()
-            ->setTemplate($this->config->getTemplate($template))
+        $view = View::create()
+            ->setTemplate($configuration->getTemplate($template))
             ->setData(array(
                 'taxon'    => $taxon,
                 'products' => $results,
@@ -281,6 +287,6 @@ class ProductController extends BaseProductController
             ))
         ;
 
-        return $this->handleView($view);
+        return $this->viewHandler->handle($view);
     }
 }
