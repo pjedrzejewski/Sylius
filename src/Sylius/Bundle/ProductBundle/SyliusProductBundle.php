@@ -11,6 +11,7 @@
 
 namespace Sylius\Bundle\ProductBundle;
 
+use Sylius\Bundle\ProductBundle\DependencyInjection\Compiler\ServicesPass;
 use Sylius\Bundle\ProductBundle\DependencyInjection\Compiler\ValidatorPass;
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
@@ -26,12 +27,6 @@ use Sylius\Component\Product\Model\VariantInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Product management bundle with highly flexible architecture.
- * Implements basic product model with properties support.
- *
- * Use *SyliusVariationBundle* to get variants, options and
- * customizations support.
- *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  * @author Gonzalo Vilaseca <gvilaseca@reiss.co.uk>
  */
@@ -54,6 +49,7 @@ class SyliusProductBundle extends AbstractResourceBundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new ServicesPass());
         $container->addCompilerPass(new ValidatorPass());
     }
 
