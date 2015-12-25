@@ -12,6 +12,7 @@
 namespace Sylius\Bundle\ProductBundle\DependencyInjection\Compiler;
 
 use Sylius\Component\Resource\Factory\Factory;
+use Sylius\Component\Translation\Factory\TranslatableFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -27,6 +28,19 @@ class ServicesPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        $productFactoryDefinition = $container->getDefinition('sylius.factory.product');
+        $productFactoryClass = $productFactoryDefinition->getClass();
+        $productFactoryDefinition->setClass(TranslatableFactory::class);
+
+        $decoratedProductFactoryDefinition = new Definition($productFactoryClass);
+        $decoratedProductFactoryDefinition
+            ->addArgument($productFactoryDefinition)
+            ->addArgument(new Reference('sylius.repository.product_archetype'))
+            ->addArgument(new Reference('sylius.builder.product_archetype'))
+        ;
+
+        $container->setDefinition('sylius.factory.product', $decoratedProductFactoryDefinition);
+
         $variantFactoryDefinition = $container->getDefinition('sylius.factory.product_variant');
         $variantFactoryClass = $variantFactoryDefinition->getClass();
         $variantFactoryDefinition->setClass(Factory::class);

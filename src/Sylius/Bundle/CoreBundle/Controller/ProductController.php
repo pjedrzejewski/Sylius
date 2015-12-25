@@ -14,8 +14,8 @@ namespace Sylius\Bundle\CoreBundle\Controller;
 use FOS\RestBundle\View\View;
 use Gedmo\Loggable\Entity\LogEntry;
 use Pagerfanta\Pagerfanta;
-use Sylius\Bundle\ProductBundle\Controller\ProductController as BaseProductController;
 use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
+use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
 use Sylius\Bundle\SearchBundle\Query\TaxonQuery;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\TaxonInterface;
@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-class ProductController extends BaseProductController
+class ProductController extends ResourceController
 {
     /**
      * List products categorized under given taxon.
