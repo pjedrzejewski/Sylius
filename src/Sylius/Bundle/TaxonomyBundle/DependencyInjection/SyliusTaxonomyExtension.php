@@ -12,9 +12,12 @@
 namespace Sylius\Bundle\TaxonomyBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension;
+use Sylius\Component\Translation\Factory\TranslatableFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Taxonomy extension.
@@ -42,5 +45,16 @@ class SyliusTaxonomyExtension extends AbstractResourceExtension
         foreach ($configFiles as $configFile) {
             $loader->load($configFile);
         }
+
+        $taxonFactoryDefinition = $container->getDefinition('sylius.factory.taxon');
+        $taxonFactoryClass = $taxonFactoryDefinition->getClass();
+        $taxonFactoryDefinition->setClass(TranslatableFactory::class);
+
+        $decoratedTaxonFactoryDefinition = new Definition($taxonFactoryClass);
+        $decoratedTaxonFactoryDefinition
+            ->addArgument($taxonFactoryDefinition)
+            ->addArgument(new Reference('sylius.repository.taxonomy'))
+        ;
+        $container->setDefinition('sylius.factory.taxon', $decoratedTaxonFactoryDefinition);
     }
 }
