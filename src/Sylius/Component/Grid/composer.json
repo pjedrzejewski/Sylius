@@ -1,7 +1,7 @@
 {
     "name": "sylius/grid",
     "type": "library",
-    "description": "Grid component for Sylius resource.",
+    "description": "Grid component.",
     "keywords": ["shop", "ecommerce", "resource", "api", "sylius", "doctrine", "grid", "admin"],
     "homepage": "http://sylius.org",
     "license": "MIT",
@@ -20,12 +20,9 @@
         }
     ],
     "require": {
-        "php":                      ">=5.3.3",
+        "php": ">=5.5.9",
 
-        "doctrine/collections":     "~1.0",
-        "doctrine/common":          "~2.3",
-        "winzou/state-machine":     "~0.1",
-        "symfony/event-dispatcher": "~2.3"
+        "sylius/resource": "^0.16.0@dev"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1"
@@ -34,14 +31,14 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-4": { "Sylius\\Component\\Resource\\": "" }
+        "psr-4": { "Sylius\\Component\\Grid\\": "" }
     },
     "autoload-dev": {
-        "psr-4": { "Sylius\\Component\\Resource\\spec\\": "spec/" }
+        "psr-4": { "Sylius\\Component\\Grid\\spec\\": "spec/" }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.14-dev"
+            "dev-master": "0.16-dev"
         }
     }
 }

@@ -23,8 +23,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- *
- *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class GridExtension extends \Twig_Extension
@@ -45,9 +43,9 @@ class GridExtension extends \Twig_Extension
     private $parametersParser;
 
     /**
-     * @param FormFactoryInterface    $formFactory
+     * @param FormFactoryInterface $formFactory
      * @param ColumnRendererInterface $columnRenderer
-     * @param ParmaetersParser        $parametersParser
+     * @param ParametersParser $parametersParser
      */
     public function __construct(FormFactoryInterface $formFactory, ColumnRendererInterface $columnRenderer, ParametersParser $parametersParser)
     {
@@ -87,8 +85,8 @@ class GridExtension extends \Twig_Extension
 
     /**
      * @param \Twig_Environment $twig
-     * @param GridView          $gridView
-     * @param Configuration     $configuration
+     * @param GridView $gridView
+     * @param Configuration $configuration
      *
      * @return string
      */
@@ -99,8 +97,8 @@ class GridExtension extends \Twig_Extension
 
     /**
      * @param \Twig_Environment $twig
-     * @param GridView          $gridView
-     * @param Column            $column
+     * @param GridView $gridView
+     * @param Column $column
      *
      * @return string
      */
@@ -127,34 +125,35 @@ class GridExtension extends \Twig_Extension
 
     /**
      * @param \Twig_Environment $twig
-     * @param $object
-     * @param GridView          $gridView
-     * @param $field
+     * @param mixed $data
+     * @param GridView $gridView
+     * @param string $field
      */
-    public function renderValue(\Twig_Environment $twig, $object, GridView $gridView, $field)
+    public function renderValue(\Twig_Environment $twig, $data, GridView $gridView, $field)
     {
-        return $this->columnRenderer->render($object, $field, $gridView->getDefinition());
+        return $this->columnRenderer->render($data, $field, $gridView->getDefinition());
     }
 
     /**
      * @param \Twig_Environment $twig
-     * @param GridView          $gridView
-     * @param Action            $actionDefinition
-     * @param Request           $request
-     * @param $object
+     * @param GridView $gridView
+     * @param Action $actionDefinition
+     * @param Request $request
+     * @param mixed $data
      *
      * @return string
      */
-    public function renderAction(\Twig_Environment $twig, GridView $gridView, Action $actionDefinition, Request $request, $object = null)
+    public function renderAction(\Twig_Environment $twig, GridView $gridView, Action $actionDefinition, Request $request, $data = null)
     {
         $options = $actionDefinition->getOptions();
 
         $parameters = isset($options['parameters']) ? $options['parameters'] : array();
         $parameters = $this->parametersParser->parse($parameters, $request);
 
-        if (null !== $object) {
-            $parameters = $this->parametersParser->process($parameters, $object);
+        if (null !== $data) {
+            $parameters = $this->parametersParser->process($parameters, $data);
         }
+
         // Assign only parameters values
         $contextParameters = $parameters[0];
 
@@ -165,8 +164,8 @@ class GridExtension extends \Twig_Extension
 
     /**
      * @param \Twig_Environment $twig
-     * @param Request           $request
-     * @param GridView          $gridView
+     * @param Request $request
+     * @param GridView $gridView
      *
      * @return string
      */
@@ -201,6 +200,7 @@ class GridExtension extends \Twig_Extension
     private function getFiltersFormTemplate(Grid $definition)
     {
         $templates = $definition->getTemplates();
+
         if (isset($templates['filters'])) {
             return $templates['filters'];
         }

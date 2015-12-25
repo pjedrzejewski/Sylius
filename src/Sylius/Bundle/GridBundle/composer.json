@@ -1,7 +1,7 @@
 {
     "name": "sylius/grid-bundle",
     "type": "symfony-bundle",
-    "description": "Sylius grids bundle.",
+    "description": "Simple grids on top of SyliusResourceBundle.",
     "keywords": ["shop", "ecommerce", "store", "webshop", "sylius", "grid", "admin", "crud"],
     "homepage": "http://sylius.org",
     "license": "MIT",
@@ -20,9 +20,9 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.5.9",
 
-        "sylius/resource-bundle": "0.14.*@dev"
+        "sylius/resource-bundle": "0.16.*@dev"
     },
     "config": {
         "bin-dir": "bin"
@@ -32,7 +32,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.14-dev"
+            "dev-master": "0.16-dev"
         }
     }
 }

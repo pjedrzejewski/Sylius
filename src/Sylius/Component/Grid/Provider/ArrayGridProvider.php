@@ -32,7 +32,7 @@ class ArrayGridProvider implements GridProviderInterface
     }
 
     /**
-     * @param string $name
+     * {@inheritdoc}
      */
     public function getGrid($name)
     {

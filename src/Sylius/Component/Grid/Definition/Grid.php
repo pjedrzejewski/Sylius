@@ -64,11 +64,6 @@ class Grid
     /**
      * @var array
      */
-    private $massActions = array();
-
-    /**
-     * @var array
-     */
     private $sorting = array();
 
     /**
