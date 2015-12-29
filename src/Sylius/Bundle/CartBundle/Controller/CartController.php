@@ -52,7 +52,7 @@ class CartController extends Controller
             ))
         ;
 
-        return $this->viewHandler->handle($view);
+        return $this->viewHandler->handle($configuration, $view);
     }
 
     /**
@@ -98,7 +98,7 @@ class CartController extends Controller
             ))
         ;
 
-        return $this->viewHandler->handle($view);
+        return $this->viewHandler->handle($configuration, $view);
     }
 
     /**
