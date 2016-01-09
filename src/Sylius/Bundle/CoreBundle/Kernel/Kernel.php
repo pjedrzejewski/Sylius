@@ -78,6 +78,7 @@ abstract class Kernel extends BaseKernel
             new \Sylius\Bundle\CoreBundle\SyliusCoreBundle(),
             new \Sylius\Bundle\WebBundle\SyliusWebBundle(),
             new \Sylius\Bundle\ResourceBundle\SyliusResourceBundle(),
+            new \Sylius\Bundle\GridBundle\SyliusGridBundle(),
             new \winzou\Bundle\StateMachineBundle\winzouStateMachineBundle(),
             new \Sylius\Bundle\ApiBundle\SyliusApiBundle(),
 
@@ -126,6 +127,18 @@ abstract class Kernel extends BaseKernel
         ];
 
         return $bundles;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getContainerBaseClass()
+    {
+        if ('test' === $this->environment) {
+            return '\PSS\SymfonyMockerContainer\DependencyInjection\MockerContainer';
+        }
+
+        return parent::getContainerBaseClass();
     }
 
     /**
