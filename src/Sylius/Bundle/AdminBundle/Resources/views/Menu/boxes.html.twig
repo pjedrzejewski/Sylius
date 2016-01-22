@@ -1,0 +1,52 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% macro attributes(attributes) %}
+    {% for name, value in attributes %}
+        {%- if value is not none and value is not sameas(false) -%}
+            {{- ' %s="%s"'|format(name, value is sameas(true) ? name|e : value|e)|raw -}}
+        {%- endif -%}
+    {%- endfor -%}
+{% endmacro %}
+
+{% block item %}
+{% if item.level is sameas(1) %}
+<div class="col-md-6">
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">{{ item.label|trans }}</h3>
+            <div class="box-tools">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="box-body no-padding">
+            {% set listAttributes = {'class': 'nav nav-pills nav-stacked'} %}
+            {{ block('list') }}
+        </div>
+    </div>
+</div>
+{% else %}
+{{ parent() }}
+{% endif %}
+{% endblock %}
+
+{% block list %}
+    {% if item.level is sameas(0) %}
+        {{ block('children') }}
+    {% else %}
+        {% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
+            <ul{{ _self.attributes(listAttributes) }}>
+                {{ block('children') }}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block linkElement %}
+    <a href="{{ item.uri }}"{{ _self.attributes(item.linkAttributes) }}>{{ block('icon') }}<span>{{ block('label') }}</span></a>
+{% endblock %}
+
+{% block icon %}
+    {% set icon = item.labelAttribute('icon') %}
+
+    {% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}
+{% endblock %}

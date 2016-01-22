@@ -1,0 +1,13 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% block title %}{{ parent() }}{{ 'sylius.ui.configuration'|trans }}{% endblock %}
+
+{% block header %}
+<i class="fa fa-cogs"></i> {{ 'sylius.ui.configuration'|trans }}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {{ knp_menu_render('sylius.admin.configuration', {'template': 'SyliusAdminBundle:Menu:boxes.html.twig'}) }}
+</div>
+{% endblock %}

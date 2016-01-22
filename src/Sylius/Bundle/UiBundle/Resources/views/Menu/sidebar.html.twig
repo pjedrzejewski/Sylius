@@ -86,12 +86,6 @@
 {% endif %}
 {% endblock %}
 
-{% block icon %}
-{% set icon = item.labelAttribute('icon') %}
-
-{% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}
-{% endblock %}
-
 {% block linkElement %}
 <a href="{{ item.uri }}"{{ _self.attributes(item.linkAttributes) }}>{{ block('icon') }}<span>{{ block('label') }}</span></a>
 {% endblock %}
@@ -99,3 +93,10 @@
 {% block spanElement %}<span{{ _self.attributes(item.labelAttributes) }}>{{ block('label') }}</span>{% endblock %}
 
 {% block label %}{% if options.allow_safe_labels and item.getExtra('safe_label', false) %}{{ item.label|trans|raw }}{% else %}{{ item.label|trans }}{% endif %}{% endblock %}
+
+{% block icon %}
+    {% set icon = item.labelAttribute('icon') %}
+
+    {% if icon %}<i class="fa fa-{{ icon }}"></i> {% endif %}
+{% endblock %}
+

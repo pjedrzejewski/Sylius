@@ -2,5 +2,13 @@ sylius:
   menu:
     admin:
       main:
-        configuration:
-          header: Configuration
+        system:
+          header: System
+          configuration: Configuration
+      configuration:
+        taxes:
+          tax_categories: Tax Categories
+          tax_rates: Tax Rates
+        shipping:
+          shipping_categories: Shipping Categories
+          shipping_methods: Shipping Methods

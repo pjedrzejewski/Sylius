@@ -8,4 +8,5 @@ sylius:
     sign_in: Sign in
     sign_out: Sign out
     dashboard: Dashboard
+    configuration: Configuration
     powered_by: Powered by

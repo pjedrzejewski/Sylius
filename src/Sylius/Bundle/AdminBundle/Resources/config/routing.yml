@@ -24,3 +24,9 @@ sylius_admin_login_check:
 
 sylius_admin_logout:
     path: /logout
+
+sylius_admin_configuration:
+    path: /configuration
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: SyliusAdminBundle::configuration.html.twig

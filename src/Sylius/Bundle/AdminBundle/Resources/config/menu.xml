@@ -18,6 +18,7 @@
 
     <parameters>
         <parameter key="sylius.menu_builder.admin.main.class">Sylius\Bundle\AdminBundle\Menu\MainMenuBuilder</parameter>
+        <parameter key="sylius.menu_builder.admin.configuration.class">Sylius\Bundle\AdminBundle\Menu\ConfigurationMenuBuilder</parameter>
     </parameters>
 
     <services>
@@ -27,6 +28,14 @@
         <service id="sylius.menu.admin.main" class="Knp\Menu\MenuItem" factory-service="sylius.menu_builder.admin.main" factory-method="createMenu" scope="request">
             <argument type="service" id="request" />
             <tag name="knp_menu.menu" alias="sylius.admin.main" />
+        </service>
+
+        <service id="sylius.menu_builder.admin.configuration" class="%sylius.menu_builder.admin.configuration.class%" parent="sylius.menu_builder">
+            <argument type="service" id="sylius.authorization_checker" />
+        </service>
+        <service id="sylius.menu.admin.configuration" class="Knp\Menu\MenuItem" factory-service="sylius.menu_builder.admin.configuration" factory-method="createMenu" scope="request">
+            <argument type="service" id="request" />
+            <tag name="knp_menu.menu" alias="sylius.admin.configuration" />
         </service>
     </services>
 

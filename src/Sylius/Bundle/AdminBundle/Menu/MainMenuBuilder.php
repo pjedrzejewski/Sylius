@@ -28,7 +28,7 @@ final class MainMenuBuilder extends AbstractAdminMenuBuilder
     {
         $menu = $this->factory->createItem('root');
 
-        $this->addConfigurationMenu($menu);
+        $this->addSystemMenu($menu);
 
         $this->eventDispatcher->dispatch(self::EVENT_NAME, new MenuBuilderEvent($this->factory, $menu));
 
@@ -38,15 +38,21 @@ final class MainMenuBuilder extends AbstractAdminMenuBuilder
     /**
      * @param ItemInterface $menu
      */
-    private function addConfigurationMenu(ItemInterface $menu)
+    private function addSystemMenu(ItemInterface $menu)
     {
         $child = $menu
-            ->addChild('configuration')
-            ->setLabel('sylius.menu.admin.main.configuration.header')
+            ->addChild('system')
+            ->setLabel('sylius.menu.admin.main.system.header')
+        ;
+
+        $child
+            ->addChild('configuration', ['route' => 'sylius_admin_configuration'])
+            ->setLabel('sylius.menu.admin.main.system.configuration')
+            ->setLabelAttribute('icon', 'cogs')
         ;
 
         if (!$child->hasChildren()) {
-            $menu->removeChild('configuration');
+            $menu->removeChild('system');
         }
     }
 }
