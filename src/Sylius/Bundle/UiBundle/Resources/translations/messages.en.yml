@@ -5,7 +5,32 @@ sylius:
       password: Password
       remember_me: Remember me
   ui:
+    are_your_sure_you_want_to_delete_this_item: Are you sure you want to delete this item?
+    are_your_sure_you_want_to_perform_this_action: Are you sure you want to perform this action?
+    category_requirements: Category requirements
+    charges_and_taxes: Charges and taxes
+    confirm_your_action: Confirm your action
+    create: Create
+    dashboard: Dashboard
+    delete: Delete
+    disabled: Disabled
+    edit: Edit
+    enabled: Enabled
+    error_flash_header: An error occurred.
+    error_message_header: An error occurred.
+    last_updated: Last updated
+    manage_how_to_ship_your_goods: Manage how to ship your goods
+    no: No
+    no_results_to_display: There are no results to display
+    powered_by: Powered by
+    shipping_methods: Shipping methods
+    show: Show
     sign_in: Sign in
     sign_out: Sign out
-    dashboard: Dashboard
-    powered_by: Powered by
+    status: Status
+    success_flash_header: Success!
+    success_message_header: Success!
+    yes: Yes
+    zone: Zone
+    new: New
+    save_changes: Save changes

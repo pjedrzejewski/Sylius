@@ -62,6 +62,14 @@ class RequestLocaleProvider implements LocaleProviderInterface, EventSubscriberI
     /**
      * {@inheritdoc}
      */
+    public function getAvailableLocales()
+    {
+        return ['en_US', 'es_ES', 'pl_PL', 'de_DE', 'fr_FR'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getCurrentLocale()
     {
         if (null === $this->request) {

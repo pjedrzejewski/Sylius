@@ -35,6 +35,14 @@ class TranslationLocaleProvider implements LocaleProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function getAvailableLocales()
+    {
+        return ['en_US', 'es_ES', 'pl_PL', 'de_DE', 'fr_FR'];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getCurrentLocale()
     {
         return $this->localeContext->getCurrentLocale();

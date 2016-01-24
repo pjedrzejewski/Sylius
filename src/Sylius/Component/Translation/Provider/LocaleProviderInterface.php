@@ -17,6 +17,11 @@ namespace Sylius\Component\Translation\Provider;
 interface LocaleProviderInterface
 {
     /**
+     * @return array
+     */
+    public function getAvailableLocales();
+
+    /**
      * @return string
      */
     public function getCurrentLocale();

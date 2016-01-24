@@ -4,3 +4,4 @@ sylius:
       main:
         configuration:
           header: Configuration
+          shipping_methods: Shipping methods

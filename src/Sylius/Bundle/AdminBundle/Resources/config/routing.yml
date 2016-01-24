@@ -24,3 +24,12 @@ sylius_admin_login_check:
 
 sylius_admin_logout:
     path: /logout
+
+sylius_admin_shipping_method:
+    resource: |
+        alias: sylius.shipping_method
+        section: admin
+        templates: SyliusAdminBundle:ShippingMethod
+        except: ['show']
+        redirect: update
+    type: sylius.resource

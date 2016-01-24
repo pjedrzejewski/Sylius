@@ -32,7 +32,7 @@ class ShippingMethodType extends BaseShippingMethodType
             ])
             ->add('taxCategory', 'sylius_tax_category_choice', [
                 'required' => false,
-                'empty_value' => '---',
+                'empty_value' => 'sylius.ui.no_tax_category',
                 'label' => 'sylius.form.shipping_method.tax_category',
             ])
         ;

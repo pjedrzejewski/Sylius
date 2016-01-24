@@ -86,6 +86,7 @@ sylius:
             channel: All channels
         shipping_method:
             zone: Zone
+            tax_category: Tax category
         taxon:
             file: Select image
         taxonomy:

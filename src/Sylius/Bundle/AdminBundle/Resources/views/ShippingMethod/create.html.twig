@@ -1,0 +1,20 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% form_theme form 'SyliusUiBundle:Form:theme.html.twig' %}
+
+{% block content %}
+<h1 class="ui header">
+    <i class="circular plus icon"></i>
+    <div class="content">
+        {{ 'sylius.ui.new'|trans }}
+        <div class="sub header">{{ 'sylius.ui.manage_how_to_ship_your_goods'|trans }}</div>
+    </div>
+</h1>
+
+<form class="ui form" action="{{ path('sylius_admin_shipping_method_create') }}" method="post" novalidate>
+    {% include 'SyliusAdminBundle:ShippingMethod:_form.html.twig' %}
+    <div class="ui basic segment">
+        <button class="ui labeled icon primary button" type="submit"><i class="plus icon"></i> {{ 'sylius.ui.create'|trans }}</button>
+    </div>
+</form>
+{% endblock %}

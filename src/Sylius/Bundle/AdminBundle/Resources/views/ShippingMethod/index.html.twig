@@ -1,0 +1,63 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% import 'SyliusUiBundle:Macro:buttons.html.twig' as buttons %}
+{% import 'SyliusUiBundle:Macro:messages.html.twig' as messages %}
+{% import 'SyliusUiBundle:Macro:labels.html.twig' as labels %}
+{% import 'SyliusUiBundle:Macro:pagination.html.twig' as pagination %}
+
+{% block content %}
+<div class="ui stackable two column grid">
+    <div class="column">
+    <h1 class="ui header">
+        <i class="circular truck icon"></i>
+        <div class="content">
+            {{ 'sylius.ui.shipping_methods'|trans }}
+            <div class="sub header">{{ 'sylius.ui.manage_how_to_ship_your_goods'|trans }}</div>
+        </div>
+    </h1>
+    </div>
+    <div class="middle aligned column">
+        <div class="ui right floated buttons">
+            {{ buttons.create(path('sylius_admin_shipping_method_create')) }}
+        </div>
+    </div>
+</div>
+
+<div class="ui segment">
+{{ pagination.render(shipping_methods) }}
+{% if shipping_methods|length > 0 %}
+<table class="ui stackable sortable compact celled table">
+    <thead>
+        <tr>
+            <th>{{ 'sylius.ui.code'|trans }}</th>
+            <th>{{ 'sylius.ui.zone'|trans }}</th>
+            <th>{{ 'sylius.ui.status'|trans }}</th>
+            <th>{{ 'sylius.ui.name'|trans }}</th>
+            <th>{{ 'sylius.ui.last_updated'|trans }}</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for shipping_method in shipping_methods %}
+    <tr>
+        <td class="ui middle center aligned">{{ shipping_method.code }}</td>
+        <td>{{ shipping_method.zone }} ({{ shipping_method.zone.code }})</td>
+        <td class="ui middle center aligned">{{ labels.status(shipping_method.enabled) }}</td>
+        <td>{{ shipping_method.name }}</td>
+        <td>{{ shipping_method.updatedAt|date }}</td>
+        <td>
+            <div class="ui right floated buttons">
+                {{ buttons.edit(path('sylius_admin_shipping_method_update', {'id': shipping_method.id})) }}
+                {{ buttons.delete(path('sylius_admin_shipping_method_delete', {'id': shipping_method.id})) }}
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+{{ messages.info('sylius.no_results_to_display') }}
+{% endif %}
+{{ pagination.render(shipping_methods) }}
+</div>
+{% endblock %}

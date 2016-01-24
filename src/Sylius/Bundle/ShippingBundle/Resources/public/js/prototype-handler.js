@@ -5,7 +5,6 @@
         init: function(options) {
             var settings = $.extend({
               'prototypePrefix': false,
-              'prototypeElementPrefix': '<hr />',
               'containerSelector': false
             }, options);
 
@@ -42,7 +41,7 @@
                     }
 
                     if (replace || !container.html().trim()) {
-                        container.html(settings.prototypeElementPrefix + prototypeElement.data('prototype'));
+                        container.html(prototypeElement.data('prototype'));
                     }
                 }
             });

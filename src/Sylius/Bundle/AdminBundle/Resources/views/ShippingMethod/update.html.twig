@@ -1,0 +1,22 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% form_theme form 'SyliusUiBundle:Form:theme.html.twig' %}
+
+{% block content %}
+    <h1 class="ui header">
+        <i class="circular pencil icon"></i>
+        <div class="content">
+            {{ 'sylius.ui.edit'|trans }}
+            <div class="sub header">{{ 'sylius.ui.manage_how_to_ship_your_goods'|trans }}</div>
+        </div>
+    </h1>
+
+    <form class="ui form" action="{{ path('sylius_admin_shipping_method_update', {'id': shipping_method.id}) }}" method="post" novalidate>
+        <input type="hidden" name="_method" value="PUT" />
+        {% include 'SyliusAdminBundle:ShippingMethod:_form.html.twig' %}
+        <div class="ui basic segment">
+            <button class="ui labeled icon primary button" type="submit"><i class="save icon"></i> {{ 'sylius.ui.save_changes'|trans }}</button>
+        </div>
+    </form>
+{% endblock %}
+

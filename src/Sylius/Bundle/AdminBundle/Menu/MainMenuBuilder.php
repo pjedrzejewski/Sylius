@@ -45,6 +45,12 @@ final class MainMenuBuilder extends AbstractAdminMenuBuilder
             ->setLabel('sylius.menu.admin.main.configuration.header')
         ;
 
+        $child
+            ->addChild('shipping_methods', ['route' => 'sylius_admin_shipping_method_index'])
+            ->setLabel('sylius.menu.admin.main.configuration.shipping_methods')
+            ->setLabelAttribute('icon', 'truck')
+        ;
+
         if (!$child->hasChildren()) {
             $menu->removeChild('configuration');
         }

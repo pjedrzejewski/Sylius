@@ -11,10 +11,12 @@
 
 namespace Sylius\Bundle\ResourceBundle\DependencyInjection\Driver;
 
+use Sylius\Bundle\TranslationBundle\Form\Extension\TranslatableResourceTypeExtension;
 use Sylius\Component\Resource\Factory\Factory;
 use Sylius\Component\Resource\Metadata\Metadata;
 use Sylius\Component\Resource\Metadata\MetadataInterface;
 use Sylius\Component\Translation\Factory\TranslatableFactoryInterface;
+use Sylius\Component\Translation\Model\TranslatableInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Parameter;
@@ -116,15 +118,13 @@ abstract class AbstractDriver implements DriverInterface
      */
     protected function addFactory(ContainerBuilder $container, MetadataInterface $metadata)
     {
-        $translatableFactoryInterface = TranslatableFactoryInterface::class;
-
         $factoryClass = $metadata->getClass('factory');
         $modelClass = $metadata->getClass('model');
 
         $reflection = new \ReflectionClass($factoryClass);
         $definition = new Definition($factoryClass);
 
-        if (interface_exists($translatableFactoryInterface) && $reflection->implementsInterface($translatableFactoryInterface)) {
+        if (interface_exists(TranslatableFactoryInterface::class) && $reflection->implementsInterface(TranslatableFactoryInterface::class)) {
             $decoratedDefinition = new Definition(Factory::class);
             $decoratedDefinition->setArguments([$modelClass]);
 
@@ -183,6 +183,20 @@ abstract class AbstractDriver implements DriverInterface
                 sprintf('%s.form.type.%s%s', $metadata->getApplicationName(), $metadata->getName(), $suffix),
                 $definition
             );
+        }
+
+        $reflection = new \ReflectionClass($metadata->getClass('model'));
+
+        if ($reflection->implementsInterface(TranslatableInterface::class)) {
+            $definition = new Definition(TranslatableResourceTypeExtension::class);
+            $definition->setArguments([
+                $this->getMetdataDefinition($metadata),
+                new Reference(sprintf('%s.factory.%s_translation', $metadata->getApplicationName(), $metadata->getName())),
+                new Reference('sylius.translation.locale_provider'),
+            ]);
+            $definition->addTag('form.type_extension', ['alias' => sprintf('%s_%s', $metadata->getApplicationName(), $metadata->getName())]);
+
+            $container->setDefinition(sprintf('%s.form.type_extension.translatable_%s', $metadata->getApplicationName(), $metadata->getName()), $definition);
         }
 
         if (!$container->hasDefinition(sprintf('%s.form.type.%s', $metadata->getApplicationName(), $metadata->getName()))) {
