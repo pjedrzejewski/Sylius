@@ -30,8 +30,10 @@
         .sidebar('attach events', '#sidebar-toggle', 'show')
     ;
 
-    $('.ui.checkbox').checkbox();
-    $('select').dropdown();
+    if (!$('body').hasClass('test')) {
+      $('.ui.checkbox').checkbox();
+      $('select').dropdown();
+    }
 
     $('.form button').on('click', function() {
       return $(this).closest('form').addClass('loading');

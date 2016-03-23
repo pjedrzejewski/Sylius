@@ -16,7 +16,7 @@
     {% endblock %}
 </head>
 
-<body>
+<body{% if 'test' == app.environment %} class="test"{% endif %}>
 <div class="ui sidebar vertical inverted menu" id="sidebar">
     {% block sidebar %}
     {% endblock %}

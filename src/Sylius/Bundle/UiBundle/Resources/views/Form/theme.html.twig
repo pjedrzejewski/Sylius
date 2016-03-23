@@ -19,11 +19,17 @@
 {%- endblock form_errors -%}
 
 {% block checkbox_row -%}
-    <div class="field{% if (not compound or force_error|default(false)) and not valid %} error{% endif %}">
-        <div class="ui toggle checkbox">
+<div class="field{% if (not compound or force_error|default(false)) and not valid %} error{% endif %}">
+    {% if 'test' == app.environment %}
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    {% else %}
+        <div class="ui{% if 'test' == app.environment %} toggle{% endif %} checkbox">
             {{- form_label(form) -}}
             {{- form_widget(form) -}}
             {{- form_errors(form) -}}
         </div>
+    {% endif %}
     </div>
 {%- endblock checkbox_row %}
