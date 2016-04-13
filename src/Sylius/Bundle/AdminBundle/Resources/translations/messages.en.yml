@@ -1,4 +1,5 @@
 sylius:
+<<<<<<< HEAD
     menu:
         admin:
             main:
@@ -6,6 +7,9 @@ sylius:
                     header: Catalog
                     product_options: Product options
                     taxons: Taxons
+                sales:
+                    header: Sales
+                    orders: Orders
                 configuration:
                     channels: Channels
                     countries: Countries

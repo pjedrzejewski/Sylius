@@ -77,6 +77,7 @@ sylius:
         powered_by: Powered by
         promotion_configuration: Promotion configuration
         promotion_information: Promotion information
+        purchased_from: Purchased from
         save_changes: Save changes
         shipping_methods: Shipping methods
         show: Show

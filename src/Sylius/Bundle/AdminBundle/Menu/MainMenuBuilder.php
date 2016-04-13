@@ -28,7 +28,11 @@ final class MainMenuBuilder extends AbstractAdminMenuBuilder
     {
         $menu = $this->factory->createItem('root');
 
-        $this->addConfigurationMenu($menu);
+        $this->configureSalesMenu($menu);
+        $this->configureMarketingSubMenu($menu);
+        $this->configureCustomersSubMenu($menu);
+        $this->configureCatalogSubMenu($menu);
+        $this->configureConfigurationSubMenu($menu);
 
         $this->eventDispatcher->dispatch(self::EVENT_NAME, new MenuBuilderEvent($this->factory, $menu));
 
@@ -38,12 +42,18 @@ final class MainMenuBuilder extends AbstractAdminMenuBuilder
     /**
      * @param ItemInterface $menu
      */
-    private function addConfigurationMenu(ItemInterface $menu)
+    private function configureSalesMenu(ItemInterface $menu)
     {
-        $this->configureMarketingSubMenu($menu);
-        $this->configureCustomersSubMenu($menu);
-        $this->configureCatalogSubMenu($menu);
-        $this->configureConfigurationSubMenu($menu);
+        $child = $menu
+            ->addChild('sales')
+            ->setLabel('sylius.menu.admin.main.sales.header')
+        ;
+
+        $child
+            ->addChild('orders', ['route' => 'sylius_admin_order_index'])
+            ->setLabel('sylius.menu.admin.main.sales.orders')
+            ->setLabelAttribute('icon', 'cart')
+        ;
     }
 
     /**

@@ -41,5 +41,9 @@
     });
 
     $('[data-requires-confirmation]').requireConfirmation();
+
+    $('.special.cards .image').dimmer({
+      on: 'hover'
+    });
   });
 })(jQuery);
