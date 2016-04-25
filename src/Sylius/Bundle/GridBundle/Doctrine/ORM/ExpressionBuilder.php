@@ -74,9 +74,10 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      */
     public function equals($field, $value)
     {
-        $this->queryBuilder->setParameter($field, $value);
+        $parameterName = str_replace('.', '_', $field);
+        $this->queryBuilder->setParameter($parameterName, $value);
 
-        return $this->queryBuilder->expr()->eq($this->getFieldName($field), ':'.$field);
+        return $this->queryBuilder->expr()->eq($this->getFieldName($field), ':'.$parameterName);
     }
 
     /**
@@ -118,7 +119,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      */
     public function greaterThanOrEqual($field, $value)
     {
-        $this->queryBuilder->andWhere($this->getFieldName($field).' => :%s'.$field)->setParameter($field, $value);
+        $this->queryBuilder->andWhere($this->getFieldName($field).' => :'.$field)->setParameter($field, $value);
     }
 
     /**

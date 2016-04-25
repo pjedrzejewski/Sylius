@@ -843,3 +843,4 @@ sylius_grid:
             delete: SyliusAdminBundle:Grid/Action:delete.html.twig
         filter:
             string: SyliusAdminBundle:Grid/Filter:string.html.twig
+            taxon: @SyliusWeb/Frontend/Product/Grid/Filter/taxon.html.twig

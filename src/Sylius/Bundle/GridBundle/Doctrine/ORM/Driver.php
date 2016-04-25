@@ -14,6 +14,7 @@ namespace Sylius\Bundle\GridBundle\Doctrine\ORM;
 use Doctrine\ORM\EntityManagerInterface;
 use Sylius\Component\Grid\Data\DriverInterface;
 use Sylius\Component\Grid\Parameters;
+use Webmozart\Assert\Assert;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
@@ -40,12 +41,10 @@ class Driver implements DriverInterface
      */
     public function getDataSource(array $configuration, Parameters $parameters)
     {
-        if (!array_key_exists('class', $configuration)) {
-            throw new \InvalidArgumentException('"class" must be configured.');
-        }
+        Assert::keyExists($configuration, 'class');
 
         $repository = $this->entityManager->getRepository($configuration['class']);
-        $queryBuilder = $repository->createQueryBuilder('o');
+        $queryBuilder = $repository->createListQueryBuilder();
 
         return new DataSource($queryBuilder);
     }
