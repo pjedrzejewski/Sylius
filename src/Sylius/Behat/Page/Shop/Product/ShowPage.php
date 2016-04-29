@@ -12,7 +12,6 @@
 namespace Sylius\Behat\Page\Shop\Product;
 
 use Sylius\Behat\Page\SymfonyPage;
-use Sylius\Component\Core\Model\ProductInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -53,25 +52,35 @@ class ShowPage extends SymfonyPage implements ShowPageInterface
     /**
      * {@inheritdoc}
      */
-    protected function getRouteName()
+    public function visit($url)
     {
-        // Intentionally left blank, overriding getUrl method not to use it
+        $absoluteUrl = $this->makePathAbsolute($url);
+        $this->getDriver()->visit($absoluteUrl);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getUrl(array $urlParameters = [])
+    public function getName()
     {
-        if (!isset($urlParameters['product']) || !$urlParameters['product'] instanceof ProductInterface) {
-            throw new \InvalidArgumentException(
-                'There should be only one url parameter passed to ProductShowPage '.
-                'named "product", containing an instance of Core\'s ProductInterface'
-            );
-        }
+        return $this->getElement('name')->getText();
+    }
 
-        $path = $this->router->generate($urlParameters['product']);
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteName()
+    {
+        return 'sylius_shop_product_show';
+    }
 
-        return $this->makePathAbsolute($path);
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefinedElements()
+    {
+        return array_merge(parent::getDefinedElements(), [
+            'name' => '#sylius_product_name',
+        ]);
     }
 }
