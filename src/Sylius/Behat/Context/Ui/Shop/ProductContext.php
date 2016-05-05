@@ -65,7 +65,7 @@ final class ProductContext implements Context
     /**
      * @When /^I open (this product) page$/
      */
-    public function iSelectThisProductFromList(ProductInterface $product)
+    public function iOpenProductPage(ProductInterface $product)
     {
         $this->showPage->open(['slug' => $product->getSlug()]);
     }
@@ -98,6 +98,17 @@ final class ProductContext implements Context
         Assert::true(
             $this->showPage->isOpen(['slug' => $product->getSlug()]),
             sprintf('Product %s show page should be open, but it does not.', $product->getName())
+        );
+    }
+
+    /**
+     * @Then I should see the product attribute :attributeName
+     */
+    public function iShouldSeeTheProductAttribute($attributeName)
+    {
+        Assert::true(
+            $this->showPage->isAttributeOnPage($attributeName),
+            sprintf('Product should have attribute %s, but it does not.', $attributeName)
         );
     }
 }

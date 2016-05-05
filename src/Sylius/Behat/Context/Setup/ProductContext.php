@@ -14,11 +14,13 @@ namespace Sylius\Behat\Context\Setup;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Common\Persistence\ObjectManager;
+use Sylius\Component\Attribute\Factory\AttributeFactoryInterface;
 use Sylius\Component\Core\Model\ChannelInterface;
 use Sylius\Component\Core\Model\ProductInterface;
 use Sylius\Component\Core\Model\ProductVariantInterface;
 use Sylius\Component\Core\Repository\ProductRepositoryInterface;
 use Sylius\Component\Core\Test\Services\SharedStorageInterface;
+use Sylius\Component\Product\Model\AttributeValueInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Taxation\Model\TaxCategoryInterface;
 
@@ -45,9 +47,19 @@ final class ProductContext implements Context
     private $productFactory;
 
     /**
+     * @var AttributeFactoryInterface
+     */
+    private $productAttributeFactory;
+
+    /**
      * @var FactoryInterface
      */
     private $productVariantFactory;
+
+    /**
+     * @var FactoryInterface
+     */
+    private $attributeValueFactory;
 
     /**
      * @var ObjectManager
@@ -58,20 +70,26 @@ final class ProductContext implements Context
      * @param SharedStorageInterface $sharedStorage
      * @param ProductRepositoryInterface $productRepository
      * @param FactoryInterface $productFactory
+     * @param AttributeFactoryInterface $productAttributeFactory
      * @param FactoryInterface $productVariantFactory
+     * @param FactoryInterface $attributeValueFactory
      * @param ObjectManager $objectManager
      */
     public function __construct(
         SharedStorageInterface $sharedStorage,
         ProductRepositoryInterface $productRepository,
         FactoryInterface $productFactory,
+        AttributeFactoryInterface $productAttributeFactory,
         FactoryInterface $productVariantFactory,
+        FactoryInterface $attributeValueFactory,
         ObjectManager $objectManager
     ) {
         $this->sharedStorage = $sharedStorage;
         $this->productRepository = $productRepository;
         $this->productFactory = $productFactory;
+        $this->productAttributeFactory = $productAttributeFactory;
         $this->productVariantFactory = $productVariantFactory;
+        $this->attributeValueFactory = $attributeValueFactory;
         $this->objectManager = $objectManager;
     }
 
@@ -167,6 +185,27 @@ final class ProductContext implements Context
     ) {
         $productVariant->setTaxCategory($taxCategory);
         $this->objectManager->flush($productVariant);
+    }
+
+    /**
+     * @Given /^(this product) has ([^"]+) attribute "([^"]+)" with value "([^"]+)"$/
+     */
+    public function thisProductHasTextAttribute(ProductInterface $product, $productAttributeType, $productAttributeName, $value)
+    {
+        $productAttribute = $this->productAttributeFactory->createTyped($productAttributeType);
+        $productAttribute->setCode('PA1');
+        $productAttribute->setName($productAttributeName);
+
+        /** @var AttributeValueInterface $attributeValue */
+        $attributeValue = $this->attributeValueFactory->createNew();
+        $attributeValue->setAttribute($productAttribute);
+        $attributeValue->setValue($value);
+
+        $product->addAttribute($attributeValue);
+
+        $this->objectManager->persist($productAttribute);
+        $this->objectManager->persist($attributeValue);
+        $this->objectManager->flush();
     }
 
     /**

@@ -47,4 +47,11 @@ interface ShowPageInterface extends PageInterface
      * @param string $url
      */
     public function visit($url);
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function isAttributeOnPage($name);
 }

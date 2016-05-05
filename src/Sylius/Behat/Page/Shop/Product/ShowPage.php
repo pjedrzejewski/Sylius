@@ -11,8 +11,9 @@
 
 namespace Sylius\Behat\Page\Shop\Product;
 
-use Sylius\Behat\Page\SymfonyPage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Sylius\Behat\Page\SymfonyPage;
 
 /**
  * @author Arkadiusz Krakowiak <arkadiusz.krakowiak@lakion.com>
@@ -69,6 +70,21 @@ class ShowPage extends SymfonyPage implements ShowPageInterface
     /**
      * {@inheritdoc}
      */
+    public function isAttributeOnPage($name)
+    {
+        $rows = $this->getElement('attributes')->findAll('css', 'tbody > tr > td');
+        foreach($rows as $row) {
+            if($name === $row->getText()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function getRouteName()
     {
         return 'sylius_shop_product_show';
@@ -81,6 +97,7 @@ class ShowPage extends SymfonyPage implements ShowPageInterface
     {
         return array_merge(parent::getDefinedElements(), [
             'name' => '#sylius_product_name',
+            'attributes' => '#product-attributes'
         ]);
     }
 }
