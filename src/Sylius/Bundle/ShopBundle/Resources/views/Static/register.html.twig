@@ -1,0 +1,44 @@
+{% extends 'SyliusShopBundle:Static:layout.html.twig' %}
+
+{% block content %}
+<h1 class="ui header">
+    <i class="circular user icon"></i>
+    <div class="content">
+        Register in the store
+        <div class="sub header">Create new customer account</div>
+    </div>
+</h1>
+
+<div class="ui padded segment">
+    <form class="ui form">
+        <h4 class="ui dividing header">Personal information</h4>
+        <div class="field">
+            <label>Name</label>
+            <div class="two fields">
+                <div class="field">
+                    <input type="text" name="shipping[first-name]" placeholder="First Name">
+                </div>
+                <div class="field">
+                    <input type="text" name="shipping[last-name]" placeholder="Last Name">
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label>E-Mail</label>
+            <input type="text" name="shipping[last-name]" placeholder="E-Mail">
+        </div>
+        <h4 class="ui dividing header">Account credentials</h4>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="shipping[last-name]" />
+        </div>
+        <div class="field">
+            <label>Confirm password</label>
+            <input type="password" name="shipping[last-name]" />
+        </div>
+        <button type="submit" class="ui large primary button">
+            Create an account
+        </button>
+    </form>
+</div>
+{% endblock %}

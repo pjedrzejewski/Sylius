@@ -5,3 +5,57 @@ sylius_shop_homepage:
 
 sylius_shop_product:
     resource: "@SyliusShopBundle/Resources/config/routing/product.yml"
+
+sylius_shop_static_homepage:
+    path: /static/homepage
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:homepage.html.twig
+
+sylius_shop_static_cart:
+    path: /static/cart
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:cart.html.twig
+
+sylius_shop_static_register:
+    path: /static/register
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:register.html.twig
+
+sylius_shop_static_login:
+    path: /static/login
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:login.html.twig
+
+sylius_shop_checkout_shipping:
+    path: /static/checkout/shipping
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:Checkout/shipping.html.twig
+
+sylius_shop_checkout_addressing:
+    path: /static/checkout/addressing
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:Checkout/addressing.html.twig
+
+sylius_shop_checkout_summary:
+    path: /static/checkout/summary
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:Checkout/summary.html.twig
+
+sylius_shop_checkout_thank_you:
+    path: /static/checkout/thank-you
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:Checkout/thankYou.html.twig
+
+sylius_shop_product_show:
+    path: /static/product
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:product.html.twig

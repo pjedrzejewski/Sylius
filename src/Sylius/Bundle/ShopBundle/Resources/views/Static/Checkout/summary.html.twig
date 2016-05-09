@@ -1,0 +1,133 @@
+{% extends 'SyliusShopBundle:Static:checkoutLayout.html.twig' %}
+
+{% block content %}
+<div class="ui four steps">
+    <a class="completed step" href="#">
+        <i class="map icon"></i>
+        <div class="content">
+            <div class="title">Addressing</div>
+            <div class="description">Specify your billing and shipping address</div>
+        </div>
+    </a>
+    <div class="completed step">
+        <i class="truck icon"></i>
+        <div class="content">
+            <div class="title">Shipping</div>
+            <div class="description">Choose your shipping method</div>
+        </div>
+    </div>
+    <div class="completed step">
+        <i class="payment icon"></i>
+        <div class="content">
+            <div class="title">Payment</div>
+            <div class="description">Choose your payment method</div>
+        </div>
+    </div>
+    <div class="active step">
+        <i class="checkered flag icon"></i>
+        <div class="content">
+            <div class="title">Summary</div>
+            <div class="description">Confirm your order</div>
+        </div>
+    </div>
+</div>
+<div class="ui padded segment">
+    <table class="ui celled table">
+        <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Simple T-Shirt</td>
+            <td>$14.00</td>
+            <td class="center aligned">
+                1
+            </td>
+            <td class="right aligned">$14.00</td>
+        </tr>
+        <tr>
+            <td>Mug Bomb</td>
+            <td>$20.00</td>
+            <td class="center aligned">
+                2
+            </td>
+            <td class="right aligned">$40.00</td>
+        </tr>
+        <tr>
+            <td>Sticker Kiki</td>
+            <td>$5.00</td>
+            <td class="center aligned">
+                1
+            </td>
+            <td class="right aligned">$10.00</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="right aligned">
+                Tax: $10.00
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="right aligned" style="font-size: 1.5em;">
+                Total: $110.00
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="ui two column stackable grid">
+        <div class="column">
+            <h4 class="ui dividing header">Shipping address</h4>
+            <address>
+                <strong>John Doe</strong><br>
+                +48 213 432 123<br/>
+                Dubois 114/116<br/>
+                London<br/>
+                <i class="pl flag"></i>
+                Poland 94-254
+            </address>
+        </div>
+        <div class="column">
+            <h4 class="ui dividing header">Billing address</h4>
+            <address>
+                <strong>John Doe</strong><br/>
+                +48 213 432 123<br/>
+                Dubois 114/116<br/>
+                London<br/>
+                <i class="pl flag"></i>
+                Poland 94-254
+            </address>
+        </div>
+    </div>
+    <h4 class="ui dividing header">Shipping and payment methods</h4>
+    <div class="ui two column stackable grid">
+        <div class="column">
+            <div class="ui large icon message">
+                <i class="truck icon"></i>
+                <div class="content">
+                    <div class="header">
+                        FedEx Express
+                    </div>
+                    <p>Get the best delivery service and get your goods next day.</p>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="ui large icon message">
+                <i class="payment icon"></i>
+                <div class="content">
+                    <div class="header">
+                        Payment with cash
+                    </div>
+                    <p>Paying with cash on delivery.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui hidden divider"></div>
+    <button type="submit" class="ui large primary icon labeled button"><i class="check icon"></i> Place order</button>
+</div>
+{% endblock %}

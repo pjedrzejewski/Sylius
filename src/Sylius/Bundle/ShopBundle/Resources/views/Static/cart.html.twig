@@ -1,0 +1,112 @@
+{% extends 'SyliusShopBundle:Static:layout.html.twig' %}
+
+{% block content %}
+<h1 class="ui header">
+    <i class="circular cart icon"></i>
+    <div class="content">
+        Your shopping cart
+        <div class="sub header">Edit your items, apply coupon or proceed to the checkout process</div>
+    </div>
+</h1>
+
+<div class="ui stackable grid">
+    <div class="eleven wide column">
+        <div class="ui segment">
+            <table class="ui very basic celled table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Simple T-Shirt</td>
+                        <td>$14.00</td>
+                        <td class="center aligned">
+                            <div class="ui input">
+                                <input type="text" value="1" class="ui center aligned" />
+                            </div>
+                        </td>
+                        <td>$14.00</td>
+                        <td class="center aligned">
+                            <a href="#" class="ui circular icon button"><i class="remove icon"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mug Bomb</td>
+                        <td>$20.00</td>
+                        <td class="center aligned">
+                            <div class="ui input">
+                                <input type="text" value="2" class="ui center aligned" />
+                            </div>
+                        </td>
+                        <td>$40.00</td>
+                        <td class="center aligned">
+                            <a href="#" class="ui circular icon button"><i class="remove icon"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sticker Kiki</td>
+                        <td>$5.00</td>
+                        <td class="center aligned">
+                            <div class="ui input">
+                                <input type="text" value="1" class="ui center aligned" />
+                            </div>
+                        </td>
+                        <td>$10.00</td>
+                        <td class="center aligned">
+                            <a href="#" class="ui circular icon button"><i class="remove icon"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="ui hidden divider"></div>
+            <div class="ui two column grid">
+                <div class="column">
+                    <div class="ui action input">
+                        <input type="text" placeholder="Enter your code...">
+                        <button class="ui teal icon labeled button"><i class="ticket icon"></i> Apply coupon</button>
+                    </div>
+                </div>
+                <div class="right aligned column">
+                    <button type="submit" class="ui labeled icon button"><i class="save icon"></i> Update cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="five wide column">
+        <div class="ui segment">
+            <h2 class="ui dividing header">Summary</h2>
+            <table class="ui very basic table">
+                <tbody>
+                    <tr>
+                        <td>Subtotal:</td>
+                        <td class="right aligned">$50.00</td>
+                    </tr>
+                    <tr>
+                        <td>Tax:</td>
+                        <td class="right aligned">$10.00</td>
+                    </tr>
+                    <tr>
+                        <td>Shipping:</td>
+                        <td class="right aligned">$10.00</td>
+                    </tr>
+                    <tr>
+                        <td>Discount:</td>
+                        <td class="right aligned">-$10.00</td>
+                    </tr>
+                    <tr style="font-size: 2em;">
+                        <td>Order total:</td>
+                        <td class="right aligned">$100.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="#" class="ui large primary center aligned fluid button">Go to Checkout</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

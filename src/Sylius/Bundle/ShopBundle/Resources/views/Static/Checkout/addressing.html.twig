@@ -1,0 +1,92 @@
+{% extends 'SyliusShopBundle:Static:checkoutLayout.html.twig' %}
+
+{% block content %}
+<div class="ui four steps">
+    <a class="active step" href="#">
+        <i class="map icon"></i>
+        <div class="content">
+            <div class="title">Addressing</div>
+            <div class="description">Specify your billing and shipping address</div>
+        </div>
+    </a>
+    <div class="disabled step">
+        <i class="truck icon"></i>
+        <div class="content">
+            <div class="title">Shipping</div>
+            <div class="description">Choose your shipping method</div>
+        </div>
+    </div>
+    <div class="disabled step">
+        <i class="payment icon"></i>
+        <div class="content">
+            <div class="title">Payment</div>
+            <div class="description">Choose your payment method</div>
+        </div>
+    </div>
+    <div class="disabled step">
+        <i class="checkered flag icon"></i>
+        <div class="content">
+            <div class="title">Summary</div>
+            <div class="description">Confirm your order</div>
+        </div>
+    </div>
+</div>
+<div class="ui stackable grid">
+    <div class="eleven wide column">
+        <div class="ui padded segment">
+            <form class="ui form">
+                <h4 class="ui dividing header">Shipping Information</h4>
+                <div class="field">
+                    <label>Name</label>
+                    <div class="two fields">
+                        <div class="field">
+                            <input type="text" name="shipping[first-name]" placeholder="First Name">
+                        </div>
+                        <div class="field">
+                            <input type="text" name="shipping[last-name]" placeholder="Last Name">
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Billing Address</label>
+                    <div class="fields">
+                        <div class="twelve wide field">
+                            <input type="text" name="shipping[address]" placeholder="Street Address">
+                        </div>
+                        <div class="four wide field">
+                            <input type="text" name="shipping[address-2]" placeholder="Apt #">
+                        </div>
+                    </div>
+                </div>
+                <div class="two fields">
+                    <div class="field">
+                        <label>State</label>
+                        <select class="ui fluid dropdown">
+                            <option value="">State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Country</label>
+                        <div class="ui fluid search selection dropdown">
+                            <input type="hidden" name="country">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">Select Country</div>
+                            <div class="menu">
+                                <div class="item" data-value="af"><i class="af flag"></i>Afghanistan</div>
+                                <div class="item" data-value="ax"><i class="ax flag"></i>Aland Islands</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="ui hidden divider"></div>
+            <button type="submit" class="ui large primary icon labeled button"><i class="arrow right icon"></i> Next</button>
+        </div>
+    </div>
+    <div class="five wide column">
+        {% include '@SyliusShop/Static/Checkout/_summary.html.twig' %}
+    </div>
+</div>
+{% endblock %}
