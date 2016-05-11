@@ -1,4 +1,249 @@
 {% extends 'SyliusShopBundle:Static:layout.html.twig' %}
 
 {% block content %}
+<div class="ui padded basic segment">
+    <div class="ui breadcrumb">
+        <a class="section">Home</a>
+        <div class="divider"> / </div>
+        <a class="section">Beers</a>
+        <div class="divider"> / </div>
+        <div class="active section">BudLight Beer</div>
+    </div>
+</div>
+
+<div class="ui two column stackable grid">
+    <div class="column">
+        <a href="#" class="ui fluid image">
+            <img src="http://placehold.it/400x300" />
+        </a>
+        <div class="ui divider"></div>
+        <div class="ui small images">
+            <a href="#" class="ui image">
+                <img src="http://placehold.it/150x100" />
+            </a>
+            <a href="#" class="ui image">
+                <img src="http://placehold.it/150x100" />
+            </a>
+            <a href="#" class="ui image">
+                <img src="http://placehold.it/150x100" />
+            </a>
+        </div>
+    </div>
+    <div class="column">
+        <h1 class="ui monster header">BudLight Beer</h1>
+        <div class="ui text menu">
+            <div class="item">
+                <div class="ui star rating" data-rating="4" data-max-rating="5"></div>
+            </div>
+            <a href="#" class="item">
+               4 Reviews
+            </a>
+            <a href="#" class="item">
+                Add your review
+            </a>
+        </div>
+        <div class="ui two column stackable grid">
+            <div class="column">
+                <h2 class="ui huge header">
+                    $45.00
+                </h2>
+            </div>
+            <div class="right aligned column">
+                <h3 class="ui sub header">
+                    Out of stock
+                </h3>
+                <span>Code: BUDLIGHT-24X</span>
+            </div>
+        </div>
+        <div class="ui basic segment">
+            <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+            </p>
+        </div>
+        <form class="ui form">
+            <div class="inline fields">
+                <label>Quantity</label>
+                <div class="field">
+                    <input type="text" value="1" />
+                </div>
+                <button type="submit" class="ui huge primary icon labeled button"><i class="cart icon"></i> Add to cart</button>
+            </div>
+        </form>
+        <div class="ui hidden divider"></div>
+        <div class="ui compact text menu">
+            <div class="header item">Share via</div>
+            <a class="item">
+                <i class="twitter icon"></i>
+                Twitter
+            </a>
+            <a class="item">
+                <i class="facebook icon"></i>
+                Facebook
+            </a>
+            <a class="item">
+                <i class="mail icon"></i>
+                E-Mail
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="ui top attached large tabular menu">
+    <a class="item active" data-tab="details">Details</a>
+    <a class="item" data-tab="attributes">Attributes</a>
+    <a class="item" data-tab="reviews">Reviews</a>
+</div>
+<div class="ui bottom attached tab segment active" data-tab="details">
+    Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC.
+
+    <ul>
+        <li>Ludwig von Mises</li>
+        <li>F.A. Hayek</li>
+        <li>Bastiat</li>
+        <li>Adam Smith</li>
+        <li>Milton Friedman</li>
+    </ul>
+</div>
+<div class="ui bottom attached tab segment" data-tab="attributes">
+    <table class="ui definition table">
+        <tbody>
+        <tr>
+            <td>Brand</td>
+            <td>Adidas</td>
+        </tr>
+        <tr>
+            <td>Has assurance?</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>Responsive</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Alcohol</td>
+            <td>12%</td>
+        </tr>
+        <tr>
+            <td>Date of premiere</td>
+            <td>21.11.2010</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="ui bottom attached tab segment" data-tab="reviews">
+    <div class="ui large comments">
+        <div class="comment">
+            <a class="avatar">
+                <img src="{{ asset('assets/shop/img/avatar.png') }}">
+            </a>
+            <div class="content">
+                <a class="author">Tom Lukic</a>
+                <div class="metadata">
+                    <div class="date">2 days ago</div>
+                    <div class="rating">
+                        <div class="ui star rating" data-rating="4" data-max-rating="5"></div>
+                    </div>
+                </div>
+                <div class="text">
+                    This will be great for business reports. I will definitely download this.
+                </div>
+            </div>
+        </div>
+        <div class="comment">
+            <a class="avatar">
+                <img src="{{ asset('assets/shop/img/avatar.png') }}">
+            </a>
+            <div class="content">
+                <a class="author">Ricky Martin</a>
+                <div class="metadata">
+                    <div class="date">1 week ago</div>
+                    <div class="rating">
+                        <div class="ui star rating" data-rating="1" data-max-rating="5"></div>
+                    </div>
+                </div>
+                <div class="text">
+                    I am not happy with this product.
+                </div>
+            </div>
+        </div>
+        <div class="ui dividing header">
+            Write your own review
+            <div class="sub header">
+                You are reviewing: <strong>BudLight Beer</strong>
+            </div>
+        </div>
+        <form class="ui reply form">
+            <div class="field">
+                <div class="ui huge star rating" data-rating="3" data-max-rating="5"></div>
+            </div>
+            <div class="field">
+                <textarea></textarea>
+            </div>
+            <div class="ui blue labeled submit icon button">
+                <i class="icon edit"></i> Add review
+            </div>
+        </form>
+    </div>
+</div>
+
+<h4 class="ui horizontal section divider header">
+    You may also like
+</h4>
+
+<div class="ui doubling stackable cards">
+    <div class="card">
+        <a href="#" class="blurring dimmable image">
+            <div class="ui dimmer">
+                <div class="content">
+                    <div class="center">
+                        <div class="ui inverted button">View more</div>
+                    </div>
+                </div>
+            </div>
+            <img src="http://placehold.it/200x200">
+        </a>
+        <div class="content">
+            <a href="#" class="header">Tyskie</a>
+        </div>
+        <div class="extra right aligned content">
+            <strong>$4.99</strong>
+        </div>
+    </div>
+    <div class="card">
+        <a href="#" class="blurring dimmable image">
+            <div class="ui dimmer">
+                <div class="content">
+                    <div class="center">
+                        <div class="ui inverted button">View more</div>
+                    </div>
+                </div>
+            </div>
+            <img src="http://placehold.it/200x200">
+        </a>
+        <div class="content">
+            <a href="#" class="header">Perła</a>
+        </div>
+        <div class="extra right aligned content">
+            <strong>$1.99</strong>
+        </div>
+    </div>
+    <div class="card">
+        <a href="#" class="blurring dimmable image">
+            <div class="ui dimmer">
+                <div class="content">
+                    <div class="center">
+                        <div class="ui inverted button">View more</div>
+                    </div>
+                </div>
+            </div>
+            <img src="http://placehold.it/200x200">
+        </a>
+        <div class="content">
+            <a href="#" class="header">Warka</a>
+        </div>
+        <div class="extra right aligned content">
+            <strong>$2.99</strong>
+        </div>
+    </div>
+</div>
 {% endblock %}
