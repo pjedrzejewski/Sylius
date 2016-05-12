@@ -1,0 +1,165 @@
+{% extends 'SyliusShopBundle:Static:layout.html.twig' %}
+
+{% block content %}
+<div class="ui breadcrumb">
+    <a class="section">Home</a>
+    <div class="divider"> / </div>
+    <a class="section">Alcohol</a>
+    <div class="divider"> / </div>
+    <div class="active section">Beer</div>
+</div>
+
+<h1 class="ui monster section dividing header">
+    Hoodies and Sweatshirts
+    <div class="sub header">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</div>
+</h1>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui stackable grid">
+    <div class="four wide column">
+        <div class="ui fluid vertical menu">
+            <div class="header item">Alcohol</div>
+            <a class="active item">Beer</a>
+            <a class="item">Wine</a>
+            <a class="item">Vodka</a>
+        </div>
+        <div class="ui vertical fluid accordion menu">
+            <div class="item">
+                <a class="active title">
+                    <i class="dropdown icon"></i>
+                    Size
+                </a>
+                <div class="active content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="size" value="small">
+                                    <label>Small</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="size" value="medium">
+                                    <label>Medium</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="size" value="large">
+                                    <label>Large</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="size" value="x-large">
+                                    <label>X-Large</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <a class="title">
+                    <i class="dropdown icon"></i>
+                    Colors
+                </a>
+                <div class="content">
+                    <div class="ui form">
+                        <div class="grouped fields">
+                            <div class="field">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="small">
+                                    <label>Red</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="medium">
+                                    <label>Orange</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="large">
+                                    <label>Green</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="x-large">
+                                    <label>Blue</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <button type="submit" class="ui large fluid icon labeled button"><i class="filter icon"></i> Filter</button>
+    </div>
+    <div class="twelve wide column">
+        <div class="ui two column stackable grid">
+            <div class="column">
+                <div class="ui compact text menu">
+                    <div class="item">Show</div>
+                    <div class="ui dropdown item">
+                        25
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item">50</div>
+                            <div class="item">100</div>
+                        </div>
+                    </div>
+                    <div class="item">per page</div>
+                    <div class="item"></div>
+                </div>
+            </div>
+            <div class="right aligned column">
+                <div class="ui compact text menu">
+                    <div class="header item">Sort by</div>
+                    <div class="ui dropdown item">
+                        Position
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item">Name</div>
+                            <div class="item">Price</div>
+                        </div>
+                    </div>
+                    <a href="#" class="icon item">
+                        <i class="sort content ascending icon"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="ui three column stackable grid">
+            {% for i in 1..13 %}
+                <div class="column">
+                {% include '@SyliusShop/Static/_productBox.html.twig' %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="ui pagination menu">
+            <a class="active item">
+                1
+            </a>
+            <div class="disabled item">
+                ...
+            </div>
+            <a class="item">
+                10
+            </a>
+            <a class="item">
+                11
+            </a>
+            <a class="item">
+                12
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

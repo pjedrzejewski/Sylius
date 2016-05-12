@@ -59,3 +59,9 @@ sylius_shop_product_show:
     defaults:
         _controller: FrameworkBundle:Template:template
         template:    SyliusShopBundle:Static:product.html.twig
+
+sylius_shop_product_index:
+    path: /static/product-listing
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static:productListing.html.twig
