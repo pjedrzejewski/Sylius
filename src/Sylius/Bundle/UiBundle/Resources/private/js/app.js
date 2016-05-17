@@ -37,6 +37,12 @@
     $('.ui.rating').rating('disable');
     $('.ui.tabular.menu .item').tab();
     $('.card .image').dimmer({on: 'hover'});
+    $('.cart.button')
+        .popup({
+            popup: $('.cart.popup'),
+            on: 'click',
+        })
+    ;
 
     $('.form button').on('click', function() {
       return $(this).closest('form').addClass('loading');

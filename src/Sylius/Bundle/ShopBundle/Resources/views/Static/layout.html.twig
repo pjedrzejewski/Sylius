@@ -40,7 +40,17 @@
                 {% include 'SyliusShopBundle:Static:_search.html.twig' %}
             </div>
             <div class="right aligned column">
-                <a href="#" class="ui circular icon button"><i class="cart icon"></i></a>
+                <div class="ui circular cart button" data-position="bottom center"><i class="cart icon"></i> $49.00, 1 items(s)</div>
+                <div class="ui large flowing cart popup hidden">
+                    <div class="ui list">
+                        <div class="item">2 x <strong>Sylius T-Shirt</strong> $15,00</div>
+                        <div class="item">1 x <strong>Bud Light Beer</strong> $5,00</div>
+                        <div class="item">Subtotal: $20,00</div>
+                    </div>
+                    <a href="#" class="ui fluid basic text button">View and edit cart</a>
+                    <div class="ui divider"></div>
+                    <a href="#" class="ui fluid primary button">Checkout</a>
+                </div>
             </div>
         </div>
     </div>
