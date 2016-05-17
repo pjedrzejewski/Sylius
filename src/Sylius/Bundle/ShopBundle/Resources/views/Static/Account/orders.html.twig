@@ -1,0 +1,86 @@
+{% extends 'SyliusShopBundle:Static:layout.html.twig' %}
+
+{% block content %}
+<div class="ui breadcrumb">
+    <a class="section">Home</a>
+    <div class="divider"> / </div>
+    <a class="section">My account</a>
+    <div class="divider"> / </div>
+    <div class="active section">Order history</div>
+</div>
+
+<div class="ui stackable grid">
+    <div class="four wide column">
+        {% include '@SyliusShop/Static/Account/_menu.html.twig' %}
+    </div>
+    <div class="twelve wide column">
+        <h1 class="ui monster section dividing header">
+            Order history
+            <div class="sub header">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</div>
+        </h1>
+        <table class="ui table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Number</th>
+                    <th>Total</th>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>21st of May, 2016</td>
+                    <td>#00004249</td>
+                    <td>$124,20</td>
+                    <td><span class="ui teal label">Completed</span></td>
+                    <td>
+                        <a href="#" class="ui labeled icon button">
+                            <i class="download icon"></i>
+                            Download invoice
+                        </a>
+                        <a href="#" class="ui labeled icon button">
+                            <i class="search icon"></i>
+                            View
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>21st of May, 2016</td>
+                    <td>#00004249</td>
+                    <td>$124,20</td>
+                    <td><span class="ui yellow label">Cancelled</span></td>
+                    <td>
+                        <div class="ui disabled labeled icon button">
+                            <i class="download icon"></i>
+                            Download invoice
+                        </div>
+                        <a href="#" class="ui labeled icon button">
+                            <i class="search icon"></i>
+                            View
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="ui hidden divider"></div>
+        <div class="ui pagination menu">
+            <a class="active item">
+                1
+            </a>
+            <div class="disabled item">
+                ...
+            </div>
+            <a class="item">
+                10
+            </a>
+            <a class="item">
+                11
+            </a>
+            <a class="item">
+                12
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

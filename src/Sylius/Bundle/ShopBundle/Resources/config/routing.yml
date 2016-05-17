@@ -65,3 +65,21 @@ sylius_shop_product_index:
     defaults:
         _controller: FrameworkBundle:Template:template
         template:    SyliusShopBundle:Static:productListing.html.twig
+
+sylius_shop_account_dashboard:
+    path: /static/account/dashboard
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static/Account:dashboard.html.twig
+
+sylius_shop_account_orders:
+    path: /static/account/orders
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static/Account:orders.html.twig
+
+sylius_shop_account_change_password:
+    path: /static/account/change-password
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    SyliusShopBundle:Static/Account:changePassword.html.twig
