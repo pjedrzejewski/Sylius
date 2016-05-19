@@ -1,0 +1,80 @@
+{
+    "name":        "sylius/sylius-standard",
+    "description": "Starting point for projects powered by Sylius eCommerce.",
+    "keywords":    ["symfony", "symfony2", "sylius", "distribution", "ecommerce", "cart", "shopping"],
+    "type":        "project",
+    "license":     "MIT",
+    "homepage":    "http://sylius.org",
+    "authors": [
+        {
+            "name":     "Paweł Jędrzejewski",
+            "homepage": "http://pjedrzejewski.com"
+        },
+        {
+            "name":     "Sylius project",
+            "homepage": "http://sylius.org"
+        },
+        {
+            "name":     "Community contributions",
+            "homepage": "http://github.com/Sylius/Sylius/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+
+        "sylius/sylius": "0.18.*@dev",
+        "sensio/generator-bundle": "^2.3",
+        "sensio/distribution-bundle": "^3.0"
+    },
+    "require-dev": {
+        "behat/behat": "^3.0",
+        "behat/symfony2-extension": "^2.0",
+        "behat/mink-extension": "^2.0",
+        "behat/mink-browserkit-driver": "^1.2",
+        "behat/mink-selenium2-driver": "^1.2",
+        "behat/mink":  "^1.6",
+        "coduo/php-matcher": "^2.1@dev",
+        "phpspec/phpspec": "^2.4",
+        "phpunit/phpunit": "^4.1",
+        "lakion/api-test-case": "^1.0@dev"
+    },
+    "minimum-stability": "RC",
+    "prefer-stable": true,
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Symfony\\Cmf\\Bundle\\CreateBundle\\Composer\\ScriptHandler::downloadCreateAndCkeditor",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Symfony\\Cmf\\Bundle\\CreateBundle\\Composer\\ScriptHandler::downloadCreateAndCkeditor",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
+        ]
+    },
+    "autoload": {
+        "psr-0": {
+            "": "src/",
+            "Context": "features/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.17-dev"
+        },
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        }
+    }
+}

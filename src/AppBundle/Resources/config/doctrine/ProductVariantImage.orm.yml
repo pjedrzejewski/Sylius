@@ -1,0 +1,7 @@
+AppBundle\Entity\ProductVariantImage:
+     type: entity
+     table: sylius_product_variant_image
+     fields:
+         position:
+             type: integer
+             nullable: true
