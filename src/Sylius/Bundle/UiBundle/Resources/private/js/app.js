@@ -32,6 +32,7 @@
 
     $('.ui.checkbox').checkbox();
     $('.ui.accordion').accordion();
+    $('.ui.dropdown').dropdown();
     $('.link.ui.dropdown').dropdown({action: 'hide'});
     $('.button.ui.dropdown').dropdown({action: 'hide'});
     $('.menu .item').tab();
