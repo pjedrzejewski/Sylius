@@ -126,6 +126,7 @@ sylius:
         not_in: Not in
         onhold: Onhold
         or: or
+        order_total: Order total
         partially_shipped: Partially shipped
         per_customer_usage_limit: Per customer usage limit
         powered_by: Powered by
@@ -143,6 +144,7 @@ sylius:
         returns_policy: Returns Policy
         save_changes: Save changes
         shipped: Shipped
+        shipping: Shipping
         shipping_methods: Shipping methods
         show: Show
         sign_in: Sign in
