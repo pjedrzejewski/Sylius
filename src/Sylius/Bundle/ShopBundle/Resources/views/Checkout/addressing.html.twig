@@ -1,0 +1,54 @@
+{% extends '@SyliusShop/Layout/main.html.twig' %}
+
+{% form_theme form 'SyliusUiBundle:Form:theme.html.twig' %}
+
+{% block content %}
+    <div class="ui four steps">
+        <a class="active step" href="#">
+            <i class="map icon"></i>
+            <div class="content">
+                <div class="title">Addressing</div>
+                <div class="description">Specify your billing and shipping address</div>
+            </div>
+        </a>
+        <div class="disabled step">
+            <i class="truck icon"></i>
+            <div class="content">
+                <div class="title">Shipping</div>
+                <div class="description">Choose your shipping method</div>
+            </div>
+        </div>
+        <div class="disabled step">
+            <i class="payment icon"></i>
+            <div class="content">
+                <div class="title">Payment</div>
+                <div class="description">Choose your payment method</div>
+            </div>
+        </div>
+        <div class="disabled step">
+            <i class="checkered flag icon"></i>
+            <div class="content">
+                <div class="title">Summary</div>
+                <div class="description">Confirm your order</div>
+            </div>
+        </div>
+    </div>
+    <div class="ui stackable grid">
+        <div class="eleven wide column">
+            <div class="ui padded segment">
+                {{ form_start(form, {'action': path('sylius_shop_checkout_addressing'), 'attr': {'class': 'ui form', 'novalidate': 'novalidate'}}) }}
+                    <input type="hidden" name="_method" value="PUT" />
+                    {{ form_widget(form.shippingAddress) }}
+
+                    <strong>{{ order.checkoutState }}</strong>
+
+                    <div class="ui hidden divider"></div>
+                    <button type="submit" class="ui large primary icon labeled button"><i class="arrow right icon"></i> Next</button>
+                {{ form_row(form._token) }}
+                {{ form_end(form, {'render_rest': false}) }}
+            </div>
+        </div>
+        <div class="five wide column">
+        </div>
+    </div>
+{% endblock %}
