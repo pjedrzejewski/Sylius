@@ -41,7 +41,8 @@ class DelegatingCalculator implements DelegatingCalculatorInterface
     public function calculate(ShippingSubjectInterface $subject)
     {
         if (null === $method = $subject->getMethod()) {
-            throw new UndefinedShippingMethodException('Cannot calculate charge for shipping subject without defined shipping method.');
+            //throw new UndefinedShippingMethodException('Cannot calculate charge for shipping subject without defined shipping method.');
+            return 0;
         }
 
         $calculator = $this->registry->get($method->getCalculator());

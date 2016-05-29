@@ -1,5 +1,25 @@
 (function($) {
   $.fn.extend({
+    toggleElement: function() {
+      return this.each(function() {
+        $(this).on('change', function(event) {
+          event.preventDefault();
+
+          var toggleElement = $(this);
+          var targetElement = $('#' + toggleElement.data('toggles'));
+
+          if (toggleElement.is(':checked')) {
+            targetElement.show();
+          } else {
+            targetElement.hide();
+          }
+        });
+
+        return $(this).trigger('change');
+      });
+    }
+  });
+  $.fn.extend({
     requireConfirmation: function() {
       return this.each(function() {
         return $(this).on('click', function(event) {
@@ -36,6 +56,12 @@
     $('.link.ui.dropdown').dropdown({action: 'hide'});
     $('.button.ui.dropdown').dropdown({action: 'hide'});
     $('.menu .item').tab();
+    $('.cart.button')
+        .popup({
+          popup: $('.cart.popup'),
+          on: 'click',
+        })
+    ;
 
     $('.form button').on('click', function() {
       return $(this).closest('form').addClass('loading');
@@ -45,6 +71,7 @@
     });
 
     $('[data-requires-confirmation]').requireConfirmation();
+    $('[data-toggles]').toggleElement();
 
     $('.special.cards .image').dimmer({
       on: 'hover'
