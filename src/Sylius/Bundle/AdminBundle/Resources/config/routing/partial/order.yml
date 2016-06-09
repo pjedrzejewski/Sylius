@@ -8,6 +8,15 @@ sylius_admin_partial_order_latest:
                 arguments: [$count]
             template: $template
 
+sylius_admin_partial_order_by_customer:
+    path: /customers/{customerId}/orders
+    defaults:
+        _controller: sylius.controller.order:indexAction
+        _sylius:
+            template: $template
+            grid: sylius_admin_order_by_customer
+            section: admin
+
 sylius_admin_partial_order_shipment_ship:
     path: /orders/{orderId}/shipments/{id}/ship
     methods: [GET, PUT]

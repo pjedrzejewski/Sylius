@@ -20,6 +20,7 @@ use Sylius\Component\Order\Repository\OrderRepositoryInterface as BaseOrderRepos
 interface OrderRepositoryInterface extends BaseOrderRepositoryInterface
 {
     public function createListQueryBuilder();
+    public function createByCustomerIdQueryBuilder($customerId);
 
     /**
      * @param \DateTime $expiresAt

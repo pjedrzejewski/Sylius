@@ -69,3 +69,58 @@ sylius_grid:
                         type: show
                     delete:
                         type: delete
+
+        sylius_admin_order_by_customer:
+            driver:
+                name: doctrine/orm
+                options:
+                    class: "%sylius.model.order.class%"
+                    repository:
+                        method: createByCustomerIdQueryBuilder
+                        arguments: [$customerId]
+            sorting:
+                completedAt: desc
+            fields:
+                channel:
+                    type: twig
+                    label: sylius.ui.channel
+                    path: channel
+                    options:
+                        template: SyliusAdminBundle:Order/Field:channel.html.twig
+                number:
+                    type: twig
+                    label: sylius.ui.number
+                    path: .
+                    options:
+                        template: SyliusAdminBundle:Order/Field:number.html.twig
+                date:
+                    type: datetime
+                    label: sylius.ui.date
+                    path: completedAt
+                    options:
+                        format: d-m-Y H:i:s
+                state:
+                    type: twig
+                    label: sylius.ui.state
+                    options:
+                        template: SyliusAdminBundle:Order/Field:state.html.twig
+                paymentState:
+                    type: twig
+                    label: sylius.ui.payment_state
+                    options:
+                        template: SyliusAdminBundle:Order/Field:state.html.twig
+                shippingState:
+                    type: twig
+                    label: sylius.ui.shipping_state
+                    options:
+                        template: SyliusAdminBundle:Order/Field:state.html.twig
+                total:
+                    type: twig
+                    label: sylius.ui.total
+                    path: .
+                    options:
+                        template: SyliusAdminBundle:Order/Field:total.html.twig
+            actions:
+                item:
+                    show:
+                        type: show

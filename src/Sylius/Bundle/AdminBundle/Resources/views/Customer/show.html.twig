@@ -1,0 +1,29 @@
+{% extends 'SyliusAdminBundle::layout.html.twig' %}
+
+{% import '@SyliusUi/Macro/labels.html.twig' as label %}
+
+{% block title %}{{ parent() }} {{ 'sylius.ui.customer'|trans ~' '~ customer.email }}{% endblock %}
+
+{% block content %}
+    <div class="ui stackable two column grid">
+        <div class="column">
+            {% include '@SyliusAdmin/Customer/Show/_header.html.twig' %}
+        </div>
+        <div class="right aligned column">
+            {% include '@SyliusAdmin/Customer/Show/_actions.html.twig' %}
+        </div>
+    </div>
+    <div class="ui divider"></div>
+
+    {% include '@SyliusAdmin/Customer/Breadcrumb/_show.html.twig' %}
+
+    <div class="ui stackable grid">
+        <div class="eleven wide column">
+            {% include '@SyliusAdmin/Customer/Show/_statistics.html.twig' %}
+            {{ render(url('sylius_admin_partial_order_by_customer', {'customerId': customer.id, 'template': '@SyliusAdmin/Customer/Show/_orders.html.twig'})) }}
+        </div>
+        <div class="five wide column">
+            {% include '@SyliusAdmin/Order/Show/_customer.html.twig' %}
+        </div>
+    </div>
+{% endblock %}

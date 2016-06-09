@@ -37,6 +37,19 @@ class OrderRepository extends CartRepository implements OrderRepositoryInterface
     /**
      * {@inheritdoc}
      */
+    public function createByCustomerIdQueryBuilder($customerId)
+    {
+        $queryBuilder = $this->createQueryBuilder('o');
+
+        return $queryBuilder
+            ->andWhere('o.customer = :customer')
+            ->setParameter('customer', $customerId)
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createPaginatorByCustomer(CustomerInterface $customer, array $sorting = [])
     {
         $queryBuilder = $this->createQueryBuilderWithCustomer($customer, $sorting);

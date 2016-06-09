@@ -1,0 +1,6 @@
+{% import 'SyliusUiBundle:Macro:buttons.html.twig' as buttons %}
+
+<div class="ui buttons">
+    {{ buttons.edit(path(configuration.getRouteName('update'), {'id': customer.id})) }}
+    {{ buttons.delete(path(configuration.getRouteName('delete'), {'id': customer.id})) }}
+</div>
