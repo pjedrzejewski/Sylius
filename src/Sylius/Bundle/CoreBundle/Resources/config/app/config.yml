@@ -26,12 +26,6 @@ imports:
     - { resource: "state_machine.yml" }
     - { resource: "fixtures.yml" }
 
-assetic:
-    debug: "%kernel.debug%"
-    use_controller: false
-    filters:
-        cssrewrite: ~
-
 doctrine:
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
