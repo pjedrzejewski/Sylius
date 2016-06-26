@@ -82,3 +82,6 @@ sylius_admin_partial:
 sylius_admin_api_taxon:
     resource: "@SyliusAdminBundle/Resources/config/routing/api/taxon.yml"
     prefix: /api
+
+liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"

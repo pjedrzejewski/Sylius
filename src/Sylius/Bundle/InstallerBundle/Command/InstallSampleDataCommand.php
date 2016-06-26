@@ -66,8 +66,6 @@ EOT
 
         $commands = [
             'doctrine:fixtures:load' => ['--no-interaction' => true],
-            'doctrine:phpcr:fixtures:load' => ['--no-interaction' => true],
-            'sylius:search:index',
         ];
 
         $this->runCommands($commands, $input, $output);
