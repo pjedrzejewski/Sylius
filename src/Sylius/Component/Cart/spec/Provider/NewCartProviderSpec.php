@@ -13,9 +13,9 @@ namespace spec\Sylius\Component\Cart\Provider;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Sylius\Component\Cart\Model\CartInterface;
 use Sylius\Component\Cart\Provider\CartProviderInterface;
 use Sylius\Component\Cart\Provider\NewCartProvider;
+use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 
 /**
@@ -40,7 +40,7 @@ class NewCartProviderSpec extends ObjectBehavior
         $this->shouldImplement(CartProviderInterface::class);
     }
 
-    function it_always_returns_a_new_cart(FactoryInterface $cartFactory, CartInterface $cart)
+    function it_always_returns_a_new_cart(FactoryInterface $cartFactory, OrderInterface $cart)
     {
         $cartFactory->createNew()->willReturn($cart);
 

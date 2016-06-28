@@ -11,7 +11,7 @@
 
 namespace Sylius\Component\Cart\Provider;
 
-use Sylius\Component\Cart\Model\CartInterface;
+use Sylius\Component\Order\Model\OrderInterface;
 
 /**
  * Used by context to obtain a cart.
@@ -21,7 +21,7 @@ use Sylius\Component\Cart\Model\CartInterface;
 interface CartProviderInterface
 {
     /**
-     * @return null|CartInterface
+     * @return null|OrderInterface
      */
     public function getCart();
 }

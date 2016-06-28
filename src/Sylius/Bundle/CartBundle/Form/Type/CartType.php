@@ -15,9 +15,6 @@ use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
- * Cart form form.
- * It is built from collection of cart items forms.
- *
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
 class CartType extends AbstractResourceType
@@ -31,7 +28,10 @@ class CartType extends AbstractResourceType
             ->add('items', 'collection', [
                 'type' => 'sylius_cart_item',
             ])
-            ->add('notes')
+            ->add('notes', 'textarea', [
+                'label' => 'sylius.form.cart.notes',
+                'required' => false,
+            ])
         ;
     }
 

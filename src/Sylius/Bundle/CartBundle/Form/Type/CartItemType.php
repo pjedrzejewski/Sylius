@@ -23,7 +23,7 @@ class CartItemType extends AbstractResourceType
     /**
      * @var DataMapperInterface
      */
-    protected $orderItemQuantityDataMapper;
+    private $orderItemQuantityDataMapper;
 
     /**
      * @param string $dataClass
@@ -44,8 +44,8 @@ class CartItemType extends AbstractResourceType
     {
         $builder
             ->add('quantity', 'integer', [
-                'attr' => ['min' => 1],
                 'label' => 'sylius.form.cart_item.quantity',
+                'attr' => ['min' => 1],
             ])
             ->setDataMapper($this->orderItemQuantityDataMapper);
     }

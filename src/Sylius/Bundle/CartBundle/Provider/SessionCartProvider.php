@@ -12,7 +12,7 @@
 namespace Sylius\Bundle\CartBundle\Provider;
 
 use Sylius\Component\Cart\Provider\CartProviderInterface;
-use Sylius\Component\Cart\Repository\CartRepositoryInterface;
+use Sylius\Component\Cart\Repository\CartsAwareOrderRepositoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -31,23 +31,23 @@ class SessionCartProvider implements CartProviderInterface
     private $sessionKeyName;
 
     /**
-     * @var CartRepositoryInterface
+     * @var CartsAwareOrderRepositoryInterface
      */
-    private $cartRepository;
+    private $orderRepository;
 
     /**
      * @param SessionInterface $session
      * @param string $sessionKeyName
-     * @param CartRepositoryInterface $cartRepository
+     * @param CartsAwareOrderRepositoryInterface $orderRepository
      */
     public function __construct(
         SessionInterface $session,
         $sessionKeyName,
-        CartRepositoryInterface $cartRepository
+        CartsAwareOrderRepositoryInterface $orderRepository
     ) {
         $this->session = $session;
         $this->sessionKeyName = $sessionKeyName;
-        $this->cartRepository = $cartRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -59,7 +59,7 @@ class SessionCartProvider implements CartProviderInterface
             return null;
         }
 
-        $cart = $this->cartRepository->findCartById($this->session->get($this->sessionKeyName));
+        $cart = $this->orderRepository->findCartById($this->session->get($this->sessionKeyName));
 
         if (null === $cart) {
             $this->session->remove($this->sessionKeyName);

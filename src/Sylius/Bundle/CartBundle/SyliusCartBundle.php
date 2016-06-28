@@ -12,25 +12,14 @@
 namespace Sylius\Bundle\CartBundle;
 
 use Sylius\Bundle\CartBundle\DependencyInjection\Compiler\RegisterCartProvidersPass;
-use Sylius\Bundle\ResourceBundle\AbstractResourceBundle;
-use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-class SyliusCartBundle extends AbstractResourceBundle
+class SyliusCartBundle extends Bundle
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getSupportedDrivers()
-    {
-        return [
-            SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
-        ];
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -39,21 +28,5 @@ class SyliusCartBundle extends AbstractResourceBundle
         parent::build($container);
 
         $container->addCompilerPass(new RegisterCartProvidersPass());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getBundlePrefix()
-    {
-        return 'sylius_order';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getModelNamespace()
-    {
-        return 'Sylius\Component\Cart\Model';
     }
 }

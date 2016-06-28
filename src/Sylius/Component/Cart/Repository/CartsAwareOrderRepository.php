@@ -11,22 +11,17 @@
 
 namespace Sylius\Component\Cart\Repository;
 
-use Sylius\Component\Cart\Model\CartInterface;
+use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
  * @author Alexandre Bacco <alexandre.bacco@gmail.com>
  * @author Paweł Jędrzejewski <pawel@sylius.org>
  */
-interface CartRepositoryInterface extends RepositoryInterface
+interface CartsAwareOrderRepositoryInterface extends RepositoryInterface
 {
     /**
-     * @return null|CartInterface
+     * @return null|OrderInterface
      */
     public function findCartById($id);
-
-    /**
-     * @return CartInterface[]
-     */
-    public function findExpiredCarts();
 }

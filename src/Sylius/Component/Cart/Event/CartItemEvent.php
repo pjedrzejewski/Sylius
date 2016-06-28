@@ -11,35 +11,31 @@
 
 namespace Sylius\Component\Cart\Event;
 
-use Sylius\Component\Cart\Model\CartInterface;
-use Sylius\Component\Cart\Model\CartItemInterface;
+use Sylius\Component\Order\Model\OrderItemInterface;
+use Sylius\Component\Resource\Event\ResourceEvent;
 
 /**
- * Cart item event.
- *
  * @author Joseph Bielawski <stloyd@gmail.com>
  */
-class CartItemEvent extends CartEvent
+class CartItemEvent extends ResourceEvent
 {
     /**
-     * @var CartItemInterface
+     * @var OrderItemInterface
      */
     private $item;
 
     /**
-     * @param CartInterface     $cart
-     * @param CartItemInterface $item
+     * @param OrderItemInterface $item
      */
-    public function __construct(CartInterface $cart, CartItemInterface $item)
+    public function __construct(OrderItemInterface $item)
     {
-        parent::__construct($cart);
+        parent::__construct($item);
 
         $this->item = $item;
-        $this->subject = $item;
     }
 
     /**
-     * @return CartItemInterface
+     * @return OrderItemInterface
      */
     public function getItem()
     {

@@ -17,7 +17,7 @@
                                http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="sylius.repository.cart.class">Sylius\Bundle\CartBundle\Doctrine\ORM\CartRepository</parameter>
+        <parameter key="sylius.repository.order.class">Sylius\Bundle\CartBundle\Doctrine\ORM\CartsAwareOrderRepository</parameter>
     </parameters>
 
 </container>

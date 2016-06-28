@@ -16,7 +16,7 @@ use Prophecy\Argument;
 use Sylius\Component\Cart\Context\CartContext;
 use Sylius\Component\Cart\Context\CartContextInterface;
 use Sylius\Component\Cart\Context\CartNotFoundException;
-use Sylius\Component\Cart\Model\CartInterface;
+use Sylius\Component\Order\Model\OrderInterface;
 use Sylius\Component\Cart\Provider\CartProviderInterface;
 use Sylius\Component\Registry\PrioritizedServiceRegistryInterface;
 
@@ -46,7 +46,7 @@ class CartContextSpec extends ObjectBehavior
         PrioritizedServiceRegistryInterface $providersRegistry,
         CartProviderInterface $firstProvider,
         CartProviderInterface $secondProvider,
-        CartInterface $cart
+        OrderInterface $cart
     ) {
         $providersRegistry->all()->willReturn([$firstProvider, $secondProvider]);
         $firstProvider->getCart()->willReturn(null);

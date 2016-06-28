@@ -23,13 +23,13 @@
 
     <services>
         <service id="sylius.cart_provider.new" class="%sylius.cart_provider.new.class%">
-            <argument type="service" id="sylius.factory.cart" />
+            <argument type="service" id="sylius.factory.order" />
             <tag name="sylius.cart_provider" priority="-999" />
         </service>
         <service id="sylius.cart_provider.session" class="%sylius.cart_provider.session.class%">
             <argument type="service" id="session" />
             <argument>_sylius.cart</argument>
-            <argument type="service" id="sylius.repository.cart" />
+            <argument type="service" id="sylius.repository.order" />
             <tag name="sylius.cart_provider" priority="-888" />
         </service>
     </services>

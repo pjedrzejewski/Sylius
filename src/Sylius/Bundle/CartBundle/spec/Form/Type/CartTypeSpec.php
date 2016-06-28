@@ -44,7 +44,7 @@ class CartTypeSpec extends ObjectBehavior
         ;
 
         $builder
-            ->add('notes')
+            ->add('notes', 'textarea', Argument::any())
             ->willReturn($builder)
         ;
 
