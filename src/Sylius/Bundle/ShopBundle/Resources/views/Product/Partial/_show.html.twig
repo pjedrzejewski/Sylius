@@ -17,7 +17,4 @@
         <div class="sylius-product-price">{{ money.convertAndFormat(product.variants.first()|sylius_channel_variant_price) }}</div>
         {% endif %}
     </div>
-    <div class="extra content">
-        {% include '@SyliusShop/Product/Partial/Show/_rating.html.twig' %}
-    </div>
 </div>
