@@ -22,38 +22,6 @@
         </div>
         <div class="sf-toolbar-info-group">
             <div class="sf-toolbar-info-piece">
-                <b>Currency</b>
-                <span class="sf-toolbar-status sf-toolbar-status-green">
-                    <abbr title="Current {% if collector.currencyCode == collector.defaultCurrencyCode %}and default {% endif %}currency">
-                        {{ collector.currencyCode|default('Undefined') }}
-                    </abbr>
-                </span>
-                {% if collector.currencyCode != collector.defaultCurrencyCode %}
-                    <span class="sf-toolbar-status">
-                        <abbr title="Default locale">
-                            {{ collector.defaultCurrencyCode }}
-                        </abbr>
-                    </span>
-                {% endif %}
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>Locale</b>
-                <span class="sf-toolbar-status sf-toolbar-status-green">
-                    <abbr title="Current {% if collector.localeCode == collector.defaultLocaleCode %}and default {% endif %}locale">
-                        {{ collector.localeCode|default('Undefined') }}
-                    </abbr>
-                </span>
-                {% if collector.localeCode != collector.defaultLocaleCode %}
-                    <span class="sf-toolbar-status">
-                        <abbr title="Default locale">
-                            {{ collector.defaultLocaleCode }}
-                        </abbr>
-                    </span>
-                {% endif %}
-            </div>
-        </div>
-        <div class="sf-toolbar-info-group">
-            <div class="sf-toolbar-info-piece">
                 <b>Resources</b>
                 <span><a href="http://docs.sylius.org/en/latest/" rel="help">Sylius Documentation</a></span>
             </div>
