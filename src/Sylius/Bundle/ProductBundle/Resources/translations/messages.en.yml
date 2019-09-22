@@ -26,3 +26,6 @@ sylius:
         option_value:
             add_value: Add value
             value: Value
+        product_family:
+            name: Name
+            options: Options

@@ -95,7 +95,7 @@ final class MainMenuBuilder
         $catalog
             ->addChild('families', ['route' => 'sylius_admin_product_family_index'])
             ->setLabel('sylius.menu.admin.main.catalog.families')
-            ->setLabelAttribute('icon', 'options')
+            ->setLabelAttribute('icon', 'boxes')
         ;
     }
 

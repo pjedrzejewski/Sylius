@@ -9,6 +9,7 @@ sylius:
                     inventory: Inventory
                     options: Options
                     products: Products
+                    families: Product families
                     taxons: Taxons
                 configuration:
                     admin_users: Administrators
