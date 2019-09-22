@@ -25,6 +25,11 @@ sylius_grid:
                     type: string
                     label: sylius.ui.name
                     sortable: translation.name
+                family:
+                    type: twig
+                    label: sylius.ui.family
+                    options:
+                        template: "@SyliusAdmin/Product/Grid/Field/family.html.twig"
                 mainTaxon:
                     type: twig
                     label: sylius.ui.main_taxon
@@ -44,6 +49,11 @@ sylius_grid:
                 enabled:
                     type: boolean
                     label: sylius.ui.enabled
+                family:
+                    type: entity
+                    label: sylius.ui.family
+                    form_options:
+                        class: "%sylius.model.product_family.class%"
             actions:
                 main:
                     create:

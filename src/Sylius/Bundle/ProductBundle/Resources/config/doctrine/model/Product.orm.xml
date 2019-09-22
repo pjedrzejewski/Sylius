@@ -20,6 +20,11 @@
         </id>
         <field name="code" column="code" type="string" unique="true" nullable="false"/>
 
+        <many-to-one target-entity="Sylius\Component\Product\Model\ProductFamilyInterface" field="family">
+            <join-column name="family_id" referenced-column-name="id" nullable="true" />
+        </many-to-one>
+
+
         <one-to-many field="attributes" target-entity="Sylius\Component\Product\Model\ProductAttributeValueInterface" mapped-by="subject" orphan-removal="true">
             <cascade>
                 <cascade-all />

@@ -48,6 +48,10 @@ interface ProductInterface extends
 
     public function setMetaDescription(?string $metaDescription): void;
 
+    public function getFamily(): ?ProductFamilyInterface;
+
+    public function setFamily(?ProductFamilyInterface $family): void;
+
     public function hasVariants(): bool;
 
     /**

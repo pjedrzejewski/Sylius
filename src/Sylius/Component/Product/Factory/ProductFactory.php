@@ -65,7 +65,6 @@ class ProductFactory implements ProductFactoryInterface
      */
     public function createFromFamily($familyCode): ProductInterface
     {
-        $product = $this->createWithVariant();
 
         $family = $this->familyRepository->findOneBy(['code' => $familyCode]);
 
@@ -73,11 +72,19 @@ class ProductFactory implements ProductFactoryInterface
             throw new \InvalidArgumentException(sprintf('Product family with code "%s" does not exist!', $familyCode));
         }
 
+        if (count($family->getOptions()) > 0) {
+            $product = $this->createNew();
+        } else {
+            $product = $this->createWithVariant();
+        }
+
+
+        $product->setFamily($family);
+        $product->setCode($familyCode . '_');
+
         foreach ($family->getOptions() as $option) {
             $product->addOption($option);
         }
-
-        $product->setCode($familyCode . '_');
 
         return $product;
     }

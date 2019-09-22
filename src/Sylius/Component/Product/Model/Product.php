@@ -36,6 +36,9 @@ class Product implements ProductInterface
     /** @var string */
     protected $code;
 
+    /** @var ProductFamilyInterface */
+    protected $family;
+
     /** @var Collection|AttributeValueInterface[] */
     protected $attributes;
 
@@ -134,6 +137,22 @@ class Product implements ProductInterface
     public function setDescription(?string $description): void
     {
         $this->getTranslation()->setDescription($description);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFamily(): ?ProductFamilyInterface
+    {
+        return $this->family;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFamily(?ProductFamilyInterface $family): void
+    {
+        $this->family = $family;
     }
 
     /**

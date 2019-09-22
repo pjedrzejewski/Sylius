@@ -13,5 +13,5 @@ sylius_admin_product_family:
               templates:
                   form: "@SyliusAdmin/ProductFamily/_form.html.twig"
           index:
-              icon: test
+              icon: boxes
     type: sylius.resource
