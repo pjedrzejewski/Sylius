@@ -28,6 +28,15 @@ sylius_grid:
                     create:
                         type: create
                 item:
+                    add:
+                        type: default
+                        label: sylius.ui.create_product
+                        icon: plus
+                        options:
+                            link:
+                                route: sylius_admin_product_create_from_family
+                                parameters:
+                                    family: resource.code
                     update:
                         type: update
                     delete:

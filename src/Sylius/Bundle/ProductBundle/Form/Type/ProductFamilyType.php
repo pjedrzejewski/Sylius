@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sylius\Bundle\ProductBundle\Form\Type;
 
+use Sylius\Bundle\ProductBundle\Form\Type\ProductOptionChoiceType;
 use Sylius\Bundle\ResourceBundle\Form\EventSubscriber\AddCodeFormSubscriber;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType;
 use Sylius\Bundle\ResourceBundle\Form\Type\ResourceTranslationsType;
@@ -26,6 +27,11 @@ final class ProductFamilyType extends AbstractResourceType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('options', ProductOptionChoiceType::class, [
+                'required' => false,
+                'multiple' => true,
+                'label' => 'sylius.form.product_family.options',
+            ])
             ->add('translations', ResourceTranslationsType::class, [
                 'entry_type' => ProductFamilyTranslationType::class,
                 'label' => 'sylius.form.product_family.translations',

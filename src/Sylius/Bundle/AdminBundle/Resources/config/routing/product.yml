@@ -97,6 +97,28 @@ sylius_admin_product_create_simple:
                 route:
                     name: sylius_admin_product_create_simple
 
+sylius_admin_product_create_from_family:
+    path: /products/new/from-family/{family}
+    methods: [GET, POST]
+    defaults:
+        _controller: sylius.controller.product:createAction
+        _sylius:
+            section: admin
+            permission: true
+            factory:
+                method: createFromFamily
+                arguments: [$family]
+            template: "@SyliusAdmin/Crud/create.html.twig"
+            redirect: sylius_admin_product_update
+            vars:
+                subheader: sylius.ui.manage_your_product_catalog
+                templates:
+                    form: "@SyliusAdmin/Product/_form.html.twig"
+                route:
+                    name: sylius_admin_product_create_from_family
+                    parameters:
+                        family: $family
+
 sylius_admin_product_show:
     path: /products/{id}
     methods: [GET]

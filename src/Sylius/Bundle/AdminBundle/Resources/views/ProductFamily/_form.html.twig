@@ -2,8 +2,7 @@
 
 <div class="ui segment">
     {{ form_errors(form) }}
-    <div class="two fields">
-        {{ form_row(form.code) }}
-    </div>
+    {{ form_row(form.code) }}
+    {{ form_row(form.options) }}
     {{ translationForm(form.translations) }}
 </div>

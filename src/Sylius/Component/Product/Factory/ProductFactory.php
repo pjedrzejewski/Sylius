@@ -15,6 +15,7 @@ namespace Sylius\Component\Product\Factory;
 
 use Sylius\Component\Product\Model\ProductInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 class ProductFactory implements ProductFactoryInterface
 {
@@ -24,12 +25,17 @@ class ProductFactory implements ProductFactoryInterface
     /** @var FactoryInterface */
     private $variantFactory;
 
+    /** @var RepositoryInterface */
+    private $familyRepository;
+
     public function __construct(
         FactoryInterface $factory,
-        FactoryInterface $variantFactory
+        FactoryInterface $variantFactory,
+        RepositoryInterface $familyRepository
     ) {
         $this->factory = $factory;
         $this->variantFactory = $variantFactory;
+        $this->familyRepository = $familyRepository;
     }
 
     /**
@@ -50,6 +56,28 @@ class ProductFactory implements ProductFactoryInterface
         /** @var ProductInterface $product */
         $product = $this->factory->createNew();
         $product->addVariant($variant);
+
+        return $product;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createFromFamily($familyCode): ProductInterface
+    {
+        $product = $this->createWithVariant();
+
+        $family = $this->familyRepository->findOneBy(['code' => $familyCode]);
+
+        if (null === $family) {
+            throw new \InvalidArgumentException(sprintf('Product family with code "%s" does not exist!', $familyCode));
+        }
+
+        foreach ($family->getOptions() as $option) {
+            $product->addOption($option);
+        }
+
+        $product->setCode($familyCode . '_');
 
         return $product;
     }

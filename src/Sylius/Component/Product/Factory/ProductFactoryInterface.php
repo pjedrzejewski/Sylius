@@ -19,4 +19,5 @@ use Sylius\Component\Resource\Factory\TranslatableFactoryInterface;
 interface ProductFactoryInterface extends TranslatableFactoryInterface
 {
     public function createWithVariant(): ProductInterface;
+    public function createFromFamily($familyCode): ProductInterface;
 }

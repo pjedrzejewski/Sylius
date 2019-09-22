@@ -33,10 +33,14 @@ class ProductFamily implements ProductFamilyInterface
     /** @var string */
     protected $code;
 
+    /** @var Collection|ProductOptionInterface[] */
+    protected $options;
+
     public function __construct()
     {
         $this->initializeTranslationsCollection();
 
+        $this->options = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
 
@@ -84,6 +88,51 @@ class ProductFamily implements ProductFamilyInterface
     {
         $this->getTranslation()->setName($name);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasOptions(): bool
+    {
+        return !$this->options->isEmpty();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addOption(ProductOptionInterface $option): void
+    {
+        if (!$this->hasOption($option)) {
+            $this->options->add($option);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeOption(ProductOptionInterface $option): void
+    {
+        if ($this->hasOption($option)) {
+            $this->options->removeElement($option);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasOption(ProductOptionInterface $option): bool
+    {
+        return $this->options->contains($option);
+    }
+
 
     /**
      * @return ProductFamilyTranslationInterface

@@ -33,6 +33,7 @@
         <service id="sylius.custom_factory.product" class="Sylius\Component\Product\Factory\ProductFactory" decorates="sylius.factory.product" decoration-priority="256" public="false">
             <argument type="service" id="sylius.custom_factory.product.inner" />
             <argument type="service" id="sylius.factory.product_variant" />
+            <argument type="service" id="sylius.repository.product_family" />
         </service>
         <service id="Sylius\Component\Product\Factory\ProductFactoryInterface" alias="sylius.factory.product" />
 

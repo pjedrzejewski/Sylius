@@ -36,6 +36,20 @@ interface ProductFamilyInterface extends
      */
     public function setName(?string $name): void;
 
+    public function hasOptions(): bool;
+
+    /**
+     * @return Collection|ProductOptionInterface[]
+     */
+    public function getOptions(): Collection;
+
+    public function addOption(ProductOptionInterface $option): void;
+
+    public function removeOption(ProductOptionInterface $option): void;
+
+    public function hasOption(ProductOptionInterface $option): bool;
+
+
     /**
      * @return ProductFamilyTranslationInterface
      */
