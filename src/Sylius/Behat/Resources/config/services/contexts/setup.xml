@@ -161,6 +161,13 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
 
+        <service id="sylius.behat.context.setup.product_family" class="Sylius\Behat\Context\Setup\ProductFamilyContext">
+            <argument type="service" id="sylius.behat.shared_storage" />
+            <argument type="service" id="sylius.repository.product_family" />
+            <argument type="service" id="sylius.factory.product_family" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+
         <service id="sylius.behat.context.setup.product_review" class="Sylius\Behat\Context\Setup\ProductReviewContext">
             <argument type="service" id="sylius.behat.shared_storage" />
             <argument type="service" id="sylius.factory.product_review" />

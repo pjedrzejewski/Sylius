@@ -16,6 +16,8 @@ namespace Sylius\Bundle\ProductBundle\DependencyInjection;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductAssociationType;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductAssociationTypeTranslationType;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductAssociationTypeType;
+use Sylius\Bundle\ProductBundle\Form\Type\ProductFamilyTranslationType;
+use Sylius\Bundle\ProductBundle\Form\Type\ProductFamilyType;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductOptionTranslationType;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductOptionType;
 use Sylius\Bundle\ProductBundle\Form\Type\ProductOptionValueTranslationType;
@@ -33,6 +35,10 @@ use Sylius\Component\Product\Model\ProductAssociationType as ProductAssociationT
 use Sylius\Component\Product\Model\ProductAssociationTypeInterface as ProductAssociationTypeModelInterface;
 use Sylius\Component\Product\Model\ProductAssociationTypeTranslation;
 use Sylius\Component\Product\Model\ProductAssociationTypeTranslationInterface;
+use Sylius\Component\Product\Model\ProductFamily;
+use Sylius\Component\Product\Model\ProductFamilyInterface;
+use Sylius\Component\Product\Model\ProductFamilyTranslation;
+use Sylius\Component\Product\Model\ProductFamilyTranslationInterface;
 use Sylius\Component\Product\Model\ProductInterface;
 use Sylius\Component\Product\Model\ProductOption;
 use Sylius\Component\Product\Model\ProductOptionInterface;
@@ -272,6 +278,40 @@ final class Configuration implements ConfigurationInterface
                                                 ->scalarNode('repository')->cannotBeEmpty()->end()
                                                 ->scalarNode('factory')->defaultValue(Factory::class)->end()
                                                 ->scalarNode('form')->defaultValue(ProductAssociationTypeTranslationType::class)->cannotBeEmpty()->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->arrayNode('product_family')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->variableNode('options')->end()
+                                ->arrayNode('classes')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->scalarNode('model')->defaultValue(ProductFamily::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('interface')->defaultValue(ProductFamilyInterface::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
+                                        ->scalarNode('repository')->cannotBeEmpty()->end()
+                                        ->scalarNode('factory')->defaultValue(TranslatableFactory::class)->end()
+                                        ->scalarNode('form')->defaultValue(ProductFamilyType::class)->cannotBeEmpty()->end()
+                                    ->end()
+                                ->end()
+                                ->arrayNode('translation')
+                                    ->addDefaultsIfNotSet()
+                                    ->children()
+                                        ->variableNode('options')->end()
+                                        ->arrayNode('classes')
+                                            ->addDefaultsIfNotSet()
+                                            ->children()
+                                                ->scalarNode('model')->defaultValue(ProductFamilyTranslation::class)->cannotBeEmpty()->end()
+                                                ->scalarNode('interface')->defaultValue(ProductFamilyTranslationInterface::class)->cannotBeEmpty()->end()
+                                                ->scalarNode('controller')->defaultValue(ResourceController::class)->cannotBeEmpty()->end()
+                                                ->scalarNode('repository')->cannotBeEmpty()->end()
+                                                ->scalarNode('factory')->defaultValue(Factory::class)->end()
+                                                ->scalarNode('form')->defaultValue(ProductFamilyTranslationType::class)->cannotBeEmpty()->end()
                                             ->end()
                                         ->end()
                                     ->end()

@@ -63,6 +63,9 @@ sylius_admin_product_association_type:
 sylius_admin_product_attribute:
     resource: "@SyliusAdminBundle/Resources/config/routing/product_attribute.yml"
 
+sylius_admin_product_family:
+    resource: "@SyliusAdminBundle/Resources/config/routing/product_family.yml"
+
 sylius_admin_product_option:
     resource: "@SyliusAdminBundle/Resources/config/routing/product_option.yml"
 

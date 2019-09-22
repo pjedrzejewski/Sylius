@@ -90,6 +90,12 @@ final class MainMenuBuilder
             ->addChild('association_types', ['route' => 'sylius_admin_product_association_type_index'])
             ->setLabel('sylius.menu.admin.main.catalog.association_types')
             ->setLabelAttribute('icon', 'tasks')
+            ;
+
+        $catalog
+            ->addChild('families', ['route' => 'sylius_admin_product_family_index'])
+            ->setLabel('sylius.menu.admin.main.catalog.families')
+            ->setLabelAttribute('icon', 'options')
         ;
     }
 

@@ -40,6 +40,12 @@
         <parameter key="sylius.form.type.product_generate_variants.validation_groups" type="collection">
             <parameter>sylius</parameter>
         </parameter>
+        <parameter key="sylius.form.type.product_family.validation_groups" type="collection">
+            <parameter>sylius</parameter>
+        </parameter>
+        <parameter key="sylius.form.type.product_family_translation.validation_groups" type="collection">
+            <parameter>sylius</parameter>
+        </parameter>
         <parameter key="sylius.form.type.product_option.validation_groups" type="collection">
             <parameter>sylius</parameter>
         </parameter>
@@ -165,6 +171,18 @@
         <service id="sylius.form.type.product_option_translation" class="Sylius\Bundle\ProductBundle\Form\Type\ProductOptionTranslationType">
             <argument>%sylius.model.product_option_translation.class%</argument>
             <argument>%sylius.form.type.product_option_translation.validation_groups%</argument>
+            <tag name="form.type" />
+        </service>
+
+        <service id="sylius.form.type.product_family" class="Sylius\Bundle\ProductBundle\Form\Type\ProductFamilyType">
+            <argument>%sylius.model.product_family.class%</argument>
+            <argument>%sylius.form.type.product_family.validation_groups%</argument>
+            <tag name="form.type" />
+        </service>
+
+        <service id="sylius.form.type.product_family_translation" class="Sylius\Bundle\ProductBundle\Form\Type\ProductFamilyTranslationType">
+            <argument>%sylius.model.product_family_translation.class%</argument>
+            <argument>%sylius.form.type.product_family_translation.validation_groups%</argument>
             <tag name="form.type" />
         </service>
 
