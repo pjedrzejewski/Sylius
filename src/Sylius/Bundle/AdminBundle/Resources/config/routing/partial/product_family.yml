@@ -1,0 +1,10 @@
+sylius_admin_partial_product_family_index:
+    path: /
+    methods: [GET]
+    defaults:
+        _controller: sylius.controller.product_family:indexAction
+        _sylius:
+            repository:
+                method: findAll
+            template: $template
+            permission: true

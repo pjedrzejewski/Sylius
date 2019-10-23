@@ -74,6 +74,8 @@ sylius_grid:
                                     label: sylius.ui.configurable_product
                                     icon: plus
                                     route: sylius_admin_product_create
+                    create_from_family:
+                        type: create_product_from_family
                 item:
                     details:
                         label: sylius.ui.details

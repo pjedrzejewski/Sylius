@@ -1,0 +1,23 @@
+{% if product_families|length > 1 %}
+
+<div class="ui floating dropdown labeled icon button">
+    <i class="plus icon"></i>
+    <span class="text">
+        {{ 'sylius.ui.from_family'|trans }}
+    </span>
+    <div class="menu">
+        <div class="ui icon search input">
+            <i class="search icon"></i>
+            <input type="text" placeholder="{{ 'sylius.ui.search'|trans }}...">
+        </div>
+        <div class="scrolling menu">
+            {% for family in product_families %}
+                <a href="{{ path('sylius_admin_product_create_from_family', {'family': family.code}) }}" class="item">
+                    <i class="ui icon boxes"></i>
+                    {{ family.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

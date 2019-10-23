@@ -18,6 +18,10 @@ sylius_admin_partial_product:
     resource: "@SyliusAdminBundle/Resources/config/routing/partial/product.yml"
     prefix: /products
 
+sylius_admin_partial_product_family:
+    resource: "@SyliusAdminBundle/Resources/config/routing/partial/product_family.yml"
+    prefix: /product-families
+
 sylius_admin_partial_promotion:
     resource: "@SyliusAdminBundle/Resources/config/routing/partial/promotion.yml"
     prefix: /promotions
